@@ -1,16 +1,43 @@
 import styled from "styled-components";
-import ProductDesignHeaderBar from "../ProductDesignHeaderBar";
+import ProductDesignHeaderBar from "../DesignPage/ProductDesignHeaderBar";
+import ProductDesignUnderBar from "../DesignPage/ProductDesignUnderBar";
+import ProductDesignMainScreen from "../DesignPage/ProductDesignMainScreen";
 import { useState, useEffect } from "react";
+
+import PhotobookScreen from "../../../assets/products/design_screen/products_design_screen_photobook.png"
 
 const Container = styled.div`
   width: 100vw;
   position: relative;
 `
-
 const Wrapper = styled.div`
   width: 1200px;
   margin: auto;
 `
+
+const options = [
+  ["사이즈 ( cm )", "27x27", "21.6x21.6", "16.2x16.2"],
+  ["커버", "하드커버", "레더커버"],
+  ["커버코팅", "무광", "유광"],
+  ["커버색상", "블랙", "핑크", "레드", "블루", "민트", "엘로", "오렌지"],
+  ["내지", "무광지", "유광지"],
+];
+
+const optFamily = {
+  isFamily: true,
+  parentsOpt: 1,
+  childOpts: {
+    childOpt1: 2,
+    childOpt2: 3,
+  },
+  priceModifier: [
+    [1, 0.8, 0.6],
+    [1, 1.2],
+    null,
+    null,
+    null,
+  ]
+};
 
 export default function PhotobookDesignPage() {
   const [cartInfo, setcartInfo] = useState([]);
@@ -56,52 +83,48 @@ export default function PhotobookDesignPage() {
 
     if (cartInfo && cartInfo.length > 0 && cartInfo[0].cart_option) {
       if (cartInfo[0].cart_option[0] === 0) {
-        size = '27x27';
+        size = 0;
       } else if (cartInfo[0].cart_option[0] === 1) {
-        size = '21.6x21.6';
+        size = 1;
       } else if (cartInfo[0].cart_option[0] === 2) {
-        size = '16.2x16.2';
+        size = 2;
       } 
 
       if (cartInfo[0].cart_option[1] === 0) {
-        coverMain = '하드커버'
+        coverMain = 0;
       } else if (cartInfo[0].cart_option[1] === 1) {
-        coverMain = '레더커버'
+        coverMain = 1;
       }
 
       if (cartInfo[0].cart_option[2] === 0) {
-        coverCoating = '무광'
+        coverCoating = 0;
       } else if (cartInfo[0].cart_option[2] === 1) {
-        coverCoating = '유광'
+        coverCoating = 1;
       }
 
       if (cartInfo[0].cart_option[3] === 0) {
-        coverColor = '블랙'
+        coverColor = 0;
       } else if (cartInfo[0].cart_option[3] === 1) {
-        coverColor = '핑크'
+        coverColor = 1;
       } else if (cartInfo[0].cart_option[3] === 2) {
-        coverColor = '레드'
+        coverColor = 2;
       } else if (cartInfo[0].cart_option[3] === 3) {
-        coverColor = '블루'
+        coverColor = 3;
       } else if (cartInfo[0].cart_option[3] === 4) {
-        coverColor = '민트'
+        coverColor = 4;
       } else if (cartInfo[0].cart_option[3] === 5) {
-        coverColor = '엘로'
+        coverColor = 5;
       } else if (cartInfo[0].cart_option[3] === 6) {
-        coverColor = '오렌지'
+        coverColor = 6;
       }
 
       if (cartInfo[0].cart_option[4] === 0) {
-        inner = '무광지';
+        inner = 0;
       } else if (cartInfo[0].cart_option[4] === 1) {
-        inner = '유광지';
+        inner = 1;
       } 
 
-      if (coverMain == '하드커버') {
-        setProductOption([size, coverMain, coverCoating, inner]);
-      } else {
-        setProductOption([size, coverMain, coverColor, inner]);
-      }
+      setProductOption([size, coverMain, coverCoating, coverColor, inner]);
     }
   }, [cartInfo])
 
@@ -113,6 +136,12 @@ export default function PhotobookDesignPage() {
           setcartInfo={setcartInfo}
           productOption={productOption}
           setProductOption={setProductOption}
+          options={options}
+          optFamily={optFamily}
+        />
+        <ProductDesignUnderBar />
+        <ProductDesignMainScreen 
+          productSrc={PhotobookScreen}
         />
       </Container>
     </>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
-import WrrantyCard from '../../assets/products/products_warranty.png';
+import WrrantyCard from '../../../assets/products/products_warranty.png';
 
 const Container = styled.div`
     width: 100vw;

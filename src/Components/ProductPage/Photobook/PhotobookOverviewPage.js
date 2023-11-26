@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import HeaderBar from '../../IndexPage/HeaderBar';
 import NavBar from '../../IndexPage/NavBar';
-import ProductOptSelector from "../ProductOptSelector";
+import PhotobookOptSelector from "./PhotobookOptSelector";
 import Footer from '../../IndexPage/Footer';
 import React, { useEffect, useState } from 'react';
-import ProductNavBar from "../ProductNavBar";
-import ProductIntroduction from "../ProductIntroduction";
-import ProductDetail from "../ProductDetail";
-import ProductReview from "../ProductReview";
+import ProductNavBar from "../OverviewPage/ProductNavBar";
+import ProductIntroduction from "../OverviewPage/ProductIntroduction";
+import ProductDetail from "../OverviewPage/ProductDetail";
+import ProductReview from "../OverviewPage/ProductReview";
 
 import MainImg from "../../../assets/products/introImgs/products_introImgs_photobook.jpg";
 import SubImgWedding from "../../../assets/products/introImgs/products_introImgs_photobook_wedding.png";
@@ -49,6 +49,13 @@ const optFamily = {
     childOpt1: 2,
     childOpt2: 3,
   },
+  priceModifier: [
+    [1, 0.8, 0.6],
+    [1, 1.2],
+    null,
+    null,
+    null,
+  ]
 };
 
 const introGuider = {
@@ -163,7 +170,7 @@ export default function PhotobookOverviewPage() {
       <HeaderBar/>
       <NavBar />
       <Container>
-        <ProductOptSelector
+        <PhotobookOptSelector
           productId={1}
           options={options}
           optFamily={optFamily}

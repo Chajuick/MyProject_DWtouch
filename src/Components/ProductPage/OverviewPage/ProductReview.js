@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Icon } from '@iconify/react';
-import styled from "styled-components";
-import ZeroStar from '../../assets/user/review/review_zero_star.png';
-import HalfStar from '../../assets/user/review/review_half_star.png';
-import PerfectStar from '../../assets/user/review/review_perfect_star.png';
+import ZeroStar from '../../../assets/user/review/review_zero_star.png';
+import HalfStar from '../../../assets/user/review/review_half_star.png';
+import PerfectStar from '../../../assets/user/review/review_perfect_star.png';
 import * as S from './ProductReviewStyle';
-import * as MS from '../Modal/ModalStyle';
+import * as MS from '../../Modal/ModalStyle';
 
 const viewMethod = ["최신순(오름차순)", "최신순(내림차순)", "별점순(오름차순)", "별점순(내림차순)"];
 

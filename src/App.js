@@ -11,7 +11,6 @@ import Event from './page/Event';
 import PrivacyPolicy from './page/PrivacyPolicy';
 import TermsOfUse from './page/TermsOfUse';
 import CompanyIntro from './page/CompanyIntro';
-import ProductList from './Components/ProductPage/ProductNavBar';
 import PhotobookList from './Components/ProductPage/Photobook/PhotobookList';
 import PhotobookOverviewPage from './Components/ProductPage/Photobook/PhotobookOverviewPage';
 import PhotobookDesignPage from './Components/ProductPage/Photobook/PhotobookDesignPage';
@@ -52,7 +51,6 @@ export default function App() {
           <Route path="/dwstudio" element={<CompanyIntro />} />
           <Route path="/termsofuse" element={<TermsOfUse />} />
           <Route path="/privaypolicy" element={<PrivacyPolicy />} />
-          <Route path="/productlist" element={<ProductList />} />
           <Route path="/productlist/photobook" element={<PhotobookList />} />
           <Route path="/productlist/photobook/photobook" element={<PhotobookOverviewPage />} />
           <Route path="/productlist/photobook/photobook/design" element={<PhotobookDesignPage />} />

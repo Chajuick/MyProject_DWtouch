@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import ErrorDiv from "../ErrorDiv";
-import * as S from './ProductOptSelectorStyle';
-import ErrorModal from "../Modal/ErrorModal";
+import ErrorDiv from "../../ErrorDiv";
+import * as S from '../OverviewPage/ProductOptSelectorStyle';
+import ErrorModal from "../../Modal/ErrorModal";
 import { useNavigate } from 'react-router-dom';
-import Login from "../AcountManagement/Login";
+import Login from "../../AcountManagement/Login";
 
 function filteredChildOptions(options, delChild) {
     const filteredOptions = options.filter((option, index) => index !== delChild);
     return filteredOptions;
 }
 
-export default function ProductOptSelector({ productId, options, optFamily, userGrade, detailGuides, changeOptSelectorY, setOptPrice }) {
+export default function PhotobookOptSelector({ productId, options, optFamily, userGrade, detailGuides, changeOptSelectorY, setOptPrice }) {
     const [mainImg, setMainImg] = useState('');
     const [productImgs, setProductImgs] = useState([]);
     const [productsInfo, setProductsInfo] = useState([]);
@@ -40,12 +40,15 @@ export default function ProductOptSelector({ productId, options, optFamily, user
     }, [defaultPrice, userGrade, productQuantity]);
 
     useEffect(() => {
+        let sizeOption = optFamily.priceModifier[0][selectedOptionIndexes[0]];
+        let coverOption = optFamily.priceModifier[1][selectedOptionIndexes[1]];
+        setDelPrice(defaultPrice*productQuantity*sizeOption*coverOption);
        if (saleInfo === 0) {
-        setFinalPrice(defaultPrice*productQuantity);
+        setFinalPrice(defaultPrice*productQuantity*sizeOption*coverOption);
        } else {
-        setFinalPrice(defaultPrice*(100-saleInfo)/100*productQuantity);
+        setFinalPrice(defaultPrice*(100-saleInfo)/100*productQuantity*sizeOption*coverOption);
        }    
-    }, [defaultPrice, userGrade, saleInfo, productQuantity])
+    }, [defaultPrice, userGrade, saleInfo, productQuantity, selectedOptionIndexes]);
     
     const handleScroll = () => {
         if (productOptSelectorRef.current) {
@@ -57,7 +60,7 @@ export default function ProductOptSelector({ productId, options, optFamily, user
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
         return () => {
-        window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
@@ -178,8 +181,6 @@ export default function ProductOptSelector({ productId, options, optFamily, user
         }
     }  
 
-    console.log(selectedOptionIndexes);
-
     function addToCart() {
         // 서버로 삼품 정보를 전송
         const cartData = {
@@ -206,9 +207,11 @@ export default function ProductOptSelector({ productId, options, optFamily, user
             if (data.message) {
                 if (data.success) {
                     sessionStorage.setItem('cart_id', data.cart_id);
-                    sessionStorage.setItem('del_price', delPrice);
-                    sessionStorage.setItem('final_price', finalPrice);
+                    sessionStorage.setItem('default_price', defaultPrice);
+                    sessionStorage.setItem('del_price', delPrice/productQuantity);
+                    sessionStorage.setItem('final_price', finalPrice/productQuantity);
                     sessionStorage.setItem('sale_info', saleInfo);
+                    sessionStorage.setItem('product_quantity', productQuantity);
                     navigate('/productlist/photobook/photobook/design');
                 }
             } else {

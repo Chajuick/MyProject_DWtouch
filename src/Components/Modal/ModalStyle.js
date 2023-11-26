@@ -25,6 +25,16 @@ export const Modal = styled.div`
     max-width: 800px;
     max-height: 500px;
   }
+  h2 {
+    position: absolute;
+    width: 100%;
+    top: 14px;
+    left: 0;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(80, 80, 80);
+  }
 `;
 
 export const ModalCloseBtn = styled.button`
@@ -38,6 +48,7 @@ export const ModalCloseBtn = styled.button`
   border-radius: 6px;
   transition: all 400ms;
   cursor: pointer;
+  z-index: 1001;
   &:hover {
     color: rgb(250, 250, 250);
     background-color: rgb(25, 25, 25);
