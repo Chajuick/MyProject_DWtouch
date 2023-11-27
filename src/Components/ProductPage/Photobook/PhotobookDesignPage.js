@@ -2,12 +2,15 @@ import styled from "styled-components";
 import ProductDesignHeaderBar from "../DesignPage/ProductDesignHeaderBar";
 import ProductDesignUnderBar from "../DesignPage/ProductDesignUnderBar";
 import ProductDesignMainScreen from "../DesignPage/ProductDesignMainScreen";
+import ProductDesignImgBar from "../DesignPage/ProductDesignImgBar";
 import { useState, useEffect } from "react";
 
-import PhotobookScreen from "../../../assets/products/design_screen/products_design_screen_photobook.png"
+import PhotobookScreen from "../../../assets/products/design_screen/products_design_screen_photobook.png";
+import PhotobookGrid from "../../../assets/products/design_screen/products_grid_screen_photobook.png";
 
 const Container = styled.div`
   width: 100vw;
+  height: 100vh;
   position: relative;
 `
 const Wrapper = styled.div`
@@ -43,6 +46,10 @@ export default function PhotobookDesignPage() {
   const [cartInfo, setcartInfo] = useState([]);
   const [iscartInfoLoading, setIscartInfoLoading] = useState(false);
   const [productOption, setProductOption] = useState(['사이즈옵션', '커버주옵션', '커버부옵션', '내지옵션']);
+  const [mainScreenSize, setMainScreenSize] = useState(100);
+  const [isGrid, setIsGrid] = useState(false);
+  const [textField, setTextField] = useState([]);
+  const [imgField, setImgField] = useState([]);
 
   function cartInfoLoader() {   
     const cartId = sessionStorage.getItem('cart_id');
@@ -139,10 +146,25 @@ export default function PhotobookDesignPage() {
           options={options}
           optFamily={optFamily}
         />
-        <ProductDesignUnderBar />
-        <ProductDesignMainScreen 
-          productSrc={PhotobookScreen}
+        <ProductDesignUnderBar 
+          mainScreenSize={mainScreenSize}
+          setMainScreenSize={setMainScreenSize}
+          isGrid={isGrid}
+          setIsGrid={setIsGrid}
+          textField={textField}
+          setTextField={setTextField}
         />
+        <ProductDesignMainScreen
+          productGrid={PhotobookGrid} 
+          productSrc={PhotobookScreen}
+          mainScreenSize={mainScreenSize}
+          setMainScreenSize={setMainScreenSize}
+          isGrid={isGrid}
+          setIsGrid={setIsGrid}
+          textField={textField}
+          setTextField={setTextField}
+        />
+        <ProductDesignImgBar />
       </Container>
     </>
   );

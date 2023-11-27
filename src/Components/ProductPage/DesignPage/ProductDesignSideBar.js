@@ -37,13 +37,19 @@ const TextAdd = styled.li`
     }
 `;
 
-export default function ProductDesignSideBar() {
+export default function ProductDesignSideBar({ textField, setTextField }) {
+
+    const handleAddButtonClick = () => {
+        // 새로운 input을 추가합니다.
+        setTextField([...textField, ""]);
+      };
+
     return (
         <>
         <BelowBar >
             <DoBtn><Icon icon="material-symbols-light:undo" width="31px" height="31px" /></DoBtn>
             <DoBtn><Icon icon="material-symbols-light:redo" width="31px" height="31px" /></DoBtn>
-            <TextAdd>
+            <TextAdd onClick={handleAddButtonClick}>
                 <Icon icon="ph:textbox-thin"  width="31px" height="31px" />
                 <span>텍스트 추가</span>
             </TextAdd>

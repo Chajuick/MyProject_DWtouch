@@ -17,6 +17,7 @@ const Container = styled.div`
     padding: 5px 0;
     position: relative;
     background-color: rgb(250, 250, 250);
+    z-index: 5;
 `;
 
 const Wrapper = styled.div`
@@ -287,7 +288,7 @@ function filteredChildOptions(options, delChild) {
   return filteredOptions;
 }
 
-export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productOption, setProductOption, options, optFamily }) {
+export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productOption, setProductOption, options, optFamily, }) {
     const [showTooltipSaveBtn, setShowTooltipSaveBtn] = useState(false);
     const [showTooltipTitle, setShowTooltipTitle] = useState(false);
     const [showTooltipSettingChangeBtn, setShowTooltipSettingChangeBtn] = useState(false);
@@ -430,7 +431,7 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
         <MS.Modal $showModal={showSettingChangeModal}>
             <MS.ModalCloseBtn onClick={() => setShowSettingChangeModal(false)}>&times;</MS.ModalCloseBtn>
             {options.map((item, index) => (
-              <SettingContainer>
+              <SettingContainer key={index}>
                 <SettingTitle
                   style={{ display:
                   (index === optFamily.childOpts.childOpt1 && settingOption[optFamily.parentsOpt] === 1) ||

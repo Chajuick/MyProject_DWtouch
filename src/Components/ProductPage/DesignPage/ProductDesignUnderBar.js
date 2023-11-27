@@ -11,6 +11,7 @@ const BelowBar = styled.div`
     border-bottom: 1px solid rgb(220, 220, 220);
     position: relative;
     background-color: rgb(250, 250, 250);
+    z-index: 5;
 `;
 
 const RightBar = styled.ul`
@@ -39,9 +40,10 @@ const BelowMenu = styled.li`
 
 const SizeModify = styled.div`
     border-left: 1px solid rgb(220, 220, 220);
-    padding-left: 10px;
     display: flex;
+    justify-content: center;
     align-items: center;
+    width: 100px;
     span {
         cursor: default;
         color: rgb(60, 60, 60);
@@ -66,27 +68,34 @@ const ViewModify = styled.div`
     }
 `;
 
-export default function ProductDesignUnderBar() {
-    const [screenSize, setScreenSize]=useState(100);
+export default function ProductDesignUnderBar({ mainScreenSize, setMainScreenSize, isGrid, setIsGrid, textField, setTextField }) {
+
+    function minusScreenSize(num) {
+        if (num-20 >= 100) {
+            setMainScreenSize(num-20);
+        }
+    }
+    function plusScreenSize(num) {
+        if (num+20 <= 200) {
+            setMainScreenSize(num+20);
+        }
+    }
 
     return (
         <>
             <BelowBar>
-                <ProductDesignSideBar />
+                <ProductDesignSideBar textField={textField} setTextField={setTextField}/>
                 <RightBar>
-                    <BelowMenu>
-                        <Icon icon="material-symbols:fit-screen-outline" width="20px" height="20px" />
-                        <span>화면 맞춤</span>
-                    </BelowMenu>
-                    <BelowMenu>
-                        <Icon icon="cil:grid" width="20px" height="20px" />
+                    <BelowMenu onClick={() => setIsGrid(!isGrid)}>
+                        {isGrid? <Icon icon="cil:grid" width="20px" height="20px" /> : <Icon icon="ri:grid-fill" width="20px" height="20px" />
+                        }
                         <span>그리드</span>
                     </BelowMenu>
                     <BelowMenu>
                         <SizeModify>
-                            <p>-</p>
-                            <span>{screenSize}%</span>
-                            <p>+</p>
+                            <p onClick={() => minusScreenSize(mainScreenSize)}>-</p>
+                            <span>{mainScreenSize}%</span>
+                            <p onClick={() => plusScreenSize(mainScreenSize)}>+</p>
                         </SizeModify>
                     </BelowMenu>
                     <BelowMenu>
