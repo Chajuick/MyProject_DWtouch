@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo/logo.png';
 import * as MS from '../Modal/ModalStyle';
+import FindAccount from '../FindUser/FindAccount';
 
 const Logo = styled.img`
   width: 200px;
@@ -106,13 +107,15 @@ const ERR_MESSAGES = {
   password: '비밀번호를 입력해주세요',
 };
 
-export default function Login({ showModal, setShowModal }) {
+export default function Login({ showModal, setShowModal, showRegisterModal, setShowRegisterModal }) {
   const [userid, setUserid] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [useridFocus, setUseridFocus] = useState(true);
   const [passwordFocus, setPasswordFocus] = useState(true);
   const [loginError, setLoginError] = useState('');
+  const [showFindModal, setShowFindModal] = useState(false);
+  const [isId, setIsId] = useState(true);
 
   useEffect(() => {
     const savedUserid = localStorage.getItem('rememberedUserid');
@@ -194,6 +197,21 @@ export default function Login({ showModal, setShowModal }) {
 
   const isButtonDisabled = userid.trim() === '' || password.trim() === '';
 
+  function handleRegister() {
+    setShowModal(false);
+    setShowRegisterModal(true);
+  };
+
+  function handleFindModalOpen(num) {
+    setShowModal(false);
+    setShowFindModal(true);
+    if (num === 0) {
+      setIsId(true);
+    } else if (num === 1) {
+      setIsId(false);
+    };
+  };
+
   return (
     <>
       <MS.Overlay $showModal={showModal} />
@@ -243,11 +261,17 @@ export default function Login({ showModal, setShowModal }) {
           <ErrorMessage className='LoginChecker' $show={loginError !== ''}>{loginError}</ErrorMessage>
         </LoginForm>
         <HelpBox>
-          <Link to="/signin">회원가입</Link>
-          <div>아이디찾기</div>
-          <div>비밀번호찾기</div>
+          <div onClick={handleRegister}>회원가입</div>
+          <div onClick={() => handleFindModalOpen(0)}>아이디찾기</div>
+          <div onClick={() => handleFindModalOpen(1)}>비밀번호찾기</div>
         </HelpBox>
       </MS.Modal>
+      <FindAccount
+        showFindModal={showFindModal}
+        setShowFindModal={setShowFindModal}
+        isId={isId}
+        setIsId={setIsId}
+      />
     </>
   );
 }

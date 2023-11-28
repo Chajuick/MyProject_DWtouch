@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
+import { act } from "react-dom/test-utils";
 
 const MainScreen = styled.div`
     position: absolute;
@@ -39,41 +40,58 @@ const TextInputBox = styled.div`
     position: absolute;
     top: 20px;
     left: 20px;
-    padding: 10px;
-    cursor: pointer;
-    &:hover {
-        
-    }
+    padding: 5px;
+    background: none;
     input {
         cursor: move;
-        border: none;
         outline: none;
+        border: none;
     }
 `;
 
 export default function ProductDesignMainScreen({ productGrid, productSrc, mainScreenSize, setMainScreenSize, isGrid, setIsGrid, textField, setTextField }) {
     const [activeText, setActiveText] = useState();
-    const inputRef = useRef();
+    
+    const inputRefs = useRef([]);
 
     const handleInputChange = (index, value) => {
         const newTextField = [...textField];
         newTextField[index] = value;
         setTextField(newTextField);
-      };
+    };
 
-      useEffect(() => {
+    const handleMouseDown = (event, index) => {
+
+    };
+
+    const handleMouseMove = (event) => {
+
+    };
+
+    const handleMouseUp = () => {
+
+    };
+
+    useEffect(() => {
         const handleClickOutside = (event) => {
-          if (inputRef.current && !inputRef.current.contains(event.target)) {
-            setActiveText('');
-          }
+            if (activeText !== null &&
+                Object.values(inputRefs.current).every(
+                    (ref, index) => ref && ref.current && !ref.current.contains(event.target) && index !== activeText
+                )) {
+                setActiveText('');
+            }
         };
-    
+
         document.addEventListener("click", handleClickOutside);
-    
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
+
         return () => {
-          document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
         };
-      }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 이펙트를 등록하도록 함
+    }, []); 
 
     return (
         <>
@@ -83,7 +101,10 @@ export default function ProductDesignMainScreen({ productGrid, productSrc, mainS
                     <img src={productGrid} />
                     <img src={productSrc} />
                     {textField.map((value, index) => (
-                        <TextInputBox ref={inputRef} key={index} onDoubleClick={() => setActiveText(index)}>
+                        <TextInputBox ref={(el) => (inputRefs[index] = el)} key={index} 
+                            onDoubleClick={() => setActiveText(index)}
+                            onMouseDown={(e) => handleMouseDown(e, index)}
+                        >
                             <input
                                 type="text"
                                 value={value}

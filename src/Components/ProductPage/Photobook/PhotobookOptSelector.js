@@ -182,49 +182,14 @@ export default function PhotobookOptSelector({ productId, options, optFamily, us
     }  
 
     function addToCart() {
-        // 서버로 삼품 정보를 전송
-        const cartData = {
-            product_name: productsInfo[0].product_name,
-            option: selectedOptionIndexes,
-            price: finalPrice,
-            user_uid: sessionStorage.getItem('user_uid'),
-        }
-        fetch('http://localhost:3001/api/cart/addToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify( cartData ),
-        })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('서버 응답이 실패하였습니다.');
-            }
-        })
-        .then((data) => {
-            if (data.message) {
-                if (data.success) {
-                    sessionStorage.setItem('cart_id', data.cart_id);
-                    sessionStorage.setItem('default_price', defaultPrice);
-                    sessionStorage.setItem('del_price', delPrice/productQuantity);
-                    sessionStorage.setItem('final_price', finalPrice/productQuantity);
-                    sessionStorage.setItem('sale_info', saleInfo);
-                    sessionStorage.setItem('product_quantity', productQuantity);
-                    navigate('/productlist/photobook/photobook/design');
-                }
-            } else {
-                console.error('오류:', data.error);
-                setErrCode('CT01 : 데이터베이스 저장 오류');
-                setShowErrorModal(true);
-            }
-        })
-        .catch((error) => {
-        console.error('오류:', error);
-        setErrCode('CT02 : 데이터베이스 저장 오류');
-        setShowErrorModal(true);
-        });
+        sessionStorage.setItem('cart_option', selectedOptionIndexes);
+        sessionStorage.setItem('cart_product_name', productsInfo[0].product_name);
+        sessionStorage.setItem('default_price', defaultPrice);
+        sessionStorage.setItem('del_price', delPrice/productQuantity);
+        sessionStorage.setItem('final_price', finalPrice/productQuantity);
+        sessionStorage.setItem('sale_info', saleInfo);
+        sessionStorage.setItem('product_quantity', productQuantity);
+        navigate('/productlist/photobook/photobook/design');
     };
 
     useEffect(() => {
@@ -313,10 +278,10 @@ export default function PhotobookOptSelector({ productId, options, optFamily, us
                 errCode={errCode}
                 setErrCode={setErrCode}
             />
-                <Login 
-                    showModal={showLoginModal}
-                    setShowModal={setShowLoginModal}
-                />
+            <Login 
+                showModal={showLoginModal}
+                setShowModal={setShowLoginModal}
+            />
         </>
     )
 }

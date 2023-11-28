@@ -26,14 +26,14 @@ export const CloseButton = styled.button`
 export const Title = styled.h2`
   text-align: center;
   color: rgb(100, 100, 100);
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 50px;
 `;
 
 export const RegisterForm = styled.form`
   display: flex;
   flex-direction: column;
   width: 420px;
+  padding-top: 20px;
 `;
 
 export const InputBox = styled.div`
@@ -59,18 +59,18 @@ export const InputBox = styled.div`
     transform: translateY(-50%);
     margin-left: 5px; 
   }
-  & div#phoneVerificationBox {
+  & div.phoneVerificationBox {
     display: flex;
     flex-direction: row;
     align-items: center;
   }
-  & input#phonenumInput {
+  & input.phonenumInput {
     width: 220px;
     padding: 8px 0 8px 8px;
     border: 1px solid rgb(150, 150, 150);
     border-radius: 5px;
   }
-  & button#phoneVerificationSendBtn {
+  & button.phoneVerificationSendBtn {
     padding: 8px;
     margin-left: 20px;
     background-color: rgb(20, 20, 20);
@@ -86,14 +86,14 @@ export const InputBox = styled.div`
       color: rgb(20, 20, 20);
     }
   }
-  & input#phoneVerificationInput {
+  & input.phoneVerificationInput {
     width: 120px;
     margin: 10px 0 0 100px;
     padding: 8px 0 8px 8px;
     border: 1px solid rgb(150, 150, 150);
     border-radius: 5px;
   }
-  & button#phoneVerificationCheckBtn {
+  & button.phoneVerificationCheckBtn {
     padding: 8px;
     margin: 10px 0 0 15px;
     background-color: rgb(20, 20, 20);
@@ -107,12 +107,12 @@ export const InputBox = styled.div`
       color: rgb(20, 20, 20);
     }
   }
-  & div#verificationTimeOut {
+  & div.verificationTimeOut {
     color: rgb(230, 40, 40);
     font-size: 13px;
     margin: 10px 0 0 10px;
   }
-  & input#postCodeInput {
+  & input.postCodeInput {
     width: 100px;
     padding: 8px 0 8px 8px;
     border: 1px solid rgb(150, 150, 150);
@@ -120,7 +120,7 @@ export const InputBox = styled.div`
     margin-bottom: 5px;
     margin-top: 5px;
   }
-  & button#postCodeSearchBtn {
+  & button.postCodeSearchBtn {
     margin-left: 8px;
     padding: 5px 10px 5px 10px;
     padding: 8px;

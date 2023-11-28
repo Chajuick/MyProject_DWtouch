@@ -4,6 +4,7 @@ import ProductDesignUnderBar from "../DesignPage/ProductDesignUnderBar";
 import ProductDesignMainScreen from "../DesignPage/ProductDesignMainScreen";
 import ProductDesignImgBar from "../DesignPage/ProductDesignImgBar";
 import { useState, useEffect } from "react";
+import * as MS from "../../Modal/ModalStyle";
 
 import PhotobookScreen from "../../../assets/products/design_screen/products_design_screen_photobook.png";
 import PhotobookGrid from "../../../assets/products/design_screen/products_grid_screen_photobook.png";
@@ -13,9 +14,25 @@ const Container = styled.div`
   height: 100vh;
   position: relative;
 `
-const Wrapper = styled.div`
-  width: 1200px;
-  margin: auto;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-top: 30px;
+  button{
+    font-size: 14px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background-color: rgb(240, 240, 240);
+    transition: all 400ms;
+    cursor: pointer;
+  }
+
+  button:hover{
+    background-color: rgb(40, 40, 40);
+    color: rgb(240, 240, 240);
+  }
 `
 
 const options = [
@@ -43,97 +60,41 @@ const optFamily = {
 };
 
 export default function PhotobookDesignPage() {
-  const [cartInfo, setcartInfo] = useState([]);
-  const [iscartInfoLoading, setIscartInfoLoading] = useState(false);
-  const [productOption, setProductOption] = useState(['사이즈옵션', '커버주옵션', '커버부옵션', '내지옵션']);
+  const [cartInfo, setcartInfo] = useState({
+    cart_product_name: sessionStorage.getItem('cart_product_name') || "알수없음",
+    cart_name: "프로젝트명을 입력해주세요",
+  });
+  const [productOption, setProductOption] = useState(sessionStorage.getItem('cart_option')? sessionStorage.getItem('cart_option').split(",").map(Number) : [0, 0, 0, 0, 0]);
   const [mainScreenSize, setMainScreenSize] = useState(100);
   const [isGrid, setIsGrid] = useState(false);
   const [textField, setTextField] = useState([]);
   const [imgField, setImgField] = useState([]);
+  const [showCheckModal, setShowCheckModal] = useState(false);
 
-  function cartInfoLoader() {   
-    const cartId = sessionStorage.getItem('cart_id');
-
-    fetch(`http://localhost:3001/api/cart/infoLoading`, {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ cartId }),
-    })
-    .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // 서버에서 받아온 데이터 처리
-      setcartInfo(data.cartInfo);
-      setIscartInfoLoading(true);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
+  console.log(productOption);
 
   useEffect(() => {
-    cartInfoLoader();
-  }, [iscartInfoLoading])
+    const handleBeforeUnload = (event) => {
+      const message = "현재까지 편집된 디자인을 저장하고 종료하시겠습니까?\n\n저장하지 않은 디자인은 삭제됩니다.";
+      event.returnValue = message; // 대부분의 브라우저에 대한 표준
+      return message; // 일부 예전 브라우저에 대한 반환 (return) 구문
+    };
 
-  useEffect(() => {
-    let size = '';
-    let coverMain = '';
-    let coverCoating = '';
-    let coverColor = '';
-    let inner = '';
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-    if (cartInfo && cartInfo.length > 0 && cartInfo[0].cart_option) {
-      if (cartInfo[0].cart_option[0] === 0) {
-        size = 0;
-      } else if (cartInfo[0].cart_option[0] === 1) {
-        size = 1;
-      } else if (cartInfo[0].cart_option[0] === 2) {
-        size = 2;
-      } 
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
-      if (cartInfo[0].cart_option[1] === 0) {
-        coverMain = 0;
-      } else if (cartInfo[0].cart_option[1] === 1) {
-        coverMain = 1;
-      }
+  const handleSaveAndExit = () => {
+    setShowCheckModal(false);
+  };
 
-      if (cartInfo[0].cart_option[2] === 0) {
-        coverCoating = 0;
-      } else if (cartInfo[0].cart_option[2] === 1) {
-        coverCoating = 1;
-      }
-
-      if (cartInfo[0].cart_option[3] === 0) {
-        coverColor = 0;
-      } else if (cartInfo[0].cart_option[3] === 1) {
-        coverColor = 1;
-      } else if (cartInfo[0].cart_option[3] === 2) {
-        coverColor = 2;
-      } else if (cartInfo[0].cart_option[3] === 3) {
-        coverColor = 3;
-      } else if (cartInfo[0].cart_option[3] === 4) {
-        coverColor = 4;
-      } else if (cartInfo[0].cart_option[3] === 5) {
-        coverColor = 5;
-      } else if (cartInfo[0].cart_option[3] === 6) {
-        coverColor = 6;
-      }
-
-      if (cartInfo[0].cart_option[4] === 0) {
-        inner = 0;
-      } else if (cartInfo[0].cart_option[4] === 1) {
-        inner = 1;
-      } 
-
-      setProductOption([size, coverMain, coverCoating, coverColor, inner]);
-    }
-  }, [cartInfo])
+  const handleClickBack = () => {
+    setShowCheckModal(true);
+    // navigate("/"); // 사용자가 확인 메시지를 무시하고 뒤로가기를 눌렀을 때도 이동하고 싶다면 이 줄을 활성화
+  };
 
   return (
     <>
@@ -166,6 +127,14 @@ export default function PhotobookDesignPage() {
         />
         <ProductDesignImgBar />
       </Container>
+      <MS.Overlay $showModal={showCheckModal}/>
+        <MS.Modal $showModal={showCheckModal}>
+          <p>현재까지 편집된 디자인을<br/>저장하고 종료하시겠습니까?<br/>&nbsp;<br/>저장하지 않은 디자인은 삭제됩니다.</p>
+          <ButtonWrapper>
+            <button onClick={() => setShowCheckModal(false)}>저장하지않고 종료</button>
+            <button >저장하고 종료</button>
+          </ButtonWrapper>
+        </MS.Modal>
     </>
   );
 };

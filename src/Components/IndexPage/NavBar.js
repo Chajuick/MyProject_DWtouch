@@ -1,6 +1,9 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { Icon } from '@iconify/react';
+import Login from '../AcountManagement/Login';
+import Register from '../AcountManagement/Register/Register';
 
 const Container = styled.div`
   width: 100vw;
@@ -11,6 +14,9 @@ const MainContainer = styled.div`
   color: rgb(20, 20, 20);
   width: 100vw;
   border-bottom: 1px solid rgb(200, 200, 200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const SubContainer = styled.div`
@@ -34,10 +40,14 @@ const MainBar = styled.ul`
   width: 1200px;
   margin: 0 auto;
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   align-items: center;
-  list-style: none;
-
+  ul {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    list-style: none;
+  }
   li {
     margin-right: 2rem;
     width: 84px;
@@ -60,7 +70,6 @@ const SubBar = styled.ul`
   padding: 0.5rem 0;
   display: flex;
   list-style: none;
-
   li {
     display: flex;
     flex-direction: column;
@@ -80,8 +89,44 @@ const SubBar = styled.ul`
   }
 `;
 
+const AddtoCartBtn = styled.button`
+  border: none;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(80, 80, 80);
+  svg {
+    border-radius: 50%;
+    padding: 3px;
+    color: rgb(250, 250, 250);
+    background-color: rgb(80, 80, 80);
+    transition: all 400ms;
+    font-size: 25px;
+    margin-right: 5px;
+  }
+  &:hover {
+    cursor: pointer;
+    svg {
+      color: rgb(80, 80, 80);
+      background-color: rgb(250, 250, 250);
+    }
+    span {
+      color: rgb(120, 120, 120);
+    }
+  }
+  span {
+    transition: all 400ms;
+    font-size: 13px;
+  }
+`;
+
 export default function NavBar() {
+  const navigate = useNavigate();
   const [isSubContainerVisible, setSubContainerVisible] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
 
   const handleMouseEnter = () => {
     setSubContainerVisible(true);
@@ -91,16 +136,30 @@ export default function NavBar() {
     setSubContainerVisible(false);
   };
 
+  function handleNavigateCart() {
+    if (isLoggedIn) {
+      navigate('/cart');
+    } else {
+      setShowLoginModal(true);
+    } 
+  };
+
   return (
+    <>
     <Container onMouseLeave={handleMouseLeave}>
       <MainContainer>
         <MainBar>
-          <li><Link to="/productlist/photobook" onMouseEnter={handleMouseEnter}>포토북</Link></li>
-          <li><Link to="/" onMouseEnter={handleMouseEnter}>달력</Link></li>
-          <li><Link to="/" onMouseEnter={handleMouseEnter}>스티커</Link></li>
-          <li><Link to="/" onMouseEnter={handleMouseEnter}>의류</Link></li>
-          <li><Link to="/" onMouseEnter={handleMouseEnter}>액세서리</Link></li>
-          <li><Link to="/" onMouseEnter={handleMouseEnter}>생활</Link></li>
+          <ul>
+            <li><Link to="/productlist/photobook" onMouseEnter={handleMouseEnter}>포토북</Link></li>
+            <li><Link to="/" onMouseEnter={handleMouseEnter}>달력</Link></li>
+            <li><Link to="/" onMouseEnter={handleMouseEnter}>스티커</Link></li>
+            <li><Link to="/" onMouseEnter={handleMouseEnter}>의류</Link></li>
+            <li><Link to="/" onMouseEnter={handleMouseEnter}>액세서리</Link></li>
+            <li><Link to="/" onMouseEnter={handleMouseEnter}>생활</Link></li>
+          </ul>
+          <AddtoCartBtn onClick={handleNavigateCart}>
+            <Icon icon="subway:bag" /><span>장바구니</span>
+          </AddtoCartBtn>
         </MainBar>
       </MainContainer>
 
@@ -140,5 +199,16 @@ export default function NavBar() {
         </SubBar>
       </SubContainer>
     </Container>
+    <Login 
+      showModal={showLoginModal}
+      setShowModal={setShowLoginModal}
+      showRegisterModal={showRegisterModal}
+      setShowRegisterModal={setShowRegisterModal}
+    />
+    <Register
+      showModal={showRegisterModal}
+      setShowModal={setShowRegisterModal}
+    />
+    </>
   );
 }

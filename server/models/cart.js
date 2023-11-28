@@ -36,9 +36,9 @@ const Cart = sequelize.define('Cart', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  user_phone_number: {
+  product_quantity: {
     type: DataTypes.STRING,
-    allowNull: true,
+    defaultValue: 1,
   },
   createdAt: {
     type: DataTypes.DATE,

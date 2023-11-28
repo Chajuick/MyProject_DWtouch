@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as MS from '../../Modal/ModalStyle';
 import NameChangeGuider from '../../../assets/guider/name_changer_guider.png'
+import ErrorModal from "../../Modal/ErrorModal";
 
 const Container = styled.div`
     width: 100vw;
@@ -17,7 +18,7 @@ const Container = styled.div`
     padding: 5px 0;
     position: relative;
     background-color: rgb(250, 250, 250);
-    z-index: 5;
+    z-index: 20;
 `;
 
 const Wrapper = styled.div`
@@ -261,6 +262,44 @@ const NameChangeBtn = styled.div`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ConfirmBtn = styled.button`
+  padding: 5px 15px;
+  background-color: rgb(40, 40, 40);
+  border: 1px solid rgb(40, 40, 40);
+  color: rgb(250, 250, 250);
+  transition: all 400ms;
+  margin: 0 20px;
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(40, 40, 40);
+    color: rgb(40, 40, 40);
+  }
+`;
+
+const CancleBtn = styled.button`
+  padding: 5px 15px;
+  background-color: rgb(250, 250, 250);
+  border: 1px solid rgb(40, 40, 40);
+  color: rgb(40, 40, 40);
+  transition: all 400ms;
+  margin: 0 20px;
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(40, 40, 40);
+    border: 1px solid rgb(40, 40, 40);
+    color: rgb(250, 250, 250);
+  }
+`;
+
 const ToolTip = ({ $textMain, $textSub, $show }) => {
     return $show ? 
     <div style={{ 
@@ -268,7 +307,7 @@ const ToolTip = ({ $textMain, $textSub, $show }) => {
         border: '1px solid rgb(40, 40, 40)',
         fontSize: '14px',
         backgroundColor: 'rgb(250, 250, 250)', 
-        zIndex: 5, 
+        zIndex: 20, 
         position: 'absolute', 
         marginTop: '10px',
         top: '100%', left: '50%',
@@ -298,18 +337,20 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
     const [finalPrice, setFinalPrice] = useState(sessionStorage.getItem('final_price') || 0);
     const [productQuantity, setProductQuantity] = useState(sessionStorage.getItem('product_quantity') || 0);
     const navigate = useNavigate();
-    const [productName, setProductName] = useState("상품명");
+    const [productName, setProductName] = useState(sessionStorage.getItem('cart_product_name') || "상품명");
     const [showSettingChangeModal, setShowSettingChangeModal] = useState(false);
     const [showNameChangeModal, setShowNameChangeModal] = useState(false);
     const [showOptionList, setShowOptionList] = useState([]);
     const [settingOption, setSettingOption] = useState(productOption);
     const [projectName, setProjectName] = useState('프로젝트명을 입력해주세요');
     const [changeProjectName, setChangeProjecName] = useState(projectName);
-
+    const [showErrorModal, setShowErrorModal] = useState(false); // 에러메시지 on/off
+    const [errCode, setErrCode] = useState(''); // 에러코드
+    const [showSaveModal, setShowSaveModal] = useState(false);
+    const [showAddtoCartModal, setShowAddtoCartModal] = useState(false);
 
     useEffect(() => {
       if (finalPrice === 0) {
-        alert('잘못된 접근입니다!');
         navigate('/');
       }
     },[]);
@@ -319,7 +360,7 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
         setProductName(cartInfo[0].cart_product_name);
         setProjectName(cartInfo[0].cart_name);
       }
-    }, [cartInfo])
+    }, [cartInfo]);
 
     function handleOpenSetting() {
       setSettingOption(productOption);
@@ -345,7 +386,7 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
     function handleConfirmSetting() {
       setProductOption(settingOption);
       setShowSettingChangeModal(false);
-    }
+    };
 
     useEffect(() => {
       let sizeOption = optFamily.priceModifier[0][productOption[0]];
@@ -368,14 +409,96 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
     function handleOpenNameChangeModal() {
       setChangeProjecName('');
       setShowNameChangeModal(true);
-    }
+    };
 
     function handleCloseNameChangeModal() {
       if (changeProjectName.length > 0) {
         setProjectName(changeProjectName);
       }
       setShowNameChangeModal(false);
-    }
+    };
+
+    function saveToCart() {
+        // 서버로 삼품 정보를 전송
+        const cartData = {
+          product_name: productName,
+          option: productOption,
+          price: finalPrice*productQuantity,
+          product_quantity: productQuantity,
+          user_uid: sessionStorage.getItem('user_uid'),
+        }
+        fetch('http://localhost:3001/api/cart/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify( cartData ),
+        })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('서버 응답이 실패하였습니다.');
+            }
+        })
+        .then((data) => {
+            if (data.message) {
+                if (data.success) {
+                  setShowSaveModal(true);
+                }
+            } else {
+                console.error('오류:', data.error);
+                setErrCode('CT01 : 데이터베이스 저장 오류');
+                setShowErrorModal(true);
+            }
+        })
+        .catch((error) => {
+        console.error('오류:', error);
+        setErrCode('CT02 : 데이터베이스 저장 오류');
+        setShowErrorModal(true);
+        });
+    };
+
+    function addToCart() {
+      // 서버로 삼품 정보를 전송
+      const cartData = {
+        product_name: productName,
+        option: productOption,
+        price: finalPrice*productQuantity,
+        product_quantity: productQuantity,
+        user_uid: sessionStorage.getItem('user_uid'),
+      }
+      fetch('http://localhost:3001/api/cart/addToCart', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify( cartData ),
+      })
+      .then((response) => {
+          if (response.ok) {
+              return response.json();
+          } else {
+              throw new Error('서버 응답이 실패하였습니다.');
+          }
+      })
+      .then((data) => {
+          if (data.message) {
+              if (data.success) {
+                navigate('/cart')
+              }
+          } else {
+              console.error('오류:', data.error);
+              setErrCode('CT01 : 데이터베이스 저장 오류');
+              setShowErrorModal(true);
+          }
+      })
+      .catch((error) => {
+      console.error('오류:', error);
+      setErrCode('CT02 : 데이터베이스 저장 오류');
+      setShowErrorModal(true);
+      });
+    };
 
     return (
         <>
@@ -420,11 +543,12 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
                 <SaveBtn 
                     onMouseEnter={() => setShowTooltipSaveBtn(true)}
                     onMouseLeave={() => setShowTooltipSaveBtn(false)}
+                    onClick={saveToCart}
                 >
                     <Icon icon="bxs:save" width="20" height="20" />
                     <ToolTip $textMain="저장" $textSub="장바구니에 임시로 제작 상태를 저장합니다." $show={showTooltipSaveBtn} />
                 </SaveBtn>
-                <AddtoCartBtn><Icon icon="bxs:shopping-bag" width="20" height="20" />장바구니</AddtoCartBtn>
+                <AddtoCartBtn onClick={() => setShowAddtoCartModal(true)}><Icon icon="bxs:shopping-bag" width="20" height="20" />장바구니</AddtoCartBtn>
             </Wrapper>
         </Container>
         <MS.Overlay $showModal={showSettingChangeModal}/>
@@ -499,6 +623,27 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
           <NameChangeBtn>
             <button onClick={handleCloseNameChangeModal}>확인</button>
           </NameChangeBtn>
+        </MS.Modal>
+        <ErrorModal 
+          showErrorModal={showErrorModal}
+          setShowErrorModal={setShowErrorModal}
+          errCode={errCode}
+          setErrCode={setErrCode}
+        />
+        <MS.Overlay $showModal={showSaveModal}/>
+        <MS.Modal $showModal={showSaveModal}>
+          <p style={{ textAlign: "center", fontSize: "15px" }}>현재까지 편집된 디자인이<br/>저장되었습니다.</p>
+          <ButtonWrapper>
+            <ConfirmBtn style={{ marginTop: '20px' }} onClick={() => setShowSaveModal(false)}>확인</ConfirmBtn>
+          </ButtonWrapper>
+        </MS.Modal>
+        <MS.Overlay $showModal={showAddtoCartModal}/>
+        <MS.Modal $showModal={showAddtoCartModal}>
+          <p style={{ textAlign: "center", fontSize: "15px" }}>현재까지 편집한 디자인을 저장하고<br/>장바구니로 이동하시겠습니까?</p>
+          <ButtonWrapper>
+            <CancleBtn style={{ marginTop: '20px' }} onClick={() => setShowAddtoCartModal(false)}>취소</CancleBtn>
+            <ConfirmBtn style={{ marginTop: '20px' }} onClick={addToCart}>확인</ConfirmBtn>
+          </ButtonWrapper>
         </MS.Modal>
         </>
     )

@@ -79,7 +79,7 @@ const InputBox = styled.div`
   input[type="radio"]:hover + span {
     cursor: pointer;
   }
-  & div#phoneVerificationBox {
+  & div.phoneVerificationBox {
     margin-left: 180px;
     margin-top: 10px;
     width: 500px;
@@ -87,7 +87,7 @@ const InputBox = styled.div`
     display: flex;
     align-items: center;
   }
-  & input#phonenumInput {
+  & input.phonenumInput {
     width: 180px;
     padding: 8px 0 8px 8px;
     border: 1px solid rgb(200, 200, 200);
@@ -95,7 +95,7 @@ const InputBox = styled.div`
     color: rgb(120, 120, 120);
     margin: 2px 0;
   }
-  & button#phoneVerificationSendBtn {
+  & button.phoneVerificationSendBtn {
     margin-left: 15px;
     color: rgb(120, 120, 120);
     background-color: rgb(250, 250, 250);
@@ -111,7 +111,7 @@ const InputBox = styled.div`
     pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   }
-  & input#phoneVerificationInput {
+  & input.phoneVerificationInput {
     margin-left: 180px;
     width: 150px;
     padding: 8px 0 8px 8px;
@@ -120,7 +120,7 @@ const InputBox = styled.div`
     color: rgb(120, 120, 120);
     margin: 2px 0;
   }
-  & button#phoneVerificationCheckBtn {
+  & button.phoneVerificationCheckBtn {
     margin-left: 15px;
     color: rgb(120, 120, 120);
     background-color: rgb(250, 250, 250);
@@ -136,20 +136,20 @@ const InputBox = styled.div`
     pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
     }
-    & div#verificationTimeOut {
+    & div.verificationTimeOut {
       color: rgb(230, 40, 40);
       font-size: 13px;
       margin-left: 15px;
     }
-    & input#postCodeInput {
+    & input.postCodeInput {
       width: 100px;
       padding: 8px 0 8px 8px;
-      border: 1px solid rgb(150, 150, 150);
+      border: 1px solid rgb(200, 200, 200);
       border-radius: 5px;
       margin-bottom: 5px;
       margin-top: 5px;
     }
-  & button#postCodeSearchBtn {
+  & button.postCodeSearchBtn {
     margin-left: 15px;
     color: rgb(120, 120, 120);
     background-color: rgb(250, 250, 250);
@@ -169,7 +169,7 @@ const InputBox = styled.div`
     width: 300px;
     margin-left: 180px;
     padding: 8px 0 8px 8px;
-    border: 1px solid rgb(150, 150, 150);
+    border: 1px solid rgb(200, 200, 200);
     border-radius: 5px;
     margin-bottom: 5px;
     margin-top: 5px;
@@ -667,7 +667,7 @@ export default function ProfileEdit() {
               <p>주소</p>
               {!postcodeModify &&
                 <>
-                  <input id='postCodeInput' type="text" placeholder="우편번호" disabled value={postCode} /> 
+                  <input className='postCodeInput' type="text" placeholder="우편번호" disabled value={postCode} /> 
                   <ModifyBtn
                     type='button'
                     onClick={openPostcodeModify}

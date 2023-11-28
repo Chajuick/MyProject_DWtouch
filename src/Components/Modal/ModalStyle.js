@@ -67,7 +67,7 @@ export const AlertModal = styled.div`
   display: ${({ $showAlertModal }) => ($showAlertModal ? 'flex' : 'none')};
   flex-direction: column;
   align-items: center;
-  h2#showPhoneNumber {
+  h2.showPhoneNumber {
     font-size: 18px;
     margin-bottom: 15px;
     border: none;

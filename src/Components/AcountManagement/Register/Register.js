@@ -42,7 +42,7 @@ export default function Register({ showModal, setShowModal }) {
     setPostCode('');
     setAddress('');
     setDetailAddress('');
-  }, showModal)
+  }, [showModal])
 
   // 아이디, 패스워드, 패스워드 확인의 정규표현식을 정의
   const regexID = /^[a-zA-Z0-9]{4,16}$/; // 4~16자 사이의 숫자와 알파벳
@@ -144,6 +144,8 @@ export default function Register({ showModal, setShowModal }) {
     .then((data) => {
       // 서버로부터 받은 응답 처리
       if(!data.isAvailable){
+        setIdChecker(true)
+      } else {
         setShowIdSelectModal(true);
       }
     })
@@ -199,8 +201,8 @@ return (
   <>
     <MS.Overlay $showModal={showModal} />
     <MS.Modal $showModal={showModal}>
-      <S.CloseButton onClick={handleCloseModal}>&times;</S.CloseButton>
       <S.Title>회원가입</S.Title>
+      <S.CloseButton onClick={handleCloseModal}>&times;</S.CloseButton>
       <S.RegisterForm method='Post'>
         <S.InputBox>
           <p className='must'>아이디</p>
@@ -341,7 +343,7 @@ return (
     />
     <MS.AlertOverlay $showAlertModal={showIdSelectModal}/>
     <MS.AlertModal $showAlertModal={showIdSelectModal}>
-      <h2 style={{ color: "rgb(150, 200, 50)" }}>{id}</h2>
+      <h2 style={{ color: "rgb(150, 200, 50)", fontSize: '14px', marginBottom: "10px"}}>{id}</h2>
       <p>이 아이디로 하시겠습니까?</p>
       <div>
           <button type='button' onClick={idConfirm}>확인</button>

@@ -20,6 +20,7 @@ router.post('/addToCart', (req, res) => {
   const cartOption = cartData.option;
   const cartProductName = cartData.product_name;
   const cartPrice = cartData.price;
+  const cartQuantity = cartData.cart_quantity;
   let cartThumbnail = "";
   if (cartData.option[1] === 0) {
     cartThumbnail = "https://i.ibb.co/KFmR8cv/1.png";
@@ -49,6 +50,7 @@ router.post('/addToCart', (req, res) => {
     cart_product_name: cartProductName,
     cart_thumbnail: cartThumbnail,
     cart_price: cartPrice,
+    product_quantity: cartQuantity,
   });
 
   // 장바구니 정보를 데이터베이스에 저장

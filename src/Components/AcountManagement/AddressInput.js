@@ -45,8 +45,8 @@ export default function AddressInput( { postCode, address, detailAddress, setPos
 
   return (
   <>
-    <input id='postCodeInput' type="text" placeholder="우편번호" disabled value={postCode} />
-    <button id='postCodeSearchBtn' type="button" onClick={openPostcode}>우편번호 찾기</button>
+    <input className='postCodeInput' type="text" placeholder="우편번호" disabled value={postCode} />
+    <button className='postCodeSearchBtn' type="button" onClick={openPostcode}>우편번호 찾기</button>
     <input className='addressInput' type="text" placeholder="주소" disabled defaultValue={address} />
     <input className='addressInput' type="text" placeholder="상세주소" defaultValue={detailAddress}
       disabled={postCode.length <= 0} 

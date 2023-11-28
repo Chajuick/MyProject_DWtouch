@@ -97,7 +97,8 @@ export default function HeaderBar() {
 
   useEffect(() => {
     if (!isLoggedIn && window.location.pathname == '/my') {
-      // 사용자가 로그인하지 않았고 현재 페이지가 Route path="/my"인 경우
+      navigate('/');
+    } else if (!isLoggedIn && window.location.pathname == '/cart') {
       navigate('/');
     }
   }, []);
@@ -162,6 +163,8 @@ export default function HeaderBar() {
     <Login 
       showModal={showLoginModal}
       setShowModal={setShowLoginModal}
+      showRegisterModal={showRegisterModal}
+      setShowRegisterModal={setShowRegisterModal}
     />
     <Register
       showModal={showRegisterModal}

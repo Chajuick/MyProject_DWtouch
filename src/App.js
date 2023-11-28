@@ -8,12 +8,10 @@ import Service from './page/Service';
 import Coupon from './page/Coupon';
 import EventWelcome from './page/EventWelcome';
 import Event from './page/Event';
-import PrivacyPolicy from './page/PrivacyPolicy';
-import TermsOfUse from './page/TermsOfUse';
-import CompanyIntro from './page/CompanyIntro';
 import PhotobookList from './Components/ProductPage/Photobook/PhotobookList';
 import PhotobookOverviewPage from './Components/ProductPage/Photobook/PhotobookOverviewPage';
 import PhotobookDesignPage from './Components/ProductPage/Photobook/PhotobookDesignPage';
+import CartIndexPage from './page/CartIndexPage';
 
 
 const GlobalStyle = createGlobalStyle`
@@ -48,12 +46,10 @@ export default function App() {
           <Route path="/service" element={<Service />} />
           <Route path="/event" element={<Event />} />
           <Route path="/event/welcome" element={<EventWelcome />} />
-          <Route path="/dwstudio" element={<CompanyIntro />} />
-          <Route path="/termsofuse" element={<TermsOfUse />} />
-          <Route path="/privaypolicy" element={<PrivacyPolicy />} />
           <Route path="/productlist/photobook" element={<PhotobookList />} />
           <Route path="/productlist/photobook/photobook" element={<PhotobookOverviewPage />} />
           <Route path="/productlist/photobook/photobook/design" element={<PhotobookDesignPage />} />
+          <Route path="/cart" element={<CartIndexPage />} />
         </Routes>
       </BrowserRouter>
     </>

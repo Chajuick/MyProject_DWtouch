@@ -134,14 +134,14 @@ export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVe
 
     return(
         <>
-            <input id="phonenumInput"
+            <input className="phonenumInput"
                 type="text"
                 placeholder="휴대폰 번호 (-빼고 숫자만 입력)"
                 value={phoneNumber}
                 onInput={handlePhoneNumInput}
                 disabled={isPhoneVerificationCompleted || (phoneVerifyStatus && phoneVerifyTimeout < 0)}
             />
-            <button id="phoneVerificationSendBtn"
+            <button className="phoneVerificationSendBtn"
                 type='button'
                 disabled={isPhoneVerificationCompleted || phoneNumber.length < 11}
                 style={{
@@ -152,8 +152,8 @@ export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVe
             >
                 휴대폰 인증
             </button>
-            <div id="phoneVerificationBox">
-                <input id="phoneVerificationInput"
+            <div className="phoneVerificationBox">
+                <input className="phoneVerificationInput"
                     style={{ display: phoneVerifyStatus ? 'block' : 'none' }}
                     placeholder='인증번호'
                     value={verifyNum}
@@ -161,7 +161,7 @@ export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVe
                     disabled={phoneVerifyTimeout <= 0}
                     maxLength={6}
                 />
-                <button id="phoneVerificationCheckBtn"
+                <button className="phoneVerificationCheckBtn"
                     type='button'
                     onClick={checkPhoneVerificationCode}
                     style={{
@@ -173,7 +173,7 @@ export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVe
                 >
                     인증
                 </button>
-                <div id="verificationTimeOut" style={{ display: phoneVerifyStatus ? 'block' : 'none' }}>
+                <div className="verificationTimeOut" style={{ display: phoneVerifyStatus ? 'block' : 'none' }}>
                 {phoneVerifyTimeout > 0 ? (
                     // 아직 타이머가 동작 중인 경우 시간을 표시
                     <>
@@ -189,7 +189,7 @@ export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVe
 
             <MS.AlertOverlay $showAlertModal={showIsPhoneDuplicateModal}/>
             <MS.AlertModal $showAlertModal={showIsPhoneDuplicateModal}>
-                <h2 id="showPhoneNumber">{formatPhoneNumber(phoneNumber)}</h2>
+                <h2 className="showPhoneNumber">{formatPhoneNumber(phoneNumber)}</h2>
                 <p>이 번호로 가입한 적이 있습니다.<br />아이디를 찾으시겠습니까?</p>
                 <div>
                     <button type='button'>확인</button>

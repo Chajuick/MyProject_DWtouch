@@ -61,10 +61,6 @@ const User = sequelize.define('User', {
     type: DataTypes.INTEGER,
     defaultValue: 0, 
   },
-  user_total_purachase_amount: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0, 
-  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

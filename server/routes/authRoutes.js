@@ -65,7 +65,6 @@ router.post('/login', (req, res) => {
   });
 });
 
-
 // 로그아웃 라우트
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
@@ -111,6 +110,46 @@ router.post('/update', (req, res) => {
       } 
     } 
   })
+});
+
+// 아이디 찾기 라우트
+router.post('/find-username', (req, res) => {
+  const { phoneNum } = req.body;
+
+  const sql = 'SELECT user_id FROM user_info WHERE user_phone_num = ?';
+  db.query(sql, [phoneNum], (err, results) => {
+    if (err) {
+      console.error('아이디 찾기 오류: ' + err.message);
+      res.status(500).json({ error: '아이디 찾기 오류 : CODE 005' });
+    } else {
+      if (results.length > 0) {
+        const username = results[0].user_id;
+        res.json({ success: true, message: '아이디 찾기 성공', username });
+      } else {
+        res.json({ success: false, message: '일치하는 사용자 없음' });
+      }
+    }
+  });
+});
+
+// 회원정보 확인 라우트
+router.post('/check-user-info', (req, res) => {
+  const { userid, username, phoneNum } = req.body;
+
+  const sql = 'SELECT * FROM user_info WHERE user_id = ? AND user_name = ? AND user_phone_num = ?';
+  db.query(sql, [userid, username, phoneNum], (err, results) => {
+    if (err) {
+      console.error('회원정보 확인 오류: ' + err.message);
+      res.status(500).json({ error: '회원정보 확인 오류 : CODE 006' });
+    } else {
+      if (results.length > 0) {
+        const user = results[0];
+        res.json({ success: true, message: '회원정보 확인 성공', user });
+      } else {
+        res.json({ success: false, message: '일치하는 사용자 정보 없음' });
+      }
+    }
+  });
 });
 
 
