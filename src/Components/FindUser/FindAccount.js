@@ -55,7 +55,7 @@ const SearchAria = styled.div`
   border-radius: 0 0 8px 8px;
 `;
 
-export default function FindAccount({ showFindModal, setShowFindModal, isId, setIsId }) {
+export default function FindAccount({ showFindModal, setShowFindModal, isId, setIsId, showModal, setShowModal }) {
   return (
     <>
       <MS.Overlay $showModal={showFindModal} className='dd'/>
@@ -71,7 +71,8 @@ export default function FindAccount({ showFindModal, setShowFindModal, isId, set
             <FindID />
           }
           {!isId &&
-            <FindPW />
+            <FindPW showModal={showModal} setShowModal={setShowModal}
+            showFindModal={showFindModal} setShowFindModal={setShowFindModal}/>
           }
           </SearchAria>
         </Container>

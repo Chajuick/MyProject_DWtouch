@@ -267,6 +267,8 @@ export default function Login({ showModal, setShowModal, showRegisterModal, setS
         </HelpBox>
       </MS.Modal>
       <FindAccount
+        showModal={showModal}
+        setShowModal={setShowModal}
         showFindModal={showFindModal}
         setShowFindModal={setShowFindModal}
         isId={isId}

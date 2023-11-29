@@ -20,7 +20,8 @@ router.post('/addToCart', (req, res) => {
   const cartOption = cartData.option;
   const cartProductName = cartData.product_name;
   const cartPrice = cartData.price;
-  const cartQuantity = cartData.cart_quantity;
+  const cartFinalPrice = cartData.price*cartData.product_quantity;
+  const cartQuantity = cartData.product_quantity;
   let cartThumbnail = "";
   if (cartData.option[1] === 0) {
     cartThumbnail = "https://i.ibb.co/KFmR8cv/1.png";
@@ -50,6 +51,7 @@ router.post('/addToCart', (req, res) => {
     cart_product_name: cartProductName,
     cart_thumbnail: cartThumbnail,
     cart_price: cartPrice,
+    cart_final_price: cartFinalPrice,
     product_quantity: cartQuantity,
   });
 
@@ -70,15 +72,15 @@ router.post('/addToCart', (req, res) => {
     });
 });
 
-// 장바구니 정보 받아오기
+// 유저 uid로 장바구니 정보 받아오기
 router.post('/infoLoading', (req, res) => {
-  const cartId = req.body.cartId;
+  const userUid = req.body.userUid;
 
   // SQL 쿼리 작성
-  const query = 'SELECT * FROM shoppingcart WHERE cart_id = ?';
+  const query = 'SELECT * FROM shoppingcart WHERE user_uid = ?';
 
   // 데이터베이스 쿼리 실행
-  db.query(query, [cartId], (err, results) => {
+  db.query(query, [userUid], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -90,14 +92,35 @@ router.post('/infoLoading', (req, res) => {
       user_uid: result.user_uid,
       cart_name: result.cart_name,
       cart_option: result.cart_option,
+      cart_product_quantity: result.product_quantity,
       cart_product_name: result.cart_product_name,
       cart_thumbnail: result.cart_thumbnail,
       cart_price: result.cart_price,
+      cart_final_price: result.cart_final_price,
+      cart_create_date: result.createdAt,
     }));
 
     // 클라이언트에게 응답
     res.setHeader('Content-Type', 'application/json');
     res.json({ cartInfo });
+  });
+});
+
+// 선택한 카트 항목 삭제
+router.post('/infoDel', (req, res) => {
+  const cartIds = req.body.cartIds;
+
+  // SQL 쿼리 작성
+  const query = 'DELETE FROM shoppingcart WHERE cart_id IN (?)';
+
+  // 데이터베이스 쿼리 실행
+  db.query(query, [cartIds], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    // 클라이언트에게 응답
+    res.json({ success: true });
   });
 });
 

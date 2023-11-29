@@ -65,24 +65,49 @@ const CautionList = styled.ul`
   }
 `;
 
-const IdBox = styled.div`
+const Mes = styled.p`
+  text-align: center;
   margin-top: 40px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 14px;
-  color: rgb(80, 80, 80);
-  span {
-    margin-bottom: 10px;
-  }
+  font-size: 15px;
+  line-height: 1.4;
   b {
     font-size: 16px;
     color: rgb(50, 200, 50);
   }
 `;
 
-export default function FindUserPW() {
+const ButtonWrapper = styled.div`
+  margin-top: 30px;
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  button {
+    width: 100px;
+    padding: 8px 0;
+    transition: all 400ms;
+    border: 1px solid rgb(80, 80, 80);
+    cursor: pointer;
+  }
+  button:first-child {
+    background-color: rgb(250, 250, 250);
+    color: rgb(80, 80, 80);
+  }
+  button:first-child:hover {
+    background-color: rgb(80, 80, 80);
+    color: rgb(240, 240, 240);
+  }
+  button:last-child {
+    background-color: rgb(80, 80, 80);
+    color: rgb(240, 240, 240);
+  }
+  button:last-child:hover {
+    background-color: rgb(250, 250, 250);
+    color: rgb(80, 80, 80);
+  }
+`;
+
+export default function FindUserPW({ showModal, setShowModal, showFindModal, setShowFindModal }) {
   const [phoneNum, setPhoneNum] = useState('');
   const [userId, setUserId] = useState('');
   const [userName, setUserName] = useState('');
@@ -90,6 +115,8 @@ export default function FindUserPW() {
   const [idCheckColor, setIdCheckColor] = useState('rgb(180, 180, 180)');
   const [nameCheckColor, setNameCheckColor] = useState('rgb(180, 180, 180)');
   const [errMesShow, setErrMesShow] = useState(false);
+  const [pwChange, setPwChange] = useState(false);
+  const [confirmCooldown, setConfirmCooldown] = useState(false);
 
   useEffect(()=> {
     if (phoneNum.length == 0) {
@@ -119,8 +146,16 @@ export default function FindUserPW() {
     } else {
       setNameCheckColor('rgba(50, 205, 50, 0.5)');
     }
-  },[userName])
+  },[userName]);
 
+  useEffect(() => {
+    if (confirmCooldown) {
+      const cooldownTimeout = setTimeout(() => {
+        setConfirmCooldown(false);
+      }, 1000); // 2초 동안 쿨다운
+      return () => clearTimeout(cooldownTimeout);
+    }
+  }, [confirmCooldown]);
 
   // 휴대폰 번호 입력
   function handlePhoneNumInput(event) {
@@ -140,6 +175,7 @@ export default function FindUserPW() {
 
   const checkUserInfo = async (userid, username, phoneNum) => {
     try {
+      setConfirmCooldown(true);
       const response = await fetch('http://localhost:3001/api/auth/check-user-info', {
         method: 'POST',
         headers: {
@@ -147,12 +183,10 @@ export default function FindUserPW() {
         },
         body: JSON.stringify({ userid, username, phoneNum }),
       });
-  
       const data = await response.json();
-  
-      if (data.success) {
-        console.log('회원정보 확인 성공:', data.user);
-        // 여기에서 받은 사용자 정보(data.user)를 원하는 대로 활용할 수 있습니다.
+      if (data.passwordChange) {
+        console.log('회원정보 확인 성공:', data.randomKey);
+        setPwChange(true);
       } else {
         console.log('회원정보 확인 실패:', data.message);
       }
@@ -161,11 +195,16 @@ export default function FindUserPW() {
     }
   };
 
-
+  function handleOpenLoginModal() {
+    setPwChange(false);
+    setShowFindModal(false);
+    setShowModal(true);
+  };
 
   return (
     <>
-      <Container>
+      {!pwChange &&
+        <Container>
         <Input
           type="text"
           placeholder="아이디 입력"
@@ -193,10 +232,21 @@ export default function FindUserPW() {
           <li>· 회원 정보 일치 시 해당 휴대폰 번호로 새로운 비밀번호를 발송합니다.</li>
           <li>· 로그인 후 꼭 비밀번호를 변경해주세요.</li>
         </CautionList>
-        <ConfirmBtn onClick={() => {checkUserInfo(userId, userName, phoneNum)}} disabled={phoneNum.length === 11 && userId.length > 3 && userId.length < 17 ? false : true}>
-          비밀번호 찾기
+        <ConfirmBtn onClick={() => {checkUserInfo(userId, userName, phoneNum)}} 
+        disabled={confirmCooldown || phoneNum.length !== 11 || userId.length <= 3 || userId.length >= 17}>
+          비밀번호 발송
         </ConfirmBtn>
       </Container>
+      }
+      {pwChange &&
+      <Container>
+        <Mes>새로운 비밀번호가 <b>{phoneNum}</b>(으)로 발송되었습니다.<br/>로그인 하시겠습니까?</Mes>
+        <ButtonWrapper>
+          <button onClick={() => setShowFindModal(false)}>닫기</button>
+          <button onClick={handleOpenLoginModal}>로그인</button>
+        </ButtonWrapper>
+      </Container>
+      }
     </>
   )
 }

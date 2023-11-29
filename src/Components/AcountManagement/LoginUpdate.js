@@ -38,9 +38,6 @@ export default function LoginUpdate() {
                 const formattedDate = `${year}${month}${day}`;
                 sessionStorage.setItem('user_birthdate', formattedDate);
               }
-              if (data.user.userJoinDate) {
-                sessionStorage.setItem('user_joindate', data.user.userJoinDate);
-              }
               if (data.user.userPhoneNum) {
                 sessionStorage.setItem('user_phonenum', data.user.userPhoneNum);
               }
@@ -75,7 +72,7 @@ export default function LoginUpdate() {
     } else {
       
     }
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <>

@@ -70,7 +70,7 @@ router.post('/editpwprofile', async (req, res) => {
     }
 
     // 사용자 정보 업데이트
-    user.password = password; // 클라이언트에서 이미 해싱됨
+    user.user_password = password; // 클라이언트에서 이미 해싱됨
     user.user_name = name;
     user.user_gender = gender;
     user.user_birth_date = reBirthDate;

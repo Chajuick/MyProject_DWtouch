@@ -423,7 +423,8 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
         const cartData = {
           product_name: productName,
           option: productOption,
-          price: finalPrice*productQuantity,
+          price: finalPrice,
+          final_price: finalPrice*productQuantity,
           product_quantity: productQuantity,
           user_uid: sessionStorage.getItem('user_uid'),
         }
@@ -464,7 +465,8 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
       const cartData = {
         product_name: productName,
         option: productOption,
-        price: finalPrice*productQuantity,
+        price: finalPrice,
+        final_price: finalPrice*productQuantity,
         product_quantity: productQuantity,
         user_uid: sessionStorage.getItem('user_uid'),
       }

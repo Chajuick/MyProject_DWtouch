@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-import { Icon } from '@iconify/react';
 import React, { useState } from "react";
 import bcrypt from 'bcryptjs';
 import * as MS from '../Modal/ModalStyle'
@@ -463,6 +461,13 @@ export default function ProfileEdit() {
             if (data.message) {
               if (data.success) {
                 setShowProfileEditFinModal(true);
+                sessionStorage.setItem('user_name', name);
+                sessionStorage.setItem('user_gender', gender);
+                sessionStorage.setItem('user_birthdate', birthDate);
+                sessionStorage.setItem('user_phonenum', phoneNumber);
+                sessionStorage.setItem('user_postcode', postCode);
+                sessionStorage.setItem('user_detail_address', detailAddress);
+                sessionStorage.setItem('user_address', address);
               }
             } else {
               console.error('오류:', data.error);
@@ -507,6 +512,13 @@ export default function ProfileEdit() {
         if (data.message) {
           if (data.success) {
             setShowProfileEditFinModal(true);
+            sessionStorage.setItem('user_name', name);
+            sessionStorage.setItem('user_gender', gender);
+            sessionStorage.setItem('user_birthdate', birthDate);
+            sessionStorage.setItem('user_phonenum', phoneNumber);
+            sessionStorage.setItem('user_postcode', postCode);
+            sessionStorage.setItem('user_detail_address', detailAddress);
+            sessionStorage.setItem('user_address', address);
           }
         } else {
           console.error('오류:', data.error);

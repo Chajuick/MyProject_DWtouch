@@ -4,6 +4,22 @@ const router = express.Router();
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 
+const coolsms = require("coolsms-node-sdk").default;
+const messageService = new coolsms("NCSVKT0PTX0SKCI9", "PJT6NCSSK2JXTCPL3KMH0DAWIAHGIHVE");
+
+function generateRandomKey() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const keyLength = 6;
+  let randomKey = '';
+
+  for (let i = 0; i < keyLength; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomKey += characters.charAt(randomIndex);
+  }
+
+  return randomKey;
+}
+
 // 데이터베이스 연결 설정
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -25,7 +41,6 @@ router.post('/login', (req, res) => {
       if (results.length > 0) {
         const user = results[0];
         const storedPassword = user.user_password; // 데이터베이스에 저장된 해시된 비밀번호
-
         // 클라이언트에서 보낸 해시된 비밀번호와 데이터베이스에 저장된 비밀번호 비교
         bcrypt.compare(password, storedPassword, (err, passwordMatch) => {
           if (err) {
@@ -132,7 +147,7 @@ router.post('/find-username', (req, res) => {
   });
 });
 
-// 회원정보 확인 라우트
+// 비밀번호 재발급 라우트
 router.post('/check-user-info', (req, res) => {
   const { userid, username, phoneNum } = req.body;
 
@@ -144,13 +159,41 @@ router.post('/check-user-info', (req, res) => {
     } else {
       if (results.length > 0) {
         const user = results[0];
-        res.json({ success: true, message: '회원정보 확인 성공', user });
+        // 인증 문자 발송
+        const randomKey = generateRandomKey();
+        messageService.sendOne({
+          to: phoneNum,
+          from: "01067793140",
+          text: "[DWStudio]보안을 위해 꼭 로그인 후 비밀번호 변경 바랍니다. 비밀번호 : " + randomKey + ""
+        }).then(() => {
+          // 새로운 랜덤 키를 해싱하여 비밀번호로 변경
+          bcrypt.hash(randomKey, 10, (err, hashedKey) => {
+            if (err) {
+              console.error('랜덤 키 해싱 오류: ' + err.message);
+              res.status(500).json({ error: '비밀번호 변경 오류 : CODE 007' });
+            } else {
+              // 해싱된 키를 데이터베이스에 업데이트
+              const updateSql = 'UPDATE user_info SET user_password = ? WHERE user_id = ?';
+              db.query(updateSql, [hashedKey, userid], (updateErr) => {
+                if (updateErr) {
+                  console.error('비밀번호 변경 오류: ' + updateErr.message);
+                  res.status(500).json({ error: '비밀번호 변경 오류 : CODE 008' });
+                } else {
+                  // 업데이트가 성공하면 클라이언트에게 성공 응답과 함께 랜덤 키 전달
+                  res.json({ passwordChange: true, randomKey: randomKey });
+                }
+              });
+            }
+          });
+        }).catch((sendErr) => {
+          console.error('SMS 전송 오류: ' + sendErr.message);
+          res.status(500).json({ error: 'SMS 전송 오류 : CODE 009' });
+        });
       } else {
         res.json({ success: false, message: '일치하는 사용자 정보 없음' });
       }
     }
   });
 });
-
 
 module.exports = router;
