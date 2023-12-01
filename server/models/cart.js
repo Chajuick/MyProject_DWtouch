@@ -32,6 +32,9 @@ const Cart = sequelize.define('Cart', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  cart_default_price: {
+    type: DataTypes.INTEGER,
+  },
   cart_price: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -43,6 +46,10 @@ const Cart = sequelize.define('Cart', {
   product_quantity: {
     type: DataTypes.STRING,
     defaultValue: 1,
+  },
+  cart_sale_info: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
   createdAt: {
     type: DataTypes.DATE,

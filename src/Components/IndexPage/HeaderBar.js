@@ -93,7 +93,7 @@ export default function HeaderBar() {
   const [isLogin, setIsLogin] = useState(false);
   const [errCode, setErrCode] = useState(''); // 에러코드
   const navigate = useNavigate();
-  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem('isLoggedIn') === 'true');
 
   useEffect(() => {
     if (!isLoggedIn && window.location.pathname == '/my') {
@@ -111,9 +111,14 @@ export default function HeaderBar() {
       setIsLogin(false);
     }
   }, []);
-  
+
+  function handleLogout() {
+    setIsLogin(false);
+    alert("잘못된 접근입니다!");
+  }
+
   return <>
-    <LoginUpdate />
+    <LoginUpdate updateLogin={() => setIsLogin(true)} updateLogout={handleLogout}/>
     <Container>
       <Bar>
         <Logobox>

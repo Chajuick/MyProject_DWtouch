@@ -104,6 +104,31 @@ const Box = styled.div`
   a:hover {
     background-color: rgba(20, 20, 20, 0.4);
   }
+  ul {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    li {
+      width: 20px;
+      height: 20px;
+      background-color: rgba(40, 40, 40, 0.3);
+      transition: all 400ms;
+      border-radius: 50%;
+      margin: 0 4px;
+    }
+    li:hover {
+      cursor: pointer;
+      background-color: rgba(40, 40, 40, 0.7);
+    }
+    li.sel {
+      background-color: rgba(40, 40, 40, 0.5);
+    }
+  }
 `;
 
 const Title = styled.h2`
@@ -147,8 +172,6 @@ export default function AdsBanner() {
   const [isCooldown, setIsCooldown] = useState(false);
   const [isMainBannerLoading, setIsMainBannerLoading] = useState(false);
 
-  
-
   const handleNextBox = () => {
     if (!isCooldown) {
       setCurrentBox(prevCurrentBox => (prevCurrentBox === 3 ? 0 : prevCurrentBox + 1));
@@ -160,9 +183,22 @@ export default function AdsBanner() {
     }
   };
 
+  console.log(currentBox);
+
   const handlePrevBox = () => {
     if (!isCooldown) {
       setCurrentBox(prevCurrentBox => (prevCurrentBox === 0 ? 3 : prevCurrentBox - 1));
+      setIsCooldown(true);
+
+      setTimeout(() => {
+        setIsCooldown(false);
+      }, 600);
+    }
+  };
+
+  const handleFastMove = (index) => {
+    if (!isCooldown) {
+      setCurrentBox(index);
       setIsCooldown(true);
 
       setTimeout(() => {
@@ -205,7 +241,12 @@ export default function AdsBanner() {
             <Title>{banner.title}</Title>
             <Detail>{banner.detail_1}<br />{banner.detail_2}</Detail>
             <Link to="/">바로가기</Link>
-            <img src={banner.image} style={{ height: '400px' }}/>
+            <img src={banner.image} style={{ height: '400px' }} alt="Banner Image"/>
+            <ul>
+            {Array.from({ length: banners.length }, (_, index) => (
+              <li key={index} className={index == currentBox? 'sel' : ''} onClick={() => handleFastMove(index)}></li>
+            ))}
+            </ul>
           </Box>
         </SlideBox>
       ))}

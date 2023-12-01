@@ -21,8 +21,8 @@ const MainContainer = styled.div`
 
 const SubContainer = styled.div`
   border-top: 1px solid rgb(200, 200, 200);
-  background-color: rgb(250, 250, 250);
-  color: rgb(20, 20, 20);
+  background-color: rgb(80, 80, 80);
+  color: rgb(250, 250, 250);
   width: 100vw;
   max-height: ${({ "$isSubContainerVisible": isSubContainerVisible }) =>
     isSubContainerVisible ? '500px' : '0'};
@@ -78,7 +78,7 @@ const SubBar = styled.ul`
     width: 84px;
   }
   li > a {
-    color: rgb(25, 25, 25);
+    color: rgb(210, 210, 210);
     text-decoration: none;
     font-size: 14px;
     padding: 0.5rem 0;

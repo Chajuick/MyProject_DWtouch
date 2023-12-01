@@ -4,7 +4,9 @@ import Footer from '../Components/IndexPage/Footer';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import CartProductList from '../Components/CartPage/CartProductList';
+import CartPurchaseList from '../Components/CartPage/CartPurchaseList';
 import * as MS from '../Components/Modal/ModalStyle';
+import CartPurchaseAria from '../Components/CartPage/CartPurchaseAria';
 
 const Container = styled.div`
   width: 100vw;
@@ -50,6 +52,7 @@ const StatusBar = styled.div`
 const CartControlBar = styled.div`
   width: 100vw;
   position: sticky;
+  z-index: 10;
   top: 0;
   background-color: rgba(250, 250, 250, 0.5);
   nav {
@@ -95,16 +98,19 @@ const PurchaseBar = styled.div`
       color: rgba(250, 50, 50, 0.8);
     }
   }
-  button {
-    padding: 10px 20px;
-    color: rgb(240, 240, 240);
-    border: 1px solid rgb(80, 80, 80);
-    border-radius: 20px;
-    background-color: rgb(80, 80, 80);
-    transition: all 400ms;
-    margin-left: 10px;
-  }
-  button:hover {
+`;
+
+const PurchaseBtn = styled.button`
+  padding: 10px 20px;
+  color: rgb(240, 240, 240);
+  border: 1px solid rgb(80, 80, 80);
+  border-radius: 20px;
+  background-color: rgb(80, 80, 80);
+  transition: all 400ms;
+  margin-left: 10px;
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  &:hover {
     cursor: pointer;
     background-color: rgb(250, 250, 250);
     color: rgb(80, 80, 80);
@@ -177,14 +183,34 @@ const ButtonWrapper = styled.div`
 const purchaseStatus = ["01. 장바구니", "02. 주문·결제", "03. 주문완료"];
 
 export default function CartIndexPage() {
-  const [selectedProduct, setSelectedProduct] = useState([]);
   const [sumPrice, setSumPrice] = useState(0);
   const [currentStatus, setCurrentStatus] = useState(0);
   const [cartInfo, setCartInfo] = useState([]);
   const [isCartInfoLoading, setIsCartInfoLoading] = useState(false);
+  const [selectedQuantity, setSelectedQuantity] = useState(0);
   const [selectedInfo, setSelectedInfo] = useState([]);
   const [showDelModal, setShowDelModal] = useState(false);
 
+  const purchaseListInfo = cartInfo.reduce((result, item, index) => {
+    if (selectedInfo[index] === 1) {
+      // 조건을 만족하는 경우에만 현재 요소를 결과 배열에 추가
+      result.push(item);
+    }
+    return result;
+  }, []);
+
+  useEffect(() => {
+    const updatedCartInfo = cartInfo.map((item, index) => ({
+      ...item,
+      cart_final_price: selectedInfo[index] === 1 ? item.cart_price * item.cart_product_quantity : 0,
+      cart_product_quantity: selectedInfo[index] === 1 ? item.cart_product_quantity : 0,
+    }));
+    const totalSum = updatedCartInfo.reduce((sum, item) => sum + item.cart_final_price, 0);
+    const quantitySum = updatedCartInfo.reduce((sum, item) => sum + item.cart_product_quantity, 0);
+    setSumPrice(totalSum);
+    setSelectedQuantity(quantitySum);
+  }, [cartInfo, selectedInfo]);
+  
   // 상단 전체 선택 체크 버튼 클릭 시 실행될 함수
   function handleAllCheck() {
       setSelectedInfo(prevSelectedInfo => {
@@ -192,6 +218,7 @@ export default function CartIndexPage() {
         return newSelectedInfo;
       });
   }
+
   function handleAllDeCheck() {
     setSelectedInfo(prevSelectedInfo => {
       const newSelectedInfo = prevSelectedInfo.map(() => (0));
@@ -263,28 +290,13 @@ export default function CartIndexPage() {
   };
 
   function handleAddToPurchase() {
-    fetch('http://localhost:3001/api/cart/addToCart', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ cartInfo }),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // 삭제 성공 시 페이지를 새로고침
-        if (data.success) {
-
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
+    if (selectedQuantity > 0) {
+      setCurrentStatus(1);
+      window.scrollTo({
+        top: 105,
+        behavior: 'smooth', 
       });
+    }
   }
 
   return (
@@ -299,31 +311,42 @@ export default function CartIndexPage() {
               <div key={index} className={index === currentStatus? 'sel' : ''}>{item}</div>
             ))}
           </StatusBar>
-          <CartControlBar>
-              <nav>
-                <SelecBar>
-                  <button onClick={handleAllCheck}>전체 선택</button>
-                  <button onClick={handleAllDeCheck}>선택 해제</button>
-                  <button onClick={() => setShowDelModal(true)}>삭제</button>
-                </SelecBar>
-                <PurchaseBar>
-                  <span>결제 예정 금액(<b>{selectedProduct.length? selectedProduct.length : 0}</b>)</span>
-                  <Price>{sumPrice}원</Price>
-                  <button onClick={handleAddToPurchase}>선택상품 주문하기</button>
-                </PurchaseBar>
-              </nav>
-          </CartControlBar>
-          <CartProductList
-            cartInfo={cartInfo}
-            setCartInfo={setCartInfo}
-            selectedInfo={selectedInfo}
-            setSelectedInfo={setSelectedInfo}
-          />
-          <CautionList>
-            이용안내
-            <li className='alert'>· 삭제한 상품 디자인은 복구할 수 없습니다.</li>
-            <li>· 총 결제금액이 5만원 이상인 경우 무료 배송 혜택을 받으실 수 있습니다.</li>
-          </CautionList>
+          {currentStatus === 0 &&
+            <>
+              <CartControlBar>
+                <nav>
+                  <SelecBar>
+                    <button onClick={handleAllCheck}>전체 선택</button>
+                    <button onClick={handleAllDeCheck}>선택 해제</button>
+                    <button onClick={() => setShowDelModal(true)}>삭제</button>
+                  </SelecBar>
+                  <PurchaseBar>
+                    <span>결제 예정 금액(<b>{selectedQuantity}</b>)</span>
+                    <Price>{sumPrice.toLocaleString()}원</Price>
+                    <PurchaseBtn onClick={handleAddToPurchase} disabled={selectedQuantity === 0}
+                    >선택상품 주문하기</PurchaseBtn>
+                  </PurchaseBar>
+                </nav>
+              </CartControlBar>
+              <CartProductList
+                cartInfo={cartInfo}
+                setCartInfo={setCartInfo}
+                selectedInfo={selectedInfo}
+                setSelectedInfo={setSelectedInfo}
+              />
+              <CautionList>
+                이용안내
+                <li className='alert'>· 삭제한 상품 디자인은 복구할 수 없습니다.</li>
+                <li>· 총 결제금액이 5만원 이상인 경우 무료 배송 혜택을 받으실 수 있습니다.</li>
+              </CautionList>
+            </>
+          }
+          {currentStatus === 1 &&
+          <>
+            <CartPurchaseList purchaseListInfo={purchaseListInfo} />
+            <CartPurchaseAria purchaseListInfo={purchaseListInfo}/>
+          </>
+          }
         </Wrapper>
       </Container>
       <Footer />

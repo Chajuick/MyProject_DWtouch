@@ -319,7 +319,8 @@ return (
             setPostCode={setPostCode}
             address={address}
             setAddress={setAddress}
-            detailAddress={setDetailAddress}
+            detailAddress={detailAddress}
+            setDetailAddress={setDetailAddress}
           />
         </S.InputBox>
         <S.FormButton onClick={handleRegister} type='button'

@@ -42,11 +42,11 @@ export default function PhotobookOptSelector({ productId, options, optFamily, us
     useEffect(() => {
         let sizeOption = optFamily.priceModifier[0][selectedOptionIndexes[0]];
         let coverOption = optFamily.priceModifier[1][selectedOptionIndexes[1]];
-        setDelPrice(defaultPrice*productQuantity*sizeOption*coverOption);
+        setDelPrice(parseInt((defaultPrice*productQuantity*sizeOption*coverOption) / 10) * 10);
        if (saleInfo === 0) {
-        setFinalPrice(defaultPrice*productQuantity*sizeOption*coverOption);
+        setFinalPrice(parseInt((defaultPrice*productQuantity*sizeOption*coverOption) / 10) * 10);
        } else {
-        setFinalPrice(defaultPrice*(100-saleInfo)/100*productQuantity*sizeOption*coverOption);
+        setFinalPrice(parseInt((defaultPrice*(100-saleInfo)/100*productQuantity*sizeOption*coverOption) / 10) * 10);
        }    
     }, [defaultPrice, userGrade, saleInfo, productQuantity, selectedOptionIndexes]);
     

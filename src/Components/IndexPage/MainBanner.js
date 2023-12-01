@@ -58,6 +58,7 @@ const Box = styled.div`
     padding: 1rem 3.5rem;
     background-color: ${props => (props.$thema === 1 ? 'rgba(230, 230, 230, 0.6)' : 'rgba(40, 40, 40, 0.6)')};
     color: ${props => (props.$thema === 1 ? 'rgb(40, 40, 40)' : 'rgb(230, 230, 230)')};
+    border: ${props => (props.$thema === 1 ? '1px solid rgba(230, 230, 230, 0)' : '1px solid rgba(40, 40, 40, 0)')};
     text-decoration: none;
     font-size: 14px;
     transition: all 400ms;
@@ -65,6 +66,7 @@ const Box = styled.div`
   a:hover {
     background-color: ${props => (props.$thema === 1 ? 'rgba(230, 230, 230, 0)' : 'rgba(40, 40, 40, 0)')};
     color: ${props => (props.$thema === 1 ? 'rgb(200, 200, 200)' : 'rgb(70, 70, 70)')};
+    border: ${props => (props.$thema === 1 ? '1px solid rgba(230, 230, 230, 0.6)' : '1px solid rgba(40, 40, 40, 0.6)')};
   }
   img {
     left: -120px;

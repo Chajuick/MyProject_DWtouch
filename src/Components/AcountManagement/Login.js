@@ -161,24 +161,25 @@ export default function Login({ showModal, setShowModal, showRegisterModal, setS
               localStorage.setItem('rememberedUserid', userid); // 아이디 저장
             }
             sessionStorage.setItem('isLoggedIn', 'true'); // 로그인 상태를 세션 스토리지에 설정
-            sessionStorage.setItem('user_uid', data.user.userUid);
-            sessionStorage.setItem('user_id', data.user.userId);
-            sessionStorage.setItem('user_name', data.user.userName);
-            sessionStorage.setItem('user_gender', data.user.userGender);
-            const dateObject = new Date(data.user.userBirthDate);
+            sessionStorage.setItem('user_uid', data.user.user_uid);
+            sessionStorage.setItem('user_id', data.user.user_id);
+            sessionStorage.setItem('user_name', data.user.user_name);
+            sessionStorage.setItem('user_gender', data.user.user_gender);
+            const dateObject = new Date(data.user.user_birth_date);
             const year = dateObject.getUTCFullYear();
             const month = (dateObject.getUTCMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작
             const day = (dateObject.getUTCDate()).toString().padStart(2, '0');
             const formattedDate = `${year}${month}${day}`;
             sessionStorage.setItem('user_birthdate', formattedDate);
-            sessionStorage.setItem('user_joindate', data.user.userJoinDate);
-            sessionStorage.setItem('user_phonenum', data.user.userPhoneNum);
-            sessionStorage.setItem('user_permissions', data.user.userPermissions);
-            sessionStorage.setItem('user_points', data.user.userPoints);
-            sessionStorage.setItem('user_grades', data.user.userGrades);
-            sessionStorage.setItem('user_address', data.user.userAddress);
-            sessionStorage.setItem('user_detail_address', data.user.userDetailAddress);
-            sessionStorage.setItem('user_postcode', data.user.userPostCode);
+            sessionStorage.setItem('user_phonenum', data.user.user_phone_num);
+            sessionStorage.setItem('user_points', data.user.user_points);
+            sessionStorage.setItem('user_grades', data.user.user_grades);
+            sessionStorage.setItem('user_address', data.user.user_address);
+            sessionStorage.setItem('user_detail_address', data.user.user_detailaddress);
+            sessionStorage.setItem('user_postcode', data.user.user_postcode);
+            localStorage.setItem('session_user', data.session.userUid);
+            localStorage.setItem('session_key', data.session.randomKey);
+            console.log(data);
             handleCloseModal();
             window.location.reload();
           } else {

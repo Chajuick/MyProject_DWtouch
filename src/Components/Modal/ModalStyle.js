@@ -37,6 +37,52 @@ export const Modal = styled.div`
   }
 `;
 
+export const HeaderModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(250, 250, 250);
+  border-radius: 5px;
+  z-index: 1002;
+  display: ${({ $showModal }) => ($showModal ? 'flex' : 'none')};
+  flex-direction: column;
+  align-items: center;
+  &>div.modalHeader {
+    width: 100%;
+    padding: 12px;
+    background-color: rgb(40, 40, 40);
+    position: relative;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    h2 {
+      position: absolute;
+      text-align: center;
+      width: 50%;
+      font-weight: 600;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 19px;
+      color: rgb(250, 250, 250);
+    }
+  }
+`;
+
+export const HeaderModalCloseBtn = styled.button`
+  margin-right: 5px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  transition: all 400ms;
+  color: rgb(250, 250, 250);
+  &:hover {
+    cursor: pointer;
+    color: rgb(150, 150, 150);
+  }
+`;
+
 export const ModalCloseBtn = styled.button`
   position: absolute;
   top: 10px;

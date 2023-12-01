@@ -32,23 +32,22 @@ export default function Logout({ showModal, setShowModal }) {
 
   const handleLogoutConfirm = () => {
     // 로그아웃 확인 시 실행되는 함수
+    const session = {
+      session_key: localStorage.getItem('session_key'),
+      user_uid: localStorage.getItem('session_user'), 
+    };
     fetch('http://localhost:3001/api/auth/logout', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ session }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           console.log('로그아웃 성공');
-          sessionStorage.removeItem('isLoggedIn'); // isLoggedIn 아이템 삭제
-          sessionStorage.setItem('user_birthdate', '');
-          sessionStorage.setItem('user_joindate', '');
-          sessionStorage.setItem('user_phonenum', '');
-          sessionStorage.setItem('user_permissions', '');
-          sessionStorage.setItem('user_points', '');
-          sessionStorage.setItem('user_grades', 0);
-          sessionStorage.setItem('user_address', '');
-          sessionStorage.setItem('user_detail_address', '');
-          sessionStorage.setItem('user_postcode', '');
+          sessionStorage.clear();
           setShowModal(false);
           window.location.reload();
         } else {

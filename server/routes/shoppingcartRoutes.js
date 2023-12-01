@@ -16,12 +16,14 @@ const db = mysql.createConnection({
 router.post('/addToCart', (req, res) => {
   const cartData = req.body;
   const userUid = cartData.user_uid;
-  const cartName = "프로젝트명을 입력해주세요";
+  const cartName = cartData.project_name;
   const cartOption = cartData.option;
   const cartProductName = cartData.product_name;
   const cartPrice = cartData.price;
   const cartFinalPrice = cartData.price*cartData.product_quantity;
   const cartQuantity = cartData.product_quantity;
+  const cartSaleInfo = cartData.sale_info;
+  const cartDefaultPrice = cartData.default_price;
   let cartThumbnail = "";
   if (cartData.option[1] === 0) {
     cartThumbnail = "https://i.ibb.co/KFmR8cv/1.png";
@@ -53,6 +55,8 @@ router.post('/addToCart', (req, res) => {
     cart_price: cartPrice,
     cart_final_price: cartFinalPrice,
     product_quantity: cartQuantity,
+    cart_sale_info: cartSaleInfo,
+    cart_default_price: cartDefaultPrice,
   });
 
   // 장바구니 정보를 데이터베이스에 저장
@@ -75,17 +79,14 @@ router.post('/addToCart', (req, res) => {
 // 유저 uid로 장바구니 정보 받아오기
 router.post('/infoLoading', (req, res) => {
   const userUid = req.body.userUid;
-
   // SQL 쿼리 작성
   const query = 'SELECT * FROM shoppingcart WHERE user_uid = ?';
-
   // 데이터베이스 쿼리 실행
   db.query(query, [userUid], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-
     // 결과를 배열로 변환
     const cartInfo = results.map(result => ({
       cart_id: result.cart_id,
@@ -95,8 +96,10 @@ router.post('/infoLoading', (req, res) => {
       cart_product_quantity: result.product_quantity,
       cart_product_name: result.cart_product_name,
       cart_thumbnail: result.cart_thumbnail,
+      cart_default_price: result.cart_default_price,
       cart_price: result.cart_price,
       cart_final_price: result.cart_final_price,
+      cart_sale_info: result.cart_sale_info,
       cart_create_date: result.createdAt,
     }));
 

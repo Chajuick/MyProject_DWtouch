@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Icon } from '@iconify/react';
 import { OptionConvert } from "./OptionConverter";
 import { useState, useEffect } from "react";
+import React from "react";
 
 const Container = styled.div`
   width: 1200px;
@@ -143,9 +144,14 @@ const ProductInfo = styled.div`
 
 const PriceInfo = styled.div`
   width: calc( 10% );
-  text-align: center;
   font-size: 15px;
   color: rgb(80, 80, 80);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  del {
+    color: rgb(150, 150, 150);
+  }
 `;
 
 const NumModify = styled.div`
@@ -274,8 +280,8 @@ export default function CartProductList({ cartInfo, setCartInfo, selectedInfo, s
         </ControlBar>
         <ProdcutList>
           {cartInfo && cartInfo.length > 0 && cartInfo.map((item, index) => (
-            <>
-              <ProductListContainer key={index}>
+            <React.Fragment key={index}>
+              <ProductListContainer>
                 <CartProductInfo>
                   <CheckBtn className={selectedInfo.length > 0 && selectedInfo[index] === 1? 'sel' : ''} 
                   onClick={() => handleToggleCheck(index)}
@@ -295,7 +301,8 @@ export default function CartProductList({ cartInfo, setCartInfo, selectedInfo, s
                     </ProductInfo>
                   </OrderInfo>
                   <PriceInfo>
-                    <span>{item.cart_price}원</span>
+                    <del>{item.cart_default_price.toLocaleString()}원</del>
+                    <span>{item.cart_price.toLocaleString()}원</span>
                   </PriceInfo>
                   <NumModify>
                     <div>
@@ -304,14 +311,14 @@ export default function CartProductList({ cartInfo, setCartInfo, selectedInfo, s
                       <span className="modifiter" onClick={() => handleQuantity(1, item.cart_product_quantity, index)}>+</span>
                     </div>
                   </NumModify>
-                  <p>{item.cart_price*item.cart_product_quantity}원</p>
+                  <p>{parseInt(item.cart_price*item.cart_product_quantity).toLocaleString()}원</p>
                 </CartProductInfo>
                 <CartModifyBar>
                   <p>편집하기</p>
                   <p>편집일 : {formattedDate(item.cart_create_date)}</p>
                 </CartModifyBar>
               </ProductListContainer>
-            </>
+            </React.Fragment>
           ))}
         </ProdcutList>
       </Container>

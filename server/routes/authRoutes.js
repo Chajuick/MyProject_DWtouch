@@ -32,42 +32,62 @@ const db = mysql.createConnection({
 router.post('/login', (req, res) => {
   const { userid, password } = req.body;
 
-  const sql = 'SELECT * FROM user_info WHERE user_id = ?';
-  db.query(sql, [userid], (err, results) => {
+  const sqlSelect = 'SELECT * FROM user_info WHERE user_id = ?';
+  const sqlFind = 'SELECT * FROM session WHERE user_uid = ?';
+  const sqlInsert = 'INSERT INTO session (session_key, user_uid) VALUES (?, ?)';
+  const sqlDelete = 'DELETE FROM session WHERE user_uid = ?';
+
+  db.query(sqlSelect, [userid], (err, results) => {
     if (err) {
       console.error('로그인 오류: ' + err.message);
       res.status(500).json({ error: '로그인 오류 : CODE 004' });
     } else {
       if (results.length > 0) {
         const user = results[0];
-        const storedPassword = user.user_password; // 데이터베이스에 저장된 해시된 비밀번호
-        // 클라이언트에서 보낸 해시된 비밀번호와 데이터베이스에 저장된 비밀번호 비교
+        const storedPassword = user.user_password;
+
         bcrypt.compare(password, storedPassword, (err, passwordMatch) => {
           if (err) {
             console.error('비밀번호 비교 오류: ' + err.message);
             res.status(500).json({ error: '로그인 오류 : CODE 003' });
           } else if (passwordMatch) {
-            // 비밀번호 일치
-            req.session.user = {
-              userUid: results[0].user_uid,
-              userId: results[0].user_id,
-              userPassword: results[0].user_password,
-              userName: results[0].user_name,
-              userGender: results[0].user_gender,
-              userPhoneNum: results[0].user_phone_num,
-              userBirthDate: results[0].user_birth_date,
-              userPoints: results[0].user_points,
-              userGrades: results[0].user_grades,
-              userPermissions: results[0].user_permissions,
-              userPostCode: results[0].user_postcode,
-              userDetailAddress: results[0].user_detailaddress,
-              userAddress: results[0].user_address,
-              userTotalPurchaseCount: results[0].user_total_purchase_count,
-              userTotalPurchaseAmount: results[0].user_total_purchase_amount,
-              userCreatedAt: results[0].createdAt,
-              // 여기에 사용자의 다른 정보를 추가
-            };
-            res.json({ success: true, message: '로그인 성공', user: req.session.user });
+            const randomKey = generateRandomKey();
+            const userUid = results[0].user_uid;
+
+            // 중복 uid 확인
+            db.query(sqlFind, [userUid], (err, existingSession) => {
+              if (err) {
+                console.error('세션 확인 오류: ' + err.message);
+                res.status(500).json({ error: '로그인 오류 : CODE 005' });
+              } else if (existingSession.length > 0) {
+                // 중복 uid 발견 시
+                db.query(sqlDelete, [userUid], (err) => {
+                  if (err) {
+                    console.error('세션 삭제 오류: ' + err.message);
+                    res.status(500).json({ error: '로그인 오류 : CODE 008' });
+                  } else {
+                    db.query(sqlInsert, [randomKey, userUid], (err) => {
+                      if (err) {
+                        console.error('세션 삽입 오류: ' + err.message);
+                        res.status(500).json({ error: '로그인 오류 : CODE 007' });
+                      } else {
+                        res.json({ success: true, message: '로그인 성공', user: user, session: { randomKey, userUid } });
+                      }
+                    });
+                  }
+                });
+              } else {
+                // 중복 uid 없을 때 세션 작업
+                db.query(sqlInsert, [randomKey, userUid], (err) => {
+                  if (err) {
+                    console.error('세션 삽입 오류: ' + err.message);
+                    res.status(500).json({ error: '로그인 오류 : CODE 007' });
+                  } else {
+                    res.json({ success: true, message: '로그인 성공', user: user, session: { randomKey, userUid } });
+                  }
+                });
+              }
+            });
           } else {
             // 비밀번호 불일치
             res.json({ success: false, message: '로그인 오류 : CODE 002 ' });
@@ -82,49 +102,57 @@ router.post('/login', (req, res) => {
 
 // 로그아웃 라우트
 router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
+  const { session } = req.body;
+
+  const sqlDelete = 'DELETE FROM session WHERE user_uid = ? AND session_key = ?';
+
+  db.query(sqlDelete, [session.user_uid, session.session_key], (err, results) => {
     if (err) {
       console.error('세션 삭제 오류: ' + err.message);
-      res.status(500).json({ error: '세션 삭제 오류' });
+      res.status(500).json({ error: '로그아웃 오류 : CODE 001' });
     } else {
       res.json({ success: true, message: '로그아웃 성공' });
     }
   });
 });
 
+
 // 유저 정보 갱신
 router.post('/update', (req, res) => {
-  const { userid } = req.body;
+  const { session } = req.body;
 
-  const sql = 'SELECT * FROM user_info WHERE user_id = ?';
-  db.query(sql, [userid], (err, results) => {
+  // SQL 쿼리: session 테이블에서 user_uid와 session_key가 일치하는 행을 조회
+  const sqlSessionSelect = 'SELECT * FROM session WHERE user_uid = ? AND session_key = ?';
+
+  db.query(sqlSessionSelect, [session.user_uid, session.session_key], (err, sessionResults) => {
     if (err) {
-      console.error('로그인 오류: ' + err.message);
-      res.status(500).json({ error: '로그인 오류 : CODE 004' });
+      console.error('세션 조회 오류: ' + err.message);
+      res.status(500).json({ error: '유저 정보 갱신 오류 : CODE 001' });
     } else {
-      if (results.length > 0) {
-        req.session.user = {
-          userUid: results[0].user_uid,
-          userId: results[0].user_id,
-          userPassword: results[0].user_password,
-          userName: results[0].user_name,
-          userGender: results[0].user_gender,
-          userPhoneNum: results[0].user_phone_num,
-          userBirthDate: results[0].user_birth_date,
-          userPoints: results[0].user_points,
-          userGrades: results[0].user_grades,
-          userPermissions: results[0].user_permissions,
-          userPostCode: results[0].user_postcode,
-          userDetailAddress: results[0].user_detailaddress,
-          userAddress: results[0].user_address,
-          userTotalPurchaseCount: results[0].user_total_purchase_count,
-          userTotalPurchaseAmount: results[0].user_total_purchase_amount,
-          userCreatedAt: results[0].createdAt,
-        };
-        res.json({ success: true, user: req.session.user });
-      } 
-    } 
-  })
+      // 세션 테이블에서 해당 세션이 존재하는 경우
+      if (sessionResults.length > 0) {
+        // SQL 쿼리: user_info 테이블에서 user_uid가 일치하는 행을 조회
+        const sqlUserInfoSelect = 'SELECT * FROM user_info WHERE user_uid = ?';
+
+        db.query(sqlUserInfoSelect, [session.user_uid], (err, userResults) => {
+          if (err) {
+            console.error('유저 정보 조회 오류: ' + err.message);
+            res.status(500).json({ error: '유저 정보 갱신 오류 : CODE 002' });
+          } else {
+            // user_info 테이블에서 해당 유저 정보가 존재하는 경우
+            if (userResults.length > 0) {
+              const user = userResults[0];
+              res.json({ success: true, message: '유저 정보 갱신 성공', user: user });
+            } else {
+              res.status(404).json({ success: false, message: '유저 정보가 존재하지 않습니다' });
+            }
+          }
+        });
+      } else {
+        res.status(401).json({ success: false, message: '세션 정보가 유효하지 않습니다' });
+      }
+    }
+  });
 });
 
 // 아이디 찾기 라우트
@@ -195,5 +223,7 @@ router.post('/check-user-info', (req, res) => {
     }
   });
 });
+
+
 
 module.exports = router;

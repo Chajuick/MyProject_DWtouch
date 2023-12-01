@@ -1,9 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const session = require('express-session');
 const app = express();
-const MySQLStore = require('express-mysql-session')(session);
 const bodyParser = require('body-parser');
 
 // 환경 변수를 로드합니다.
@@ -11,22 +9,6 @@ require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.json());
-
-const sessionStore = new MySQLStore({
-  host: process.env.DB_HOST, 
-  user: process.env.DB_USER, 
-  password: process.env.DB_PASSWORD, 
-  database: process.env.DB_NAME, 
-});
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET, 
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST, 
@@ -50,14 +32,6 @@ db.connect((err) => {
   }
 });
 
-app.use(
-  session({
-    secret: 'your-secret-key',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false
-  })
-);
 
 // 라우트 모듈들을 분리하여 가져옵니다.
 const mainBannersRouter = require('./routes/mainBannersRoutes');
@@ -67,6 +41,7 @@ const registerRouter = require('./routes/registerRoutes');
 const mypageRouter = require("./routes/mypageRoutes");
 const productsRouter = require("./routes/productsRoutes");
 const shoppingcartRouter = require("./routes/shoppingcartRoutes");
+const couponPointsRouter = require("./routes/couponPointsRoutes");
 
 // 라우트 모듈들을 사용합니다.
 app.use('/api/mainbanners', mainBannersRouter);
@@ -76,6 +51,7 @@ app.use('/api/register', registerRouter);
 app.use('/api/mypage', mypageRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/cart', shoppingcartRouter);
+app.use('/api/coupon-point', couponPointsRouter);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

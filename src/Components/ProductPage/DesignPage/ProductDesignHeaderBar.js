@@ -391,11 +391,11 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
     useEffect(() => {
       let sizeOption = optFamily.priceModifier[0][productOption[0]];
       let coverOption = optFamily.priceModifier[1][productOption[1]];
-      setDelPrice(defaultPrice*sizeOption*coverOption);
+      setDelPrice(parseInt((defaultPrice*sizeOption*coverOption) / 10) * 10);
       if (saleInfo === 0) {
-        setFinalPrice(defaultPrice*sizeOption*coverOption);
+        setFinalPrice(parseInt((defaultPrice*sizeOption*coverOption) / 10) * 10);
       } else {
-        setFinalPrice(defaultPrice*(100-saleInfo)/100*sizeOption*coverOption);
+        setFinalPrice(parseInt((defaultPrice*(100-saleInfo)/100*sizeOption*coverOption) / 10) * 10);
       }    
     }, [defaultPrice, saleInfo, productOption]);
 
@@ -420,13 +420,18 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
 
     function saveToCart() {
         // 서버로 삼품 정보를 전송
+        let sizeOption = optFamily.priceModifier[0][productOption[0]];
+        let coverOption = optFamily.priceModifier[1][productOption[1]];
         const cartData = {
+          project_name: projectName,
           product_name: productName,
           option: productOption,
+          default_price: parseInt((defaultPrice*sizeOption*coverOption) / 10) * 10,
           price: finalPrice,
           final_price: finalPrice*productQuantity,
           product_quantity: productQuantity,
           user_uid: sessionStorage.getItem('user_uid'),
+          sale_info: saleInfo,
         }
         fetch('http://localhost:3001/api/cart/addToCart', {
             method: 'POST',
@@ -463,12 +468,15 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
     function addToCart() {
       // 서버로 삼품 정보를 전송
       const cartData = {
+        project_name: projectName,
         product_name: productName,
         option: productOption,
+        default_price: defaultPrice,
         price: finalPrice,
         final_price: finalPrice*productQuantity,
         product_quantity: productQuantity,
         user_uid: sessionStorage.getItem('user_uid'),
+        sale_info: saleInfo,
       }
       fetch('http://localhost:3001/api/cart/addToCart', {
           method: 'POST',
@@ -520,7 +528,7 @@ export default function ProductDesignHeaderBar({ cartInfo, setCartInfo, productO
                   {saleInfo>0 &&
                     <del>{delPrice*productQuantity.toLocaleString('ko-KR')}원</del>
                   }
-                  <b style={{ color: saleInfo>0 ? 'rgba(250, 50, 50, 1)' : 'rgb(80, 80, 80)' }}>
+                  <b style={{ color: saleInfo > 0 ? 'rgba(250, 50, 50, 1)' : 'rgb(80, 80, 80)' }}>
                     {finalPrice*productQuantity.toLocaleString('ko-KR')}원
                   </b>
                 </OptDetail>
