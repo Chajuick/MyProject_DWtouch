@@ -1,17 +1,27 @@
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState } from 'react';
+
+// 계정 관련 컴퍼넌트
+import Login from './Components/AcountManagement/Login';
+import Logout from './Components/AcountManagement/Logout';
+import Register from './Components/AcountManagement/Register';
+import UserInfoUpdate from './Components/AcountManagement/UserInfoUpdate';
+import FindAccount from './Components/AcountManagement/FindUserInfo/FindAccount';
+
+import ErrorModal from './Components/Modal/ErrorModal';
 
 // 라우트 경로
-import Home from './page/Home';
-import Mypage from './page/Mypage';
-import Service from './page/Service';
-import Coupon from './page/Coupon';
-import EventWelcome from './page/EventWelcome';
-import Event from './page/Event';
-import PhotobookList from './Components/ProductPage/Photobook/PhotobookList';
-import PhotobookOverviewPage from './Components/ProductPage/Photobook/PhotobookOverviewPage';
-import PhotobookDesignPage from './Components/ProductPage/Photobook/PhotobookDesignPage';
-import CartIndexPage from './page/CartIndexPage';
+import IndexPage from './PageComonents/IndexPage';
+// 리스트 페이지
+import PhotobookListPage from './PageComonents/ProductPage/ListPage/PhotobookListPage';
+import CalendarListPage from './PageComonents/ProductPage/ListPage/CalendarListPage';
+import StickerListPage from './PageComonents/ProductPage/ListPage/StickerListPage';
+import ClothesListPage from './PageComonents/ProductPage/ListPage/ClothesPage copy';
+import AccessoriesListPage from './PageComonents/ProductPage/ListPage/AccessoriesListPage';
+import DrinkwareListPage from './PageComonents/ProductPage/ListPage/DrinkwareListPage';
+// 오버뷰 페이지
+import PhotobookOverviewPage from './PageComonents/ProductPage/OverViewPage/PhotobookOverViewPage';
 
 
 const GlobalStyle = createGlobalStyle`
@@ -34,22 +44,93 @@ const GlobalStyle = createGlobalStyle`
 `
 
 export default function App() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showFindAccountModal, setShowFindAccountModal] = useState(false);
+  const [isFindID, setIsFindID] = useState(true);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errCode, setErrCode] = useState('');
+  const [updateStatus, setUpdateStatus] = useState(false);
+
+  // 로그인 모달에서 회원가입 모달 열기
+  function handleOpenRegisterInLogin() {
+    setShowLoginModal(false);
+    setShowRegisterModal(true);
+  };
+
+  // 로그인 모달에서 계정 찾기 모달 열기
+  function handleOpenFindIDinfLogin() {
+    setShowLoginModal(false);
+    setIsFindID(true);
+    setShowFindAccountModal(true);
+  };
+  function handleOpenFindPWinfLogin() {
+    setIsFindID(false);
+    setShowFindAccountModal(true);
+  };
+
+  // 계정 찾기 모달에서 로그인 모달 열기
+  function handleOpenLoginModalInFindAccount() {
+    setShowFindAccountModal(false);
+    setIsFindID(true);
+    setShowLoginModal(true);
+  };
 
   return (
     <>
       <GlobalStyle />
       <BrowserRouter>
+        <UserInfoUpdate 
+          updateStatus={updateStatus}
+          setUpdateStatus={setUpdateStatus}
+          />
+        <Logout
+          showModal={showLogoutModal}
+          setShowModal={setShowLogoutModal}
+        />
+        <Login 
+          showModal={showLoginModal}
+          setShowModal={setShowLoginModal}
+          handleOpenRegister={handleOpenRegisterInLogin}
+          handleOpenFindID={handleOpenFindIDinfLogin}
+          handleOpenFindPW={handleOpenFindPWinfLogin}
+        />
+        <Register
+          showModal={showRegisterModal}
+          setShowModal={setShowRegisterModal}
+        />
+        <FindAccount 
+          showModal={showFindAccountModal}
+          setShowModal={setShowFindAccountModal}
+          isFindID={isFindID}
+          setIsFindID={setIsFindID}
+          handleOpenLoginModal={handleOpenLoginModalInFindAccount}
+        />
+        <ErrorModal 
+          showErrorModal={showErrorModal}
+          setShowErrorModal={setShowErrorModal}
+          errCode={errCode}
+          setErrCode={setErrCode}
+        />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/my" element={<Mypage />} />
-          <Route path="/coupon" element={<Coupon />} />
-          <Route path="/service" element={<Service />} />
-          <Route path="/event" element={<Event />} />
-          <Route path="/event/welcome" element={<EventWelcome />} />
-          <Route path="/productlist/photobook" element={<PhotobookList />} />
-          <Route path="/productlist/photobook/photobook" element={<PhotobookOverviewPage />} />
-          <Route path="/productlist/photobook/photobook/design" element={<PhotobookDesignPage />} />
-          <Route path="/cart" element={<CartIndexPage />} />
+          <Route path="/" element={
+            <IndexPage 
+              setShowLoginModal={setShowLoginModal} 
+              setShowLogoutModal={setShowLogoutModal} 
+              setShowRegisterModal={setShowRegisterModal} 
+              updateStatus={updateStatus}
+            />} 
+          />
+          <Route path='/photobook-list' element={<PhotobookListPage />}/>
+          <Route path='/calendar-list' element={<CalendarListPage />}/>
+          <Route path='/sticker-list' element={<StickerListPage />}/>
+          <Route path='/clothes-list' element={<ClothesListPage />}/>
+          <Route path='/accessories-list' element={<AccessoriesListPage />}/>
+          <Route path='/drinkware-list' element={<DrinkwareListPage />}/>
+
+          <Route path='/photobook-overview' element={<PhotobookOverviewPage setShowLoginModal={setShowLoginModal}/>}/>
+
         </Routes>
       </BrowserRouter>
     </>

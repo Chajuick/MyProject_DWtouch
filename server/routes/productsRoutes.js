@@ -33,6 +33,9 @@ router.post('/list', (req, res) => {
       description_first: result.product_description_first,
       description_second: result.product_description_second,
       link: result.product_link,
+      price: result.product_default_price,
+      option: result.product_option,
+      sale: result.product_sale,
     }));
 
     // 클라이언트에게 응답
@@ -42,7 +45,7 @@ router.post('/list', (req, res) => {
 });
 
 // 옵션 이미지 배열
-router.post('/optimgget', (req, res) => {
+router.post('/opt-img-get', (req, res) => {
   const productId = req.body.productId;
 
   // SQL 쿼리 작성
@@ -82,7 +85,7 @@ router.post('/optinfo', (req, res) => {
     }
 
     // 결과를 배열로 변환
-    const products = results.map(result => ({
+    const product = results.map(result => ({
       product_name: result.product_name,
       main_img: result.product_main_img,
       default_price: result.product_default_price,
@@ -93,7 +96,7 @@ router.post('/optinfo', (req, res) => {
 
     // 클라이언트에게 응답
     res.setHeader('Content-Type', 'application/json');
-    res.json({ products });
+    res.json({ product });
   });
 });
 

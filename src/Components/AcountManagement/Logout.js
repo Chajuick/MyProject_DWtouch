@@ -48,6 +48,8 @@ export default function Logout({ showModal, setShowModal }) {
         if (data.success) {
           console.log('로그아웃 성공');
           sessionStorage.clear();
+          localStorage.removeItem('session_user', data.session.userUid);
+          localStorage.removeItem('session_key', data.session.randomKey);
           setShowModal(false);
           window.location.reload();
         } else {

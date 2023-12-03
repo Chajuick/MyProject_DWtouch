@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import logo from '../../assets/logo/logo.png';
 import * as MS from '../Modal/ModalStyle';
-import FindAccount from '../FindUser/FindAccount';
 
 const Logo = styled.img`
   width: 200px;
@@ -107,15 +105,21 @@ const ERR_MESSAGES = {
   password: '비밀번호를 입력해주세요',
 };
 
-export default function Login({ showModal, setShowModal, showRegisterModal, setShowRegisterModal }) {
+const formatDate = (date) => {
+  const newDate = new Date(date);
+  const year = newDate.getUTCFullYear();
+  const month = (newDate.getUTCMonth() + 1).toString().padStart(2, '0');
+  const day = (newDate.getUTCDate()).toString().padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
+export default function Login({ showModal, setShowModal, handleOpenRegister, handleOpenFindID, handleOpenFindPW }) {
   const [userid, setUserid] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [useridFocus, setUseridFocus] = useState(true);
   const [passwordFocus, setPasswordFocus] = useState(true);
   const [loginError, setLoginError] = useState('');
-  const [showFindModal, setShowFindModal] = useState(false);
-  const [isId, setIsId] = useState(true);
 
   useEffect(() => {
     const savedUserid = localStorage.getItem('rememberedUserid');
@@ -165,12 +169,7 @@ export default function Login({ showModal, setShowModal, showRegisterModal, setS
             sessionStorage.setItem('user_id', data.user.user_id);
             sessionStorage.setItem('user_name', data.user.user_name);
             sessionStorage.setItem('user_gender', data.user.user_gender);
-            const dateObject = new Date(data.user.user_birth_date);
-            const year = dateObject.getUTCFullYear();
-            const month = (dateObject.getUTCMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작
-            const day = (dateObject.getUTCDate()).toString().padStart(2, '0');
-            const formattedDate = `${year}${month}${day}`;
-            sessionStorage.setItem('user_birthdate', formattedDate);
+            sessionStorage.setItem('user_birthdate', formatDate(data.user.user_birth_date));
             sessionStorage.setItem('user_phonenum', data.user.user_phone_num);
             sessionStorage.setItem('user_points', data.user.user_points);
             sessionStorage.setItem('user_grades', data.user.user_grades);
@@ -179,12 +178,10 @@ export default function Login({ showModal, setShowModal, showRegisterModal, setS
             sessionStorage.setItem('user_postcode', data.user.user_postcode);
             localStorage.setItem('session_user', data.session.userUid);
             localStorage.setItem('session_key', data.session.randomKey);
-            console.log(data);
             handleCloseModal();
             window.location.reload();
           } else {
             setLoginError(data.message);
-            console.log('로그인 실패');
           }
         })
         .catch((error) => {
@@ -197,21 +194,6 @@ export default function Login({ showModal, setShowModal, showRegisterModal, setS
   };
 
   const isButtonDisabled = userid.trim() === '' || password.trim() === '';
-
-  function handleRegister() {
-    setShowModal(false);
-    setShowRegisterModal(true);
-  };
-
-  function handleFindModalOpen(num) {
-    setShowModal(false);
-    setShowFindModal(true);
-    if (num === 0) {
-      setIsId(true);
-    } else if (num === 1) {
-      setIsId(false);
-    };
-  };
 
   return (
     <>
@@ -262,19 +244,11 @@ export default function Login({ showModal, setShowModal, showRegisterModal, setS
           <ErrorMessage className='LoginChecker' $show={loginError !== ''}>{loginError}</ErrorMessage>
         </LoginForm>
         <HelpBox>
-          <div onClick={handleRegister}>회원가입</div>
-          <div onClick={() => handleFindModalOpen(0)}>아이디찾기</div>
-          <div onClick={() => handleFindModalOpen(1)}>비밀번호찾기</div>
+          <div onClick={() => handleOpenRegister()}>회원가입</div>
+          <div onClick={() => handleOpenFindID()}>아이디찾기</div>
+          <div onClick={() => handleOpenFindPW()}>비밀번호찾기</div>
         </HelpBox>
       </MS.Modal>
-      <FindAccount
-        showModal={showModal}
-        setShowModal={setShowModal}
-        showFindModal={showFindModal}
-        setShowFindModal={setShowFindModal}
-        isId={isId}
-        setIsId={setIsId}
-      />
     </>
   );
 }
