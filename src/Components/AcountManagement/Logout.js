@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import * as MS from '../Modal/ModalStyle';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ const ButtonWrapper = styled.div`
 
 
 export default function Logout({ showModal, setShowModal }) {
-
+  
   const handleLogoutConfirm = () => {
     // 로그아웃 확인 시 실행되는 함수
     const session = {
@@ -46,12 +47,11 @@ export default function Logout({ showModal, setShowModal }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          console.log('로그아웃 성공');
           sessionStorage.clear();
-          localStorage.removeItem('session_user', data.session.userUid);
-          localStorage.removeItem('session_key', data.session.randomKey);
+          localStorage.removeItem('session_user', data.session_user);
+          localStorage.removeItem('session_key', data.session_key);
           setShowModal(false);
-          window.location.reload();
+          window.location.reload(true);
         } else {
           console.log('로그아웃 실패: ' + data.error);
         }

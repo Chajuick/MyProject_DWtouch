@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 import SaleBadge from '../../../assets/etc/sale.png'
 import * as S from './ListPageStyle';
 
-import HeaderBar from "../../../Components/CommonComponents/HeaderBar";
-import NavBar from "../../../Components/CommonComponents/NavBar";
 import Footer from "../../../Components/CommonComponents/Footer";
 import LoadingPage from "../../LoadingPage";
 
@@ -49,8 +47,6 @@ export default function AccessoriesListPage() {
         <>
           {isAccessoriesLoading &&
             <>
-              <HeaderBar />
-              <NavBar />
               <S.Container>
                   <S.Wrapper>
                       <S.Title>악세서리</S.Title>

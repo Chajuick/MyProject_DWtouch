@@ -6,7 +6,7 @@ import PhoneVerification from '../InputComponents/PhoneVerification';
 import AddressInput from '../InputComponents/AddressInput';
 import ErrorModal from '../Modal/ErrorModal';
 
-export default function Register({ showModal, setShowModal }) {
+export default function Register({ showModal, setShowModal, handleOpenFindAccountModal, showIsPhoneDuplicateModal, setShowIsPhoneDuplicateModal }) {
   const [showIdSelectModal, setShowIdSelectModal] = useState(false); // Id 확정 모달 
   const [showRegisterCompleteModal, setShowRegisterCompleteModal] = useState(false); // 가입확인 모달
   const [showErrorModal, setShowErrorModal] = useState(false); // 에러메시지 on/off
@@ -197,6 +197,23 @@ export default function Register({ showModal, setShowModal }) {
     setShowModal(false);
   }
 
+  function openFindAccountModal() {
+    setId(''); // 아이디 초기화
+    setPassword(''); // 패스워드 초기화
+    setConfirmPassword(''); // 확인 패스워드 초기화
+    setName('');
+    setBirthDate(''); // 생년월일 초기화 (만약 필요하다면)
+    setPhoneNumber(''); // 전화번호 초기화
+    setIsIdConfirmed(false); // 아이디 확정 여부 초기화
+    setIdChecker(false); // 아이디 중복 확인 여부 초기화
+    setPhoneVerifyStatus(false); // 전화번호 인증 상태 초기화
+    setIsPhoneVerificationCompleted(false); // 전화번호 인증 완료 상태 초기화
+    setPostCode('');
+    setAddress('');
+    setDetailAddress('');
+    handleOpenFindAccountModal();
+  }
+
 return (
   <>
     <MS.Overlay $showModal={showModal} />
@@ -310,6 +327,9 @@ return (
             setErrCode={setErrCode}
             phoneNumModify={phoneNumModify}
             setPhoneNumModify={setPhoneNumModify}
+            handleOpenFindAccountModal={() => openFindAccountModal()}
+            showIsPhoneDuplicateModal={showIsPhoneDuplicateModal}
+            setShowIsPhoneDuplicateModal={setShowIsPhoneDuplicateModal}
           />
         </S.InputBox>
         <S.InputBox>

@@ -1,25 +1,25 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import React, { useEffect, useState } from 'react';
 
-// 유저 등급 프로필
-import GradeErr from "../../assets/user/grades/user_grades_err.png";
-import Grade1 from "../../assets/user/grades/user_grades_1.png";
-import Grade2 from "../../assets/user/grades/user_grades_2.png";
-import Grade3 from "../../assets/user/grades/user_grades_3.png";
-import Grade4 from "../../assets/user/grades/user_grades_4.png";
-import Grade5 from "../../assets/user/grades/user_grades_5.png";
+const colorChange = keyframes`
+  0%, 100%{
+    filter: contrast(100%);
+  }
+  50% {
+    filter: contrast(400%);
+  }
+`;
 
-
-const gradesArr = [
-  { name: 'NONE', image: GradeErr, color: '#E3E3E3' },
-  { name: 'NEW', image: Grade1, color: '#88E2FF' },
-  { name: 'FRIEND', image: Grade2, color: '#F0F283' },
-  { name: 'BEST FRIEND', image: Grade3, color: '#FF85EB' },
-  { name: 'FAMILY', image: Grade4, color: '#83F28E' },
-  { name: 'KING', image: Grade5, color: '#F2B283' },
-];
+const imgChange = keyframes`
+  0%, 100%{
+    filter: contrast(100%);
+  }
+  50% {
+    filter: contrast(150%);
+  }
+`;
 
 const Title = styled.h1`
   font-size: 28px;
@@ -69,13 +69,11 @@ const UserInfoBox = styled.div`
   }
 `;
 
-const ProfileImg = styled.div`
+const ProfileImg = styled.img`
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  background-image: url(${props => gradesArr[props.$grade].image}); // 등급 이미지 설정
-  background-size: cover;
-  background-position: center;
+  animation: ${imgChange} 4s infinite alternate;
 `;
 
 const ProfileMes = styled.div`
@@ -98,17 +96,9 @@ const ProfileMes = styled.div`
     padding: 4px 20px;
     margin-top: 10px;
     border-radius: 1rem;
-    color: ${props => gradesArr[props.$grade].color};
-    border: 2px solid ${props => gradesArr[props.$grade].color};
-    animation: colorChange 4s infinite alternate;
-  }
-  @keyframes colorChange {
-    0%, 100%{
-      filter: contrast(100%);
-    }
-    50% {
-      filter: contrast(400%);
-    }
+    color: ${props => props.$color};
+    border: 2px solid ${props => props.$color};
+    animation: ${colorChange} 4s infinite alternate;
   }
 `
 
@@ -234,36 +224,25 @@ const ServiceList = styled.li`
   }
 `
 
-export default function MypageIndex({ screenNum, setScreenNum }) {
-  const [userGrade, setUserGrade] = useState(sessionStorage.getItem('user_grades') || 0);
-
-  useEffect(() => {
-    // userGrade가 0일 때만 세션에서 값을 받아오도록
-    if (userGrade === 0) {
-      const storedUserGrade = sessionStorage.getItem('user_grades');
-      if (storedUserGrade !== null) {
-        setUserGrade(storedUserGrade);
-      }
-    }
-  }, [userGrade]);
-
+export default function MypageIndex({ setScreenNum, gradesInfo, userInfo, couponAmount, daysDifference }) {
+  
   return (
     <>
       <Title>MY 페이지</Title>
       <UserInfo>
         <UserInfoBox>
-          <ProfileImg $grade={userGrade}></ProfileImg>
-          <ProfileMes $grade={userGrade}>
+          <ProfileImg src={gradesInfo[userInfo.user_grades].image} alt="프로필 이미지" />
+          <ProfileMes $grade={userInfo.user_grades} $color={gradesInfo[userInfo.user_grades].color}>
             <h2>
-              {sessionStorage.getItem('user_name') ? (
+              {userInfo.user_name.length > 0 ? (
                 <>
-                  <b>{`${sessionStorage.getItem('user_name')}`}</b>님 안녕하세요
+                  <b>{`${userInfo.user_name}`}</b>님 안녕하세요
                 </>
               ) : (
                 '이름을 확인할 수 없습니다'
               )}
             </h2>
-            <h3>{gradesArr[userGrade].name}</h3>
+            <h3>{gradesInfo[userInfo.user_grades].name}</h3>
           </ProfileMes>
         </UserInfoBox>
         <UserInfoBox>
@@ -273,15 +252,15 @@ export default function MypageIndex({ screenNum, setScreenNum }) {
         <UserInfoBox>
           <UserHaving>
             <li><Icon icon="mingcute:coin-2-line" />사용가능 포인트</li>
-            <li><b>1000</b>포인트</li>
+            <li><b>{(userInfo.user_points).toLocaleString()}</b>포인트</li>
           </UserHaving>
           <UserHaving>
             <li><Icon icon="mingcute:coupon-line" />보유중인 쿠폰</li>
-            <li><b>0</b>장</li>
+            <li><b>{couponAmount}</b>장</li>
           </UserHaving>
           <UserHaving>
-            <li><Icon icon="mdi:heart" />찜리스트</li>
-            <li><b>1</b>건</li>
+            <li><Icon icon="mdi:heart" />친구가 된지</li>
+            <li><b>{daysDifference}</b>일</li>
           </UserHaving>
         </UserInfoBox>
       </UserInfo>
@@ -292,7 +271,7 @@ export default function MypageIndex({ screenNum, setScreenNum }) {
         <OrderList>출고대기<br/><b>0</b>건</OrderList>
         <OrderList>배송중<br/><b>0</b>건</OrderList>
         <OrderList>배송완료<br/><b>0</b>건</OrderList>
-        <OrderList>취소.교환/반품<br/><b>0</b>건</OrderList>
+        <OrderList>취소·교환·반품<br/><b>0</b>건</OrderList>
         </ul>
       </UserOverview>
       <UserServiceOverview>

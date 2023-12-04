@@ -32,7 +32,6 @@ db.connect((err) => {
   }
 });
 
-
 // 라우트 모듈들을 분리하여 가져옵니다.
 const mainBannersRouter = require('./routes/mainBannersRoutes');
 const eventsRouter = require('./routes/eventsRoutes');
@@ -42,6 +41,7 @@ const mypageRouter = require("./routes/mypageRoutes");
 const productsRouter = require("./routes/productsRoutes");
 const shoppingcartRouter = require("./routes/shoppingcartRoutes");
 const couponPointsRouter = require("./routes/couponPointsRoutes");
+const orderRouter = require("./routes/orderRoutes");
 
 // 라우트 모듈들을 사용합니다.
 app.use('/api/mainbanners', mainBannersRouter);
@@ -52,6 +52,7 @@ app.use('/api/mypage', mypageRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/cart', shoppingcartRouter);
 app.use('/api/coupon-point', couponPointsRouter);
+app.use('/api/order', orderRouter);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

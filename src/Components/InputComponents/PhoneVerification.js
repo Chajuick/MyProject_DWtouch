@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import * as MS from "../Modal/ModalStyle";
 
-export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVerifyStatus, setPhoneVerifyStatus, isPhoneVerificationCompleted, setIsPhoneVerificationCompleted, errCode, setErrCode, onError }) {
+export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVerifyStatus, setPhoneVerifyStatus, isPhoneVerificationCompleted, setIsPhoneVerificationCompleted, setErrCode, onError, handleOpenFindAccountModal, showIsPhoneDuplicateModal, setShowIsPhoneDuplicateModal }) {
     const [verifyNum, setVerifyNum] = useState('');
     const [randomKey, setRandomKey] = useState('');
     const [phoneVerifyTimeout, setPhoneVerifyTimeout] = useState(180);
     // 알림 모달
-    const [showIsPhoneDuplicateModal, setShowIsPhoneDuplicateModal] = useState(false);
     const [showPhoneVerifyStartModal, setShowPhoneVerifyStartModal] = useState(false);
     const [showPhoneVerificationCompletedModal, setShowPhoneVerificationCompletedModal] = useState(false);
     const [showInvalidVerificationModal, setShowInvalidVerificationModal] = useState(false);
@@ -192,7 +191,7 @@ export default function PhoneVerification({ phoneNumber, setPhoneNumber, phoneVe
                 <h2 className="showPhoneNumber">{formatPhoneNumber(phoneNumber)}</h2>
                 <p>이 번호로 가입한 적이 있습니다.<br />아이디를 찾으시겠습니까?</p>
                 <div>
-                    <button type='button'>확인</button>
+                    <button type='button' onClick={() => handleOpenFindAccountModal()}>확인</button>
                     <button type='button' onClick={closePhoneDuplicateModal}>취소</button>
                 </div>
             </MS.AlertModal>

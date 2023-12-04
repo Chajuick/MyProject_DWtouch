@@ -55,12 +55,12 @@ const SearchAria = styled.div`
   border-radius: 0 0 8px 8px;
 `;
 
-export default function FindAccount({ showFindModal, setShowFindModal, isFindID, setIsFindID, handleOpenLoginModal }) {
+export default function FindAccount({ showModal, setShowModal, isFindID, setIsFindID, handleOpenLoginModal }) {
   return (
     <>
-      <MS.Overlay $showModal={showFindModal} />
-      <MS.Modal $showModal={showFindModal}>
-        <MS.ModalCloseBtn onClick={() => setShowFindModal(false)}>&times;</MS.ModalCloseBtn>
+      <MS.Overlay $showModal={showModal} />
+      <MS.Modal $showModal={showModal} >
+        <MS.ModalCloseBtn onClick={() => setShowModal(false)}>&times;</MS.ModalCloseBtn>
         <Container>
           <SelectFindValueAria>
             <button className={isFindID? 'sel' : ''} onClick={() => setIsFindID(true)}>아이디 찾기</button>
@@ -72,7 +72,7 @@ export default function FindAccount({ showFindModal, setShowFindModal, isFindID,
           }
           {!isFindID &&
             <FindUserPW 
-              setShowFindModal={setShowFindModal}
+              setShowModal={setShowModal}
               handleOpenLoginModal={handleOpenLoginModal}
             />
           }

@@ -1,7 +1,4 @@
 import { useEffect, useState } from 'react';
-
-import HeaderBar from '../Components/CommonComponents/HeaderBar';
-import NavBar from '../Components/CommonComponents/NavBar';
 import MainBanner from '../Components/MainPageComponents/MainBanner';
 import EventAria from '../Components/MainPageComponents/EventAria';
 import GuideAria from '../Components/MainPageComponents/GuideAria';
@@ -10,7 +7,7 @@ import BestGoodsAria from '../Components/MainPageComponents/BestGoodsAria';
 import Footer from '../Components/CommonComponents/Footer';
 import LoadingPage from './LoadingPage';
 
-export default function IndexPage({ setShowLoginModal, setShowLogoutModal, setShowRegisterModal, updateStatus }) {
+export default function IndexPage( ) {
   
   // 메인 배너
   const [banner, setBanner] = useState([]);
@@ -30,7 +27,14 @@ export default function IndexPage({ setShowLoginModal, setShowLogoutModal, setSh
   };
 
   useEffect(() => {
-    mainBannerLoading();
+    const intervalId = setInterval(() => {
+      if (!isMainBannerLoading) {
+        mainBannerLoading();
+        console.log("ok");
+      }
+    }, 400);
+    // 컴포넌트가 unmount 될 때 clearInterval을 통해 interval을 정리합니다.
+    return () => clearInterval(intervalId);
   }, [isMainBannerLoading]);
 
   // 이벤트
@@ -57,22 +61,19 @@ export default function IndexPage({ setShowLoginModal, setShowLogoutModal, setSh
   }
 
   useEffect(() => {
-    eventsLoading();
+    const intervalId = setInterval(() => {
+      if (!isEventLoading) {
+        eventsLoading();
+      }
+    }, 400);
+    // 컴포넌트가 unmount 될 때 clearInterval을 통해 interval을 정리합니다.
+    return () => clearInterval(intervalId);
   }, [isEventLoading]);
 
   return (
   <>
     {isMainBannerLoading && isEventLoading &&
       <>
-        <HeaderBar 
-          setShowLoginModal={setShowLoginModal}
-          setShowLogoutModal={setShowLogoutModal}
-          setShowRegisterModal={setShowRegisterModal}
-          updateStatus={updateStatus}
-        />
-        <NavBar 
-          setShowLoginModal={setShowLoginModal}
-        />
         <MainBanner 
           banner={banner}
           isMainBannerLoading={isMainBannerLoading}

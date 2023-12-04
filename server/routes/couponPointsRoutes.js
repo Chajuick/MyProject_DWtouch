@@ -13,11 +13,11 @@ const db = mysql.createConnection({
 
 // 포인트 정보 받아오기
 router.post('/point-loading', (req, res) => {
-  const userUid = req.body.userUid;
+  const userUID = req.body.userUid;
   // SQL 쿼리 작성
   const query = 'SELECT * FROM user_info WHERE user_uid = ?';
   // 데이터베이스 쿼리 실행
-  db.query(query, [userUid], (err, results) => {
+  db.query(query, [userUID], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -34,46 +34,36 @@ router.post('/point-loading', (req, res) => {
   });
 });
 
-// 유저 쿠폰 정보 받아오기
-router.post('/user-coupon-loading', async (req, res) => {
-  const userUid = req.body.userUid;
+// 유저 쿠폰 수량 받아오기
+router.post('/user-coupon-amount-loading', async (req, res) => {
+  const userUID = req.body.userUID;
+  // SQL 쿼리 작성
   const query = 'SELECT * FROM user_coupons WHERE user_id = ?';
   try {
-    const results = await new Promise((resolve, reject) => {
-      db.query(query, [userUid], (err, results) => {
-        if (err) {
-          console.error(err);
-          reject({ error: 'Internal Server Error' });
-        }
-        resolve(results);
-      });
-    });
-    if (results.length === 0) {
-      return res.json({ userCouponInfo: [] });
-    }
-    const couponsQuery = 'SELECT * FROM coupons WHERE coupons_uid = ?';
-    const couponsInfo = [];
-    for (let i = 0; i < results.length; i++) {
-      const couponsId = results[i].coupons_id;
-      const couponsResults = await new Promise((resolve, reject) => {
-        db.query(couponsQuery, [couponsId], (couponsErr, couponsResults) => {
-          if (couponsErr) {
-            console.error(couponsErr);
-            reject({ error: 'Internal Server Error' });
-          }
-          resolve(couponsResults);
-        });
-      });
-      if (couponsResults.length > 0) {
-        couponsInfo.push(couponsResults);
-      }
-    }
-    res.json({ userCouponInfo: results, couponsInfo });
+    const results = await queryDatabase(query, [userUID]);
+    const couponAmount = results.length;
+    // 클라이언트에게 응답
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ couponAmount });
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+
+// Promise로 감싸진 쿼리 실행을 위한 함수
+function queryDatabase(query, params) {
+  return new Promise((resolve, reject) => {
+    db.query(query, params, (err, results) => {
+      if (err) {
+        console.error('Query Error:', err);
+        reject(err);
+      }
+      resolve(results);
+    });
+  });
+}
 
 module.exports = router;
 

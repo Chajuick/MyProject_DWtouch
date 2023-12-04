@@ -15,24 +15,7 @@ import SubImgCouple from "../../../assets/products/introImgs/products_introImgs_
 import SubImgTravel from "../../../assets/products/introImgs/products_introImgs_photobook_travel.png";
 import SubImgBaby from "../../../assets/products/introImgs/products_introImgs_photobook_baby.png";
 
-const currentDate = new Date();
-const nextDate = new Date(currentDate);
-nextDate.setDate(currentDate.getDate() + 3);
 
-// 만약 계산된 날짜가 주말이라면 다음 주 월요일의 날짜로 조정
-const dayOfWeek = nextDate.getDay();
-if (dayOfWeek === 0) {
-    nextDate.setDate(nextDate.getDate() + 1);
-}
-if (dayOfWeek === 6) {
-  nextDate.setDate(nextDate.getDate() + 2);
-} 
-
-const year = nextDate.getFullYear();
-const month = nextDate.getMonth() + 1;
-const date = nextDate.getDate();
-const dayArr = ["일", "월", "화", "수", "목", "금", "토"];
-const day = dayArr[nextDate.getDay()];
 
 const options = [
   ["사이즈 ( cm )", "27x27", "21.6x21.6", "16.2x16.2"],

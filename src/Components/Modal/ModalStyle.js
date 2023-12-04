@@ -115,7 +115,6 @@ export const AlertModal = styled.div`
   align-items: center;
   h2.showPhoneNumber {
     font-size: 18px;
-    margin-bottom: 15px;
     border: none;
     color: rgb(250, 50, 50);
   }
@@ -123,6 +122,7 @@ export const AlertModal = styled.div`
     text-align: center;
     font-size: 15px;
     line-height: 1.3;
+    margin-top: 20px;
     margin-bottom: 20px;
   }
   div > button{

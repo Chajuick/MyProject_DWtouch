@@ -5,8 +5,8 @@ import styled from "styled-components";
 
 import ProfilePasswordCheck from "./ProfilePasswordCheck";
 import ErrorModal from "../Modal/ErrorModal";
-import PhoneVerification from "../AcountManagement/PhoneVerification";
-import AddressInput from "../AcountManagement/AddressInput";
+import PhoneVerification from "../InputComponents/PhoneVerification";
+import AddressInput from "../InputComponents/AddressInput";
 
 
 const Title = styled.h1`

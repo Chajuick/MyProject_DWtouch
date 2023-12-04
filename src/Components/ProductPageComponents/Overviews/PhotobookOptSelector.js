@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import ErrorDiv from "../../ErrorDiv";
-import * as S from '../OverviewPage/ProductOptSelectorStyle';
+import * as S from '../../ProductPageComponents/Overview/ProductOptSelectorStyle';
 import ErrorModal from "../../Modal/ErrorModal";
 import { useNavigate } from 'react-router-dom';
 import Login from "../../AcountManagement/Login";
@@ -10,7 +10,7 @@ function filteredChildOptions(options, delChild) {
     return filteredOptions;
 }
 
-export default function PhotobookOptSelector({ productId, options, optFamily, userGrade, detailGuides, changeOptSelectorY, setOptPrice }) {
+export default function PhotobookOptSelector({ productId, options, optFamily, userGrade, detailGuides, changeOptSelectorY, setOptPrice, defaultPrice, setDefaultPrice, delPrice, setDelPrice, setFinalPrice, finalPrice }) {
     const [mainImg, setMainImg] = useState('');
     const [productImgs, setProductImgs] = useState([]);
     const [productsInfo, setProductsInfo] = useState([]);
@@ -18,11 +18,10 @@ export default function PhotobookOptSelector({ productId, options, optFamily, us
     const [isProductsImgsLoading, setIsProductsImgsLoading] = useState(false);
     const [selectedOptionIndexes, setSelectedOptionIndexes] = useState([0, 0, 0, 0, 0]);
     const [imgCounter, setImgCounter] = useState(0);
-    const [defaultPrice, setDefaultPrice] = useState(0);
+    
     const [productQuantity, setProductQuantity] = useState(1);
     const navigate = useNavigate();
-    const [delPrice, setDelPrice] = useState(0);
-    const [finalPrice, setFinalPrice] = useState(0);
+
     const [saleInfo, setSaleInfo] = useState(0);
     const [showLoginModal, setShowLoginModal] = useState(false);
 

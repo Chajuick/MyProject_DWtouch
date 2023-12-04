@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as MS from '../Modal/ModalStyle';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const ModalContent = styled.div`
   display: flex;
@@ -36,7 +37,7 @@ const checkSessionKey = (item) => {
 
 export default function UserInfoUpdate({ updateStatus, setUpdateStatus }) {
   const [showAlertModal, setShowAlertModal] = useState(false);
-  
+  const navigate = useNavigate();
 
   function updateLogin() {
     const session = {
@@ -69,6 +70,7 @@ export default function UserInfoUpdate({ updateStatus, setUpdateStatus }) {
           sessionStorage.setItem('user_address', data.user.user_address);
           sessionStorage.setItem('user_detail_address', data.user.user_detailaddress);
           sessionStorage.setItem('user_postcode', data.user.user_postcode);
+          sessionStorage.setItem('user_join_date', data.user.createdAt);
           setUpdateStatus(true);
         } else {
           // 유저 정보 갱신에 실패한 경우
@@ -91,6 +93,7 @@ export default function UserInfoUpdate({ updateStatus, setUpdateStatus }) {
   },[updateStatus]);
 
   function handleModalCloseBtn() {
+    navigate('/');
     setShowAlertModal(false);
     window.location.reload(true);
   };

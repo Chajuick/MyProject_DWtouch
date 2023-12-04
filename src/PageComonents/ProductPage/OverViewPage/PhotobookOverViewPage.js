@@ -12,6 +12,25 @@ const Container = styled.div`
   background-color: rgb(250, 250, 250);
 `
 
+const currentDate = new Date();
+const nextDate = new Date(currentDate);
+nextDate.setDate(currentDate.getDate() + 3);
+
+// 만약 계산된 날짜가 주말이라면 다음 주 월요일의 날짜로 조정
+const dayOfWeek = nextDate.getDay();
+if (dayOfWeek === 0) {
+    nextDate.setDate(nextDate.getDate() + 1);
+}
+if (dayOfWeek === 6) {
+  nextDate.setDate(nextDate.getDate() + 2);
+} 
+
+const year = nextDate.getFullYear();
+const month = nextDate.getMonth() + 1;
+const date = nextDate.getDate();
+const dayArr = ["일", "월", "화", "수", "목", "금", "토"];
+const day = dayArr[nextDate.getDay()];
+
 const options = [
     ["사이즈 ( cm )", "27x27", "21.6x21.6", "16.2x16.2"],
     ["커버", "하드커버", "레더커버"],
@@ -42,7 +61,12 @@ export default function PhotobookOverviewPage({ setShowLoginModal }) {
     const [isProductsImgsLoading, setIsProductsImgsLoading] = useState(false);
     const [productImgs, setProductImgs] = useState([]);
     const [productInfo, setProductInfo] = useState([]);
+    const [defaultPrice, setDefaultPrice] = useState(0);
+    const [delPrice, setDelPrice] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(0);
+
     const [mainImg, setMainImg] = useState('');
+
     const detailGuides = [
         ["페이지", "21페이지 ~ 최대 101페이지까지 추가 가능", "rgb(150, 150, 150)"],
         ["페이지 추가 가격", `1장당 ${productInfo.toLocaleString()}원`, "rgba(250, 50, 50, 0.7)"],
@@ -108,9 +132,6 @@ export default function PhotobookOverviewPage({ setShowLoginModal }) {
         ProductOptImgLoading();
     }, [isProductsImgsLoading]);
 
-    console.log(productImgs);
-    console.log(productInfo);
-
     return (
         <>
         {isProductsInfoLoading && isProductsImgsLoading &&
@@ -118,15 +139,15 @@ export default function PhotobookOverviewPage({ setShowLoginModal }) {
                 <HeaderBar/>
                 <NavBar />
                 <Container>
-                <PhotobookOptSelector
-                        productImgs={productImgs}
-                        productInfo={productInfo}
-                        mainImg={mainImg}
-                        setMainImg={setMainImg}
-                        setShowLoginModal={setShowLoginModal}
-                        options={options}
-                        optFamily={optFamily}
-                    />
+                {/*<PhotobookOptSelector
+                    productImgs={productImgs}
+                    productInfo={productInfo}
+                    mainImg={mainImg}
+                    setMainImg={setMainImg}
+                    setShowLoginModal={setShowLoginModal}
+                    options={options}
+                    optFamily={optFamily}
+                />*/}
                 </Container>
                 <Footer />
             </>

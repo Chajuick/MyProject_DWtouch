@@ -10,18 +10,25 @@ import UserInfoUpdate from './Components/AcountManagement/UserInfoUpdate';
 import FindAccount from './Components/AcountManagement/FindUserInfo/FindAccount';
 
 import ErrorModal from './Components/Modal/ErrorModal';
+import HeaderBar from './Components/CommonComponents/HeaderBar';
+import NavBar from './Components/CommonComponents/NavBar';
 
 // 라우트 경로
 import IndexPage from './PageComonents/IndexPage';
-// 리스트 페이지
+import Mypage from './PageComonents/Mypage';
+
+
+// 물품-리스트 페이지
 import PhotobookListPage from './PageComonents/ProductPage/ListPage/PhotobookListPage';
 import CalendarListPage from './PageComonents/ProductPage/ListPage/CalendarListPage';
 import StickerListPage from './PageComonents/ProductPage/ListPage/StickerListPage';
 import ClothesListPage from './PageComonents/ProductPage/ListPage/ClothesPage copy';
 import AccessoriesListPage from './PageComonents/ProductPage/ListPage/AccessoriesListPage';
 import DrinkwareListPage from './PageComonents/ProductPage/ListPage/DrinkwareListPage';
-// 오버뷰 페이지
+// 물품-오버뷰 페이지
 import PhotobookOverviewPage from './PageComonents/ProductPage/OverViewPage/PhotobookOverViewPage';
+
+
 
 
 const GlobalStyle = createGlobalStyle`
@@ -52,6 +59,7 @@ export default function App() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errCode, setErrCode] = useState('');
   const [updateStatus, setUpdateStatus] = useState(false);
+  const [showIsPhoneDuplicateModal, setShowIsPhoneDuplicateModal] = useState(false);
 
   // 로그인 모달에서 회원가입 모달 열기
   function handleOpenRegisterInLogin() {
@@ -66,6 +74,7 @@ export default function App() {
     setShowFindAccountModal(true);
   };
   function handleOpenFindPWinfLogin() {
+    setShowLoginModal(false);
     setIsFindID(false);
     setShowFindAccountModal(true);
   };
@@ -77,6 +86,18 @@ export default function App() {
     setShowLoginModal(true);
   };
 
+  // 회원가입 모달에서 계정 찾기 모달 열기
+  function handleOpenFindAccountModalInRegister() {
+    setShowFindAccountModal(true);
+    setIsFindID(true);
+    setShowRegisterModal(false);
+    setShowIsPhoneDuplicateModal(false);
+  }
+
+  function locationReload() {
+    window.location.reload(true);
+  }
+
   return (
     <>
       <GlobalStyle />
@@ -84,7 +105,7 @@ export default function App() {
         <UserInfoUpdate 
           updateStatus={updateStatus}
           setUpdateStatus={setUpdateStatus}
-          />
+        />
         <Logout
           showModal={showLogoutModal}
           setShowModal={setShowLogoutModal}
@@ -99,6 +120,9 @@ export default function App() {
         <Register
           showModal={showRegisterModal}
           setShowModal={setShowRegisterModal}
+          handleOpenFindAccountModal={() => handleOpenFindAccountModalInRegister()}
+          showIsPhoneDuplicateModal={showIsPhoneDuplicateModal}
+          setShowIsPhoneDuplicateModal={setShowIsPhoneDuplicateModal}
         />
         <FindAccount 
           showModal={showFindAccountModal}
@@ -113,6 +137,15 @@ export default function App() {
           errCode={errCode}
           setErrCode={setErrCode}
         />
+        <HeaderBar 
+          setShowLoginModal={setShowLoginModal}
+          setShowLogoutModal={setShowLogoutModal}
+          setShowRegisterModal={setShowRegisterModal}
+          updateStatus={updateStatus}
+        />
+        <NavBar 
+          setShowLoginModal={setShowLoginModal}
+        />
         <Routes>
           <Route path="/" element={
             <IndexPage 
@@ -122,6 +155,7 @@ export default function App() {
               updateStatus={updateStatus}
             />} 
           />
+          <Route path="/my" element={<Mypage locationReload={locationReload}/>} />
           <Route path='/photobook-list' element={<PhotobookListPage />}/>
           <Route path='/calendar-list' element={<CalendarListPage />}/>
           <Route path='/sticker-list' element={<StickerListPage />}/>

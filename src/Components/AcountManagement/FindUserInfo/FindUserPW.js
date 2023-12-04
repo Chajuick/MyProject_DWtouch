@@ -98,7 +98,7 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-export default function FindUserPW({ setShowFindModal, handleOpenLoginModal }) {
+export default function FindUserPW({ setShowFindAccountModal, handleOpenLoginModal }) {
   const [phoneNum, setPhoneNum] = useState('');
   const [userId, setUserId] = useState('');
   const [userName, setUserName] = useState('');
@@ -229,7 +229,7 @@ export default function FindUserPW({ setShowFindModal, handleOpenLoginModal }) {
       <Container>
         <Mes>새로운 비밀번호가 <b>{phoneNum}</b>(으)로 발송되었습니다.<br/>로그인 하시겠습니까?</Mes>
         <ButtonWrapper>
-          <button onClick={() => setShowFindModal(false)}>닫기</button>
+          <button onClick={() => setShowFindAccountModal(false)}>닫기</button>
           <button onClick={handleOpenLoginModal}>로그인</button>
         </ButtonWrapper>
       </Container>

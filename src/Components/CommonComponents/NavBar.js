@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import Login from '../AcountManagement/Login';
-import Register from '../AcountManagement/Register';
 
 const Container = styled.div`
   width: 100vw;
