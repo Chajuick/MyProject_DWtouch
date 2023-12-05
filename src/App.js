@@ -1,7 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 // 계정 관련 컴퍼넌트
 import Login from './Components/AcountManagement/Login';
@@ -23,7 +22,7 @@ import CartPage from './PageComonents/CartPage';
 import PhotobookListPage from './PageComonents/ProductPage/ListPage/PhotobookListPage';
 import CalendarListPage from './PageComonents/ProductPage/ListPage/CalendarListPage';
 import StickerListPage from './PageComonents/ProductPage/ListPage/StickerListPage';
-import ClothesListPage from './PageComonents/ProductPage/ListPage/ClothesPage copy';
+import ClothesListPage from './PageComonents/ProductPage/ListPage/ClothesListPage';
 import AccessoriesListPage from './PageComonents/ProductPage/ListPage/AccessoriesListPage';
 import DrinkwareListPage from './PageComonents/ProductPage/ListPage/DrinkwareListPage';
 // 물품-오버뷰 페이지

@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 import CartPurchaseInfo from "./CartPurchaseInfo";
 import CartPurchaseList from "./CartPurchaseList";
+import CartPurchaseSection from "./CartPurchaseSection";
+
+const BelowContainer = styled.div`
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+`;
 
 export default function CartPurchasePage({ checkCartInfo }) {
   const [purchaseInfo, setpurchaseInfo] = useState(0);
@@ -59,16 +70,21 @@ export default function CartPurchasePage({ checkCartInfo }) {
     loadUserCouponInfo();
   },[isCouponLoading]);
 
+  console.log(userCouponInfo);
+
   return (
     <>
       <CartPurchaseList 
         checkCartInfo={checkCartInfo}
       />
-      <CartPurchaseInfo
-        purchaseInfo={purchaseInfo}
-        totalSaleAmount={totalSaleAmount}
-        totalPurchasePrice={totalPurchasePrice}
-      />
+      <BelowContainer>
+        <CartPurchaseInfo
+          purchaseInfo={purchaseInfo}
+          totalSaleAmount={totalSaleAmount}
+          totalPurchasePrice={totalPurchasePrice}
+        />
+        <CartPurchaseSection />
+      </BelowContainer>
     </>
   )
 };

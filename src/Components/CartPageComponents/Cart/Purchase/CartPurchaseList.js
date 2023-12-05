@@ -132,7 +132,6 @@ const ProductSaleInfo = styled.div`
 
 export default function CartPurchasList({ checkCartInfo }) {
 
-  console.log(checkCartInfo);
   return (
     <>
       <Container>

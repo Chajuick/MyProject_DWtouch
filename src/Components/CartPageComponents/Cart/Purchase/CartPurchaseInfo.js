@@ -10,7 +10,8 @@ import KaKaoPay from '../../../../assets/payment/kakao_pay.png';
 import Toss from '../../../../assets/payment/toss.png';
 
 const Container = styled.div`
-  width: calc(68%);
+  width: calc(66%);
+  color: rgb(40, 40, 40);
 `;
 
 const Header = styled.div`
