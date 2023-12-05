@@ -3,26 +3,6 @@ import * as MS from '../Modal/ModalStyle';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-const ModalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 150px;
-  button {
-    margin-top: 30px;
-    padding: 10px 30px;
-    background-color: rgb(40, 40, 40);
-    color: rgb(250, 250, 250);
-    border: 1px solid rgb(40, 40, 40);
-    transition: all 400ms;
-  }
-  button:hover {
-    cursor: pointer;
-    background-color: rgb(250, 250, 250);
-    color: rgb(40, 40 ,40);
-  }
-`;
-
 const formatDate = (date) => {
   const newDate = new Date(date);
   const year = newDate.getUTCFullYear();
@@ -102,10 +82,10 @@ export default function UserInfoUpdate({ updateStatus, setUpdateStatus }) {
     <>
       <MS.Overlay $showModal={showAlertModal}/>
       <MS.Modal $showModal={showAlertModal}>
-        <ModalContent>
+        <MS.ModalContent>
           <p>잘못된 접근입니다!</p>
           <button onClick={handleModalCloseBtn}>확인</button>
-        </ModalContent>
+        </MS.ModalContent>
       </MS.Modal>
     </>
   )

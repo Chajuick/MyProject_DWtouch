@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // 계정 관련 컴퍼넌트
 import Login from './Components/AcountManagement/Login';
@@ -16,7 +17,7 @@ import NavBar from './Components/CommonComponents/NavBar';
 // 라우트 경로
 import IndexPage from './PageComonents/IndexPage';
 import Mypage from './PageComonents/Mypage';
-
+import CartPage from './PageComonents/CartPage';
 
 // 물품-리스트 페이지
 import PhotobookListPage from './PageComonents/ProductPage/ListPage/PhotobookListPage';
@@ -28,6 +29,8 @@ import DrinkwareListPage from './PageComonents/ProductPage/ListPage/DrinkwareLis
 // 물품-오버뷰 페이지
 import PhotobookOverviewPage from './PageComonents/ProductPage/OverViewPage/PhotobookOverViewPage';
 
+// 물품 다지안 페이지
+import PhotobookDesignPage from './PageComonents/ProductPage/DesignPage/PhotobookDesignPage';
 
 
 
@@ -164,6 +167,10 @@ export default function App() {
           <Route path='/drinkware-list' element={<DrinkwareListPage />}/>
 
           <Route path='/photobook-overview' element={<PhotobookOverviewPage setShowLoginModal={setShowLoginModal}/>}/>
+
+          <Route path='/photobook-design' element={<PhotobookDesignPage />}/>
+          
+          <Route path='/cart' element={<CartPage />}/>
 
         </Routes>
       </BrowserRouter>

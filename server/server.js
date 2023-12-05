@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const path = require('path');
 
 // 환경 변수를 로드합니다.
 require('dotenv').config();
@@ -31,6 +32,9 @@ db.connect((err) => {
     console.log('MySQL 데이터베이스에 연결되었습니다.');
   }
 });
+
+// 이미지가 저장된 폴더를 정적 파일로 제공
+app.use('/imgs', express.static(path.join(__dirname, 'imgs')));
 
 // 라우트 모듈들을 분리하여 가져옵니다.
 const mainBannersRouter = require('./routes/mainBannersRoutes');

@@ -29,7 +29,7 @@ router.post('/list', (req, res) => {
     // 결과를 배열로 변환
     const products = results.map(result => ({
       product_name: result.product_name,
-      main_image: result.product_main_img,
+      main_img: `http://localhost:3001/imgs/${result.product_main_img}`,
       description_first: result.product_description_first,
       description_second: result.product_description_second,
       link: result.product_link,
@@ -61,9 +61,8 @@ router.post('/opt-img-get', (req, res) => {
     // 결과를 배열로 변환
     const optImgs = results.map(result => ({
       opt_value: result.opt_value,
-      img: result.img_url
+      img: `http://localhost:3001/imgs/${result.img_url}`,
     }));
-
     // 클라이언트에게 응답
     res.setHeader('Content-Type', 'application/json');
     res.json({ optImgs });
@@ -87,7 +86,7 @@ router.post('/optinfo', (req, res) => {
     // 결과를 배열로 변환
     const product = results.map(result => ({
       product_name: result.product_name,
-      main_img: result.product_main_img,
+      main_img: `http://localhost:3001/imgs/${result.product_main_img}`,
       default_price: result.product_default_price,
       opt_price: result.product_opt_price,
       link: result.product_link,

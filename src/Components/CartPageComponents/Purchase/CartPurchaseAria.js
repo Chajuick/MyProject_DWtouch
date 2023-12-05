@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import PurchaseAria from "./PurchaseAria";
-import PurchaseInfo from "./PurchaseInfo";
+import PurchaseInfo from "../Cart/Purchase/CartPurchaseInfo";
 import { useEffect, useState } from "react";
 
 const Container = styled.div`

@@ -62,7 +62,7 @@ export default function ClothesListPage() {
                                 }
                                 </S.AdditionalInfo>
                                 <S.Figure>
-                                    <img src={item.main_image} alt={item.product_name} />
+                                 <img src={item.main_img} alt={item.product_name} />
                                 </S.Figure>
                                 <S.ColorViewr>
                                 {item.option.map((item, index) => (

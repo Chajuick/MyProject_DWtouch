@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation  } from 'react-router-dom';
 import logo from '../../assets/logo/logo.png'
 
 const Container = styled.div`
   background-color: rgb(250, 250, 250);
   color: rgb(25, 25, 25);
   width: 100vw;
+  display: ${(props) => (props.$hideContainer ? 'none' : 'block')};
 `;
 
 const Bar = styled.div`
@@ -77,13 +78,16 @@ const Uibox = styled.ul`
 
 export default function HeaderBar({ setShowLoginModal, setShowLogoutModal, setShowRegisterModal, updateStatus }) {
   const [isLogin, setIsLogin] = useState(sessionStorage.getItem('isLoggedIn') === 'true');
+  const location = useLocation();
 
   useEffect(() => {
     setIsLogin((sessionStorage.getItem('isLoggedIn') === 'true'));
   }, [updateStatus]);
 
+  const hideContainer = location.pathname === '/photobook-design' || location.pathname === '/fanbook-design';
+
   return <>
-    <Container>
+    <Container $hideContainer={hideContainer}>
       <Bar>
         <Logobox>
           <Link to="/"><img src={logo} alt='logo' /></Link>

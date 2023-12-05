@@ -59,15 +59,12 @@ export default function ProductDesignMainScreen({ productGrid, productSrc, mainS
         newTextField[index] = value;
         setTextField(newTextField);
     };
-
     const handleMouseDown = (event, index) => {
 
     };
-
     const handleMouseMove = (event) => {
 
     };
-
     const handleMouseUp = () => {
 
     };
@@ -81,11 +78,9 @@ export default function ProductDesignMainScreen({ productGrid, productSrc, mainS
                 setActiveText('');
             }
         };
-
         document.addEventListener("click", handleClickOutside);
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
-
         return () => {
             document.removeEventListener("click", handleClickOutside);
             document.removeEventListener("mousemove", handleMouseMove);

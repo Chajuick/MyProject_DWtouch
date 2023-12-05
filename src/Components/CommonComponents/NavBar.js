@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 
 const Container = styled.div`
   width: 100vw;
+  display: ${(props) => (props.$hideContainer ? 'none' : 'block')};
 `
 
 const MainContainer = styled.div`
@@ -120,6 +121,7 @@ const AddtoCartBtn = styled.button`
 `;
 
 export default function NavBar({ setShowLoginModal }) {
+  const location = useLocation();
   const navigate = useNavigate();
   const [isSubContainerVisible, setSubContainerVisible] = useState(false);
   const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
@@ -140,9 +142,11 @@ export default function NavBar({ setShowLoginModal }) {
     } 
   };
 
+  const hideContainer = location.pathname === '/photobook-design' || location.pathname === '/fanbook-design';
+
   return (
     <>
-    <Container onMouseLeave={handleMouseLeave}>
+    <Container onMouseLeave={handleMouseLeave} $hideContainer={hideContainer}>
       <MainContainer>
         <MainBar>
           <ul>

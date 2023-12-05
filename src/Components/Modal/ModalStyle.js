@@ -151,3 +151,23 @@ export const AlertOverlay = styled.div`
   z-index: 2000;
   display: ${({ $showAlertModal }) => ($showAlertModal ? 'block' : 'none')};
 `
+
+export const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+  button {
+    margin-top: 30px;
+    padding: 10px 30px;
+    background-color: rgb(40, 40, 40);
+    color: rgb(250, 250, 250);
+    border: 1px solid rgb(40, 40, 40);
+    transition: all 400ms;
+  }
+  button:hover {
+    cursor: pointer;
+    background-color: rgb(250, 250, 250);
+    color: rgb(40, 40 ,40);
+  }
+`;
