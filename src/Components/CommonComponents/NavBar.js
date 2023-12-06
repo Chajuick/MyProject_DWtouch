@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 
 const Container = styled.div`
@@ -97,27 +97,36 @@ const AddtoCartBtn = styled.button`
   color: rgb(80, 80, 80);
   svg {
     border-radius: 50%;
-    padding: 3px;
+    padding: 5px;
     color: rgb(250, 250, 250);
     background-color: rgb(80, 80, 80);
     transition: all 400ms;
-    font-size: 25px;
+    font-size: 30px;
     margin-right: 5px;
+    border: 1px solid rgb(80, 80, 80);
   }
   &:hover {
     cursor: pointer;
-    svg {
-      color: rgb(80, 80, 80);
-      background-color: rgb(250, 250, 250);
-    }
-    span {
-      color: rgb(120, 120, 120);
-    }
+    filter: contrast(120%);
   }
   span {
     transition: all 400ms;
-    font-size: 13px;
+    font-size: 15px;
   }
+`;
+
+const CartNumber = styled.p `
+  margin-left: 5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgb(232, 98, 90);
+  border: 1px solid rgb(232, 98, 90);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(250, 250, 250);
+  transition: all 400ms;
 `;
 
 export default function NavBar({ setShowLoginModal }) {
@@ -125,6 +134,52 @@ export default function NavBar({ setShowLoginModal }) {
   const navigate = useNavigate();
   const [isSubContainerVisible, setSubContainerVisible] = useState(false);
   const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+
+  // 카트 정보 받아오기
+  const [cartLength, setCartLength] = useState(0);
+  const [isCartLengthLoading, setIsCartLengthLoading] = useState(false);
+
+  function cartLengthLoader() {   
+    const userUid = sessionStorage.getItem('user_uid') || 0;
+    if (userUid !== 0) {
+      fetch(`http://localhost:3001/api/cart/infoLoading`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userUid}),
+      })
+      .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+      })
+      .then(data => {
+        // 서버에서 받아온 데이터 처리
+        setCartLength(data.cartInfo.length);
+        setIsCartLengthLoading(true);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsCartLengthLoading(false);
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!isCartLengthLoading) {
+      cartLengthLoader();
+    }
+    // 5초마다 fetchData 실행
+    const intervalId = setInterval(() => {
+      if (!isCartLengthLoading) {
+        cartLengthLoader();
+      }
+    }, 1000);
+    // 컴포넌트가 언마운트되면 interval 정리
+    return () => clearInterval(intervalId);
+  }, [isCartLengthLoading]);
 
   const handleMouseEnter = () => {
     setSubContainerVisible(true);
@@ -158,7 +213,9 @@ export default function NavBar({ setShowLoginModal }) {
             <li><Link to="/drinkware-list" onMouseEnter={handleMouseEnter}>음료용기</Link></li>
           </ul>
           <AddtoCartBtn onClick={handleNavigateCart}>
-            <Icon icon="subway:bag" /><span>장바구니</span>
+            <Icon icon="subway:bag" />
+            <span>장바구니</span>
+              <CartNumber>{cartLength? cartLength : 0}</CartNumber>
           </AddtoCartBtn>
         </MainBar>
       </MainContainer>

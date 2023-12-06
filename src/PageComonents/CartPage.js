@@ -96,7 +96,7 @@ export default function CartPage() {
     cartInfoLoader();
     setSelectedInfo(Array(cartInfo.length).fill(1));
   }, [isCartInfoLoading]);
-
+  // 카트 정보 삭제
   const handleDelCartInfo = () => {
     const selectedIndexes = selectedInfo
       .map((item, index) => (item === 1 ? index : -1))

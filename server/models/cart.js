@@ -51,6 +51,10 @@ const Cart = sequelize.define('Cart', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  cart_sale_detail: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

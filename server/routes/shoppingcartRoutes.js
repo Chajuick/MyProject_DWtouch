@@ -23,6 +23,7 @@ router.post('/addToCart', (req, res) => {
   const cartFinalPrice = cartData.final_price;
   const cartQuantity = cartData.product_quantity;
   const cartSaleInfo = cartData.sale_info;
+  const cartSaleDetail = cartData.sale_detail;
   const cartDefaultPrice = cartData.default_price;
   let cartThumbnail = "";
   if (cartData.option[1] === 0) {
@@ -56,6 +57,7 @@ router.post('/addToCart', (req, res) => {
     cart_final_price: cartFinalPrice,
     product_quantity: cartQuantity,
     cart_sale_info: cartSaleInfo,
+    cart_sale_detail: cartSaleDetail,
     cart_default_price: cartDefaultPrice,
   });
 
@@ -100,6 +102,7 @@ router.post('/infoLoading', (req, res) => {
       cart_price: result.cart_price,
       cart_final_price: result.cart_final_price,
       cart_sale_info: result.cart_sale_info,
+      cart_sale_detail: result.cart_sale_detail,
       cart_create_date: result.createdAt,
     }));
 

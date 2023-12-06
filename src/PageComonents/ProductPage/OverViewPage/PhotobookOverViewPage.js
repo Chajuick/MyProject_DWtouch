@@ -49,6 +49,7 @@ export default function PhotobookOverviewPage({ setShowLoginModal }) {
     const [defaultPrice, setDefaultPrice] = useState(0);
     const [optPrice, setOptPrice] = useState(0);
     const [saleInfo, setSaleInfo] = useState(0);
+    const [saleDetail, setSaleDetail] = useState("");
     const detailGuides = [
         ["페이지", "21페이지 ~ 최대 101페이지까지 추가 가능", "rgb(150, 150, 150)"],
         ["페이지 추가 가격", `1장당 ${optPrice.toLocaleString()}원`, "rgba(250, 50, 50, 0.7)"],
@@ -76,6 +77,7 @@ export default function PhotobookOverviewPage({ setShowLoginModal }) {
             setDefaultPrice(data.product[0].default_price);
             setOptPrice(data.product[0].opt_price);
             setSaleInfo(data.product[0].sale);
+            setSaleDetail(data.product[0].sale_detail);
             setIsProductInfoLoading(true);
         })
         .catch(error => {
@@ -190,6 +192,8 @@ export default function PhotobookOverviewPage({ setShowLoginModal }) {
                     defaultPrice={defaultPrice}
                     saleInfo={saleInfo}
                     setSaleInfo={setSaleInfo}
+                    saleDetail={saleDetail}
+                    setSaleDetail={setSaleDetail}
                     productInfo={productInfo}
                     detailGuides={detailGuides}
                     mainImg={mainImg}

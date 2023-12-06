@@ -91,6 +91,7 @@ router.post('/optinfo', (req, res) => {
       opt_price: result.product_opt_price,
       link: result.product_link,
       sale: result.product_sale,
+      sale_detail: result.product_sale_detail,
     }));
 
     // 클라이언트에게 응답

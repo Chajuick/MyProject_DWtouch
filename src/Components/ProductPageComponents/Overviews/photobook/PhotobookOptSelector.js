@@ -9,10 +9,22 @@ function filteredChildOptions(options, delChild) {
     return filteredOptions;
 }
 
+function gradeSaleInfoConvert(grade) {
+    if (parseInt(grade) === 2) {
+        return "[FRIEND] 등급 기본 할인 10%"
+    } else if (parseInt(grade) === 3) {
+        return "[BEST FRIEND] 등급 기본 할인 15%"
+    } else if (parseInt(grade) === 4) {
+        return "[FAMILY] 등급 기본 할인 20%"
+    } else if (parseInt(grade) === 5) {
+        return "[KING] 등급 기본 할인 25%"
+    }
+}
+
 export default function PhotobookOptSelector({ 
     options, optFamily, detailGuides, setShowLoginModal, userGrade,
     productImgs, mainImg, setMainImg,
-    productInfo, defaultPrice, saleInfo, setSaleInfo,
+    productInfo, defaultPrice, saleInfo, setSaleInfo, saleDetail, setSaleDetail,
     changeOptSelectorY
 }) {
     const navigate = useNavigate();
@@ -27,7 +39,13 @@ export default function PhotobookOptSelector({
 
     useEffect(() => {
         if (userGrade >= 2 && userGrade <= 5 && productInfo) {
-            setSaleInfo(productInfo.sale > ((userGrade-2)*5 + 10) ? productInfo.sale : (userGrade-2)*5 + 10 );
+            
+            if (productInfo.sale > ((userGrade-2)*5 + 10)) {
+                setSaleInfo(productInfo.sale);
+            } else {
+                setSaleInfo((userGrade-2)*5 + 10 );
+                setSaleDetail(gradeSaleInfoConvert(userGrade));
+            }
         } else if (productInfo) {
             setSaleInfo(productInfo.sale);
         }
@@ -89,6 +107,7 @@ export default function PhotobookOptSelector({
         sessionStorage.setItem('del_price', delPrice/productQuantity);
         sessionStorage.setItem('final_price', finalPrice/productQuantity);
         sessionStorage.setItem('sale_info', saleInfo);
+        sessionStorage.setItem('sale_detail', saleDetail);
         sessionStorage.setItem('product_quantity', productQuantity);
         navigate('/photobook-design');
     };

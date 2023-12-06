@@ -21,6 +21,7 @@ export default function ProductDesignHeaderBar({ cartName, setCartName, productN
     const [showTooltipSettingChangeBtn, setShowTooltipSettingChangeBtn] = useState(false);
     // 가격 정보
     const saleInfo = sessionStorage.getItem('sale_info') || 0;
+    const saleDetail = sessionStorage.getItem('sale_detail') || "";
     const defaultPrice = sessionStorage.getItem('default_price') || 0;
     const [delPrice, setDelPrice] = useState(sessionStorage.getItem('del_price') || 0);
     const [finalPrice, setFinalPrice] = useState(sessionStorage.getItem('final_price') || 0);
@@ -111,6 +112,7 @@ export default function ProductDesignHeaderBar({ cartName, setCartName, productN
         finalPrice: finalPrice,
         productQuantity: productQuantity,
         saleInfo: saleInfo,
+        saleDetail: saleDetail,
       }
       if (item === 0) {
         addToCart(cartInfo, "저장");

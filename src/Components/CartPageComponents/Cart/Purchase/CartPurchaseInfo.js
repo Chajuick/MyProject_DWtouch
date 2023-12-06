@@ -2,12 +2,13 @@ import styled from "styled-components"
 import { useEffect, useState } from "react"
 import { Icon } from '@iconify/react';
 import AddressInput from "../../../InputComponents/AddressInput";
-import * as MS from "../../../Modal/ModalStyle";
-import { OptionConvert } from "../../OptionConverter";
-import { CategoryConvert } from "../../CategoryConverter";
+import { PaymentConvert } from "./PurchaseConverter";
+
 import NaverPay from '../../../../assets/payment/naver_pay.png';
 import KaKaoPay from '../../../../assets/payment/kakao_pay.png';
 import Toss from '../../../../assets/payment/toss.png';
+import CartPurchaseCouponModal from "./CartPurchaseCouponModal";
+import CartDeliveryCouponModal from "./CartDeliveryCouponModal";
 
 const Container = styled.div`
   width: calc(66%);
@@ -226,7 +227,7 @@ const RadioInput = styled.div`
     }
   }
   img {
-    margin-left: 5px;
+    margin-left: 8px;
     height: 20px;
   }
   span {
@@ -254,11 +255,16 @@ const RadioInput = styled.div`
     outline: max(2px, 0.1em) dotted rgb(150, 200, 50);
     outline-offset: max(2px, 0.1em);
   }
-`;
+`;              
 
-export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalPurchasePrice }) {
+export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo, 
+  totalSaleAmount, setTotalSaleAmount, totalPurchasePrice, setTotalPurchasePrice, totalDefaultPrice, setTotalDefaultPrice, 
+  userCouponInfo, setUserCouponInfo, setCouponInfoFIxed, deliveryCouponInfo, setDeliveryCouponInfo, usedCouponAmount, setUsedCouponAmount, 
+  usingPoints, setUsingPoints, userPoints, remainPoints, setRemainPoints, deliveryPrice, setDeliveryPrice,
+}) {
   // 모달
   const [showProductCouponModal, setShowProductCouponModal] = useState(false);
+  const [showDeliveryCouponModal, setShowDeliveryCouponModal] = useState(false);
   const [selectedAria, setSelectedAria] = useState(0);
   const [err, setErr] = useState({
     errCondition: false,
@@ -276,11 +282,6 @@ export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalP
   const [deliveryMes, setDeliveryMes] = useState('');
   // 결제 정보
   const [payment, setPayment] = useState(localStorage.getItem('payment') || '');
-  // 포인트 및 배송료
-  const [userPoints, setUserPoints] = useState(sessionStorage.getItem('user_points') || 0);
-  const [remainPoints, setRemainPoints] = useState(sessionStorage.getItem('user_points') || 0);
-  const [usingPoints, setUsingPoints] = useState(0);
-  const [deliveryPrice, setDeliveryPrice] = useState(3000);
 
   useEffect(() => {
     setRemainPoints(userPoints - usingPoints);
@@ -394,7 +395,7 @@ export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalP
         <div>
           <Header>
             <Title>
-              <h3>배송 정보</h3>
+              <h3 >배송 정보</h3>
             </Title>
             <Detail $sel={selectedAria === 0}>
               <span>{name} / {phoneNum} / {address} {detailAddress}</span>
@@ -458,7 +459,9 @@ export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalP
                 <p >할인 금액</p>
                 <InputDiv style={{ color: 'rgba(250, 50, 50, 0.8)' }}>{totalSaleAmount.toLocaleString()}원</InputDiv>
                 <InputBtn onClick={() => setShowProductCouponModal(true)}>쿠폰 변경</InputBtn>
-                <span className="addMes">(사용 쿠폰 <b>{}장</b> / 사용 가능 쿠폰 <b>{}장</b>)</span>
+                <span className="addMes">(사용 쿠폰 
+                  <b>&nbsp;{usedCouponAmount}장</b> / 보유 쿠폰 
+                  <b>&nbsp;{(userCouponInfo && deliveryCouponInfo && deliveryCouponInfo.length >= 0 && userCouponInfo.length >= 0) && userCouponInfo.length > deliveryCouponInfo.length? (userCouponInfo.length - deliveryCouponInfo.length - usedCouponAmount) : 0}장</b>)</span>
               </InputBox>
               <InputBox>
                 <p >포인트</p>
@@ -469,14 +472,17 @@ export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalP
               <InputBox>
                 <p>배송비</p>
                 <InputDiv>{deliveryPrice.toLocaleString()}원</InputDiv>
-                <InputBtn disabled={deliveryPrice == 0}>쿠폰 변경</InputBtn>
-                <span className="addMes">(사용 쿠폰 <b>0장</b> / 사용 가능 쿠폰 <b>0장</b>)</span>
+                <InputBtn onClick={() => setShowDeliveryCouponModal(true)}>쿠폰 변경</InputBtn>
+                <span className="addMes">(사용 쿠폰 <b>{deliveryCouponInfo && deliveryCouponInfo.length > 0? deliveryCouponInfo.length : 0}</b> / 보유 쿠폰 <b>0장</b>)</span>
               </InputBox>
               <UnderBoxGuider>
                 <Icon icon="tabler:alert-circle" color="rgba(250, 50, 50, 0.8)"/>
                 <span>&nbsp;기본배송비는 3,000원 이며,</span>
                 <span> 총 결제 금액이 50,000원 이상일 경우 무료배송입니다.</span>
               </UnderBoxGuider>
+              <NextBtn>
+                <button onClick={() => handleChangeStatus(2)}>다음</button>
+              </NextBtn>
             </MainContent>
         </div>
         <div>
@@ -485,7 +491,7 @@ export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalP
               <h3>결제 수단</h3>
             </Title>
             <Detail $sel={selectedAria === 2}>
-              <span>{payment}</span>
+              <span>{PaymentConvert(payment)}</span>
               <span onClick={() => handleChangeStatus(2)}><Icon icon="iwwa:circumflex" rotate={2} /></span>
             </Detail>
           </Header>
@@ -571,6 +577,29 @@ export default function CartPurchaseInfo({ purchaseInfo, totalSaleAmount, totalP
           </MainContent>
         </div>
       </Container>
+      <CartPurchaseCouponModal 
+        showProductCouponModal={showProductCouponModal}
+        setShowProductCouponModal={setShowProductCouponModal}
+        userCouponInfo={userCouponInfo}
+        setUserCouponInfo={setUserCouponInfo}
+        purchaseInfo={purchaseInfo}
+        setPurchaseInfo={setPurchaseInfo}
+        setCouponInfoFIxed={setCouponInfoFIxed}
+        totalDefaultPrice={totalDefaultPrice}
+        setTotalDefaultPrice={setTotalDefaultPrice}
+        totalPurchasePrice={totalPurchasePrice}
+        setTotalPurchasePrice={setTotalPurchasePrice}
+        totalSaleAmount={totalSaleAmount}
+        setTotalSaleAmount={setTotalSaleAmount}
+        setUsedCouponAmount={setUsedCouponAmount}
+      />
+      <CartDeliveryCouponModal 
+        showDeliveryCouponModal={showDeliveryCouponModal}
+        setShowDeliveryCouponModal={setShowDeliveryCouponModal}
+        deliveryCouponInfo={deliveryCouponInfo}
+        deliveryPrice={deliveryPrice}
+        setDeliveryPrice={setDeliveryPrice}
+      />
     </>
   )
 };

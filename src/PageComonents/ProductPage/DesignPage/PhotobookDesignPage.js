@@ -76,6 +76,7 @@ export default function PhotobookDesignPage() {
       final_price: cartInfo.finalPrice,
       product_quantity: cartInfo.productQuantity,
       sale_info: cartInfo.saleInfo,
+      sale_detail: cartInfo.saleDetail,
       user_uid: sessionStorage.getItem('user_uid'),
     }
     fetch('http://localhost:3001/api/cart/addToCart', {

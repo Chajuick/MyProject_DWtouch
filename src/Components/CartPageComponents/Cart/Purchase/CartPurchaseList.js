@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { OptionConvert } from "../../OptionConverter";
+import { OptionConvert } from "./PurchaseConverter";
 import React from "react";
 
 const Container = styled.div`
@@ -130,7 +130,7 @@ const ProductSaleInfo = styled.div`
   color: rgba(250, 50, 50, 0.8);
 `;
 
-export default function CartPurchasList({ checkCartInfo }) {
+export default function CartPurchasList({ purchaseInfo, }) {
 
   return (
     <>
@@ -143,7 +143,7 @@ export default function CartPurchasList({ checkCartInfo }) {
           <div>구매예정가</div>
         </ControlBar>
         <ProdcutList>
-        {checkCartInfo && checkCartInfo.length > 0 && checkCartInfo.map((item, index) => (
+        {purchaseInfo && purchaseInfo.length > 0 && purchaseInfo.map((item, index) => (
               <ProductListContainer key={index}>
                 <CartProductInfo>
                   <OrderInfo>
@@ -167,9 +167,9 @@ export default function CartPurchasList({ checkCartInfo }) {
                     <span>{(item.cart_default_price*item.cart_product_quantity).toLocaleString()}원</span>
                   </PriceInfo>
                   <ProductSaleInfo>
-                      {((item.cart_price*item.cart_product_quantity)-(item.cart_default_price*item.cart_product_quantity)).toLocaleString()}원
+                      {Math.abs(item.sale_amount).toLocaleString()}원
                   </ProductSaleInfo>
-                  <p>{(item.cart_price*item.cart_product_quantity).toLocaleString()}원</p>
+                  <p>{(item.purchase_final_price).toLocaleString()}원</p>
                 </CartProductInfo>
               </ProductListContainer>
           ))}

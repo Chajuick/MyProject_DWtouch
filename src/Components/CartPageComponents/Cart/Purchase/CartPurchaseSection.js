@@ -134,10 +134,10 @@ const TermsBox = styled.div`
       cursor: pointer;
       input {
         cursor: pointer;
-        box-shadow: 0 0 2px rgba(40, 40, 40, 0.5);
+        box-shadow: 0 0 1px rgba(40, 40, 40, 0.5);
       }
       input:checked {
-        box-shadow: 0 0 2px #e8625a;
+        box-shadow: 0 0 1px #e8625a;
       }
       span {
         text-decoration: underline;
@@ -198,7 +198,7 @@ const PolicyContent = styled.div`
   }
 `;
 
-export default function CartPurchaseSection() {
+export default function CartPurchaseSection({ deliveryPrice, usingPoints, totalPurchasePrice, totalDefaultPrice, totalSaleAmount, endPaymentPrice  }) {
   // 모달
   const [showPolicyModal, setShowPolicyModal] = useState(false);
   const [termPersonal, setTermPersonal] = useState(false);
@@ -211,8 +211,6 @@ export default function CartPurchaseSection() {
     setTermEvent(!selectAll);
   };
 
-  console.log(termEvent);
-
   return (
     <>
       <Container>
@@ -220,24 +218,24 @@ export default function CartPurchaseSection() {
         <PriceInfoBox $isActive={termPersonal}>
           <SumPrice>
             <span>합계</span>
-            <span>원</span>
+            <span>{endPaymentPrice}원</span>
           </SumPrice>
           <ul>
             <li>
               <span>상품 금액</span>
-              <span>원</span>
+              <span>{totalDefaultPrice}원</span>
             </li>
             <li className="red">
               <span>할인 금액</span>
-              <span>-원</span>
+              <span>{totalSaleAmount}원</span>
             </li>
             <li className="red">
               <span>포인트</span>
-              <span>-원</span>
+              <span>-{usingPoints}P</span>
             </li>
             <li>
               <span>배송비</span>
-              <span>원</span>
+              <span>{deliveryPrice}원</span>
             </li>
           </ul>
         </PriceInfoBox>

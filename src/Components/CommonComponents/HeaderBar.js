@@ -9,6 +9,7 @@ const Container = styled.div`
   color: rgb(25, 25, 25);
   width: 100vw;
   display: ${(props) => (props.$hideContainer ? 'none' : 'block')};
+  border-bottom: 1px solid rgb(230, 230, 230);
 `;
 
 const Bar = styled.div`

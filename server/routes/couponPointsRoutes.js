@@ -51,6 +51,42 @@ router.post('/user-coupon-amount-loading', async (req, res) => {
   }
 });
 
+// 유저 쿠폰 수량 받아오기
+router.post('/user-coupon-loading', async (req, res) => {
+  const userUID = req.body.userUID;
+  // SQL 쿼리 작성
+  const userCouponQuery = 'SELECT * FROM user_coupons WHERE user_id = ?';
+  const couponQuery = 'SELECT * FROM coupons WHERE coupons_uid = ?';
+
+  try {
+    // 유저 쿠폰 정보 조회
+    const userCouponResults = await queryDatabase(userCouponQuery, [userUID]);
+    if (userCouponResults.length === 0) {
+      // 만약 유저 쿠폰이 없으면 빈 배열로 응답
+      res.setHeader('Content-Type', 'application/json');
+      return res.json({ userCouponResults: [] });
+    }
+
+    // 각 유저 쿠폰에 대해 쿠폰 정보 조회
+    const couponPromises = userCouponResults.map(async (userCoupon) => {
+      const couponID = userCoupon.coupons_id;
+      const couponResults = await queryDatabase(couponQuery, [couponID]);
+      return couponResults;
+    });
+
+    // 모든 쿠폰 정보를 기다림
+    const allCouponResults = await Promise.all(couponPromises);
+
+    // 클라이언트에게 응답
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ userCouponResults: allCouponResults });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 // Promise로 감싸진 쿼리 실행을 위한 함수
 function queryDatabase(query, params) {

@@ -30,7 +30,6 @@ export default function IndexPage( ) {
     const intervalId = setInterval(() => {
       if (!isMainBannerLoading) {
         mainBannerLoading();
-        console.log("ok");
       }
     }, 400);
     // 컴포넌트가 unmount 될 때 clearInterval을 통해 interval을 정리합니다.
