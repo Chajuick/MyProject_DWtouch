@@ -247,7 +247,7 @@ const GradeProfileInfo = styled.div`
   h2 {
     font-size: 20px;
     margin-bottom: 15px;
-    b {
+    &>b {
       animation: colorChange 4s infinite alternate;
     }
   }
@@ -319,7 +319,7 @@ export default function GradeInfo() {
   }, [userGrade]);
 
   function calculateGradeCalculationPeriod() {
-    const currentDate = new Date(2023, 11, 27);
+    const currentDate = new Date();
     const currentYear = currentDate.getFullYear(); // 현재 연도를 가져옵니다.
     const currentMonth = currentDate.getMonth() + 1; // 현재 월을 가져옵니다. (월은 0부터 시작하므로 1을 더합니다.)
   
@@ -329,13 +329,13 @@ export default function GradeInfo() {
   
     // 현재 날짜로부터 6개월 전을 계산합니다.
     const sixMonthsAgo = new Date(currentDate);
-    sixMonthsAgo.setMonth(currentDate.getMonth() - 7);
+    sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
 
     // 6개월 전부터 시작합니다.
     startDate = new Date(sixMonthsAgo.getFullYear(), sixMonthsAgo.getMonth(), 1);
 
     // 현재 월의 첫 날을 구합니다.
-    const firstDayOfCurrentMonth = new Date(currentYear, currentMonth - 2, 1);
+    const firstDayOfCurrentMonth = new Date(currentYear, currentMonth - 1, 1);
 
     // 현재 월의 마지막 날을 계산합니다.
     endDate = new Date(firstDayOfCurrentMonth);

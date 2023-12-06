@@ -206,6 +206,9 @@ export default function Mypage({ locationReload }) {
     }
   }, [isOrderLoading]);
 
+  console.log(orderInfo);
+
+  // 유저 정보 받아오기
 
   return (
     <>
