@@ -198,7 +198,7 @@ const PolicyContent = styled.div`
   }
 `;
 
-export default function CartPurchaseSection({ deliveryPrice, usingPoints, totalPurchasePrice, totalDefaultPrice, totalSaleAmount, endPaymentPrice  }) {
+export default function CartPurchaseSection({ deliveryPrice, usingPoints, totalPurchasePrice, totalDefaultPrice, totalSaleAmount, endPaymentPrice, isFieldFinish, handlePurchase  }) {
   // 모달
   const [showPolicyModal, setShowPolicyModal] = useState(false);
   const [termPersonal, setTermPersonal] = useState(false);
@@ -215,7 +215,7 @@ export default function CartPurchaseSection({ deliveryPrice, usingPoints, totalP
     <>
       <Container>
         <p>최종 결제 금액 확인</p>
-        <PriceInfoBox $isActive={termPersonal}>
+        <PriceInfoBox $isActive={termPersonal && isFieldFinish}>
           <SumPrice>
             <span>합계</span>
             <span>{endPaymentPrice}원</span>
@@ -239,7 +239,7 @@ export default function CartPurchaseSection({ deliveryPrice, usingPoints, totalP
             </li>
           </ul>
         </PriceInfoBox>
-        <Terms $isActive={termPersonal}>
+        <Terms $isActive={termPersonal && isFieldFinish}>
           <span>주문할 상품의 편집정보, 상품정보, 상품가격, 배송정보를 확인하였습니다.</span>
           <span>주문취소 및 수정은 결제 후 1시간 이내에만 가능합니다.</span>
           <TermsBox className="terms_main">
@@ -274,7 +274,7 @@ export default function CartPurchaseSection({ deliveryPrice, usingPoints, totalP
             </label>
           </TermsBox>
         </Terms>
-        <PurchaseBtn disabled={!termPersonal}>결제하기</PurchaseBtn>
+        <PurchaseBtn disabled={!termPersonal || !isFieldFinish} onClick={() => handlePurchase(termEvent)}>결제하기</PurchaseBtn>
       </Container>
       <MS.Overlay $showModal={showPolicyModal}/>
       <MS.HeaderModal $showModal={showPolicyModal}>

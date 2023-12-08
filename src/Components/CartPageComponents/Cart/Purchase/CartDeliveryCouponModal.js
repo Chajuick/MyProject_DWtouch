@@ -237,16 +237,39 @@ const ButtonWrapper = styled.div`
 `;
 
 export default function CartDeliveryCouponModal({ showDeliveryCouponModal, setShowDeliveryCouponModal, deliveryCouponInfo, deliveryPrice, setDeliveryPrice, setUsedDeliveryCoupon }) {
-  const [selectedCouponInfo, setSelectedCouponInfo] = useState(-1);
+  const [selectedCouponInfo, setSelectedCouponInfo] = useState(0);
   const [isOptionVisible, setIsOptionVisible] = useState(false);
+  const [tempDeliveryCouponInfo, setTempDeliveryCouponInfo] = useState([]);
+
+  useEffect(() => {
+    const updatedTempDeliveryCouponInfo = [
+      {
+        coupons_name: "쿠폰 사용안함",
+        coupons_discount_limit: 0,
+        coupons_uid: 0,
+        used: false,
+        coupons_detail: "",
+      },
+      ...deliveryCouponInfo,
+    ];
+  
+    // setTempDeliveryCouponInfo를 통해 상태 업데이트
+    setTempDeliveryCouponInfo(updatedTempDeliveryCouponInfo);
+  }, [deliveryCouponInfo]);
 
   function handleCouponApply() {
-    let used = deliveryCouponInfo[selectedCouponInfo].coupons_uid;
-    let discount = 3000 - deliveryCouponInfo[selectedCouponInfo].coupons_discount_limit;
-    setUsedDeliveryCoupon(used);
-    setDeliveryPrice(discount);
-  };
 
+    if (selectedCouponInfo > 0) {
+      let used = deliveryCouponInfo[selectedCouponInfo-1];
+      setUsedDeliveryCoupon(used);
+    } else {
+      setUsedDeliveryCoupon({
+        coupons_uid: 0, coupons_name: '쿠폰 사용안함', coupons_discount_limit: 0,
+      })
+    }
+    setShowDeliveryCouponModal(false);
+  };
+  
   return (
     <>
     <MS.Overlay $showModal={showDeliveryCouponModal}/>
@@ -262,18 +285,14 @@ export default function CartDeliveryCouponModal({ showDeliveryCouponModal, setSh
           <ProductList>
             <li>
               <CouponSelectBar onClick={() => setIsOptionVisible(!isOptionVisible)}>
-                {deliveryCouponInfo && deliveryCouponInfo.length > 0 && selectedCouponInfo === -1?
-                  <span>-</span>
-                  :
                   <span>
-                    [{deliveryCouponInfo[selectedCouponInfo].coupons_name}]&nbsp;
-                    {deliveryCouponInfo[selectedCouponInfo].coupons_detail}
-                    <b>-{deliveryCouponInfo[selectedCouponInfo].coupons_discount_limit.toLocaleString()}원</b>
+                    [{tempDeliveryCouponInfo && tempDeliveryCouponInfo.length > 0 && tempDeliveryCouponInfo[selectedCouponInfo].coupons_name}]&nbsp;
+                    {tempDeliveryCouponInfo && tempDeliveryCouponInfo.length > 0 &&tempDeliveryCouponInfo[selectedCouponInfo].coupons_detail}
+                    <b>-{tempDeliveryCouponInfo && tempDeliveryCouponInfo.length > 0 &&tempDeliveryCouponInfo[selectedCouponInfo].coupons_discount_limit.toLocaleString()}원</b>
                   </span>
-                }
                 <span className="drop_down">{isOptionVisible? "▲" : "▼"}</span>
                 <CouponOpionList $isShow={isOptionVisible}>
-                  {deliveryCouponInfo && deliveryCouponInfo.length > 0 && deliveryCouponInfo.map((item, index) => (
+                  {tempDeliveryCouponInfo && tempDeliveryCouponInfo.length > 0 && tempDeliveryCouponInfo.map((item, index) => (
                       <li
                         key={index}
                         onClick={() => setSelectedCouponInfo(index)}

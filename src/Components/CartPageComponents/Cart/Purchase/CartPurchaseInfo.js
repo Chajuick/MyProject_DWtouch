@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { useEffect, useState } from "react"
 import { Icon } from '@iconify/react';
 import AddressInput from "../../../InputComponents/AddressInput";
-import { PaymentConvert } from "./PurchaseConverter";
+import { CategoryConvert, PaymentConvert } from "./PurchaseConverter";
 
 import NaverPay from '../../../../assets/payment/naver_pay.png';
 import KaKaoPay from '../../../../assets/payment/kakao_pay.png';
@@ -44,6 +44,10 @@ const Detail = styled.div`
     svg {
       transition: all 400ms;
       color: rgb(100, 100, 100);
+    }
+    b {
+      font-weight: 400;
+      color: #e5362c;
     }
   }
   span:last-child {
@@ -260,7 +264,13 @@ const RadioInput = styled.div`
 export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo, 
   totalSaleAmount, setTotalSaleAmount, totalPurchasePrice, setTotalPurchasePrice, totalDefaultPrice, setTotalDefaultPrice, 
   userCouponInfo, setUserCouponInfo, setCouponInfoFIxed, deliveryCouponInfo, setDeliveryCouponInfo, usedCouponAmount, setUsedCouponAmount, 
-  usingPoints, setUsingPoints, userPoints, remainPoints, setRemainPoints, deliveryPrice, setDeliveryPrice,
+  usingPoints, setUsingPoints, userPoints, remainPoints, setRemainPoints, deliveryPrice, setDeliveryPrice, setIsFieldFinish,
+  orderName, setOrderName, orderPhoneNum, setOrderPhoneNum,
+  name, setName, phoneNum, setPhoneNum,
+  postCode, setPostCode, address, setAddress,
+  detailAddress, setDetailAddress, deliveryMes,
+  setDeliveryMes, payment, setPayment,
+  usedDeliveryCoupon, setUsedDeliveryCoupon,
 }) {
   // 모달
   const [showProductCouponModal, setShowProductCouponModal] = useState(false);
@@ -271,17 +281,7 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
     errColor: 'rgb(150, 150, 150)',
     errMes: '필수 항목들을 채워주세요.',
   });
-  // 유저 정보
-  const [orderName, setOrderName] = useState(sessionStorage.getItem('user_name') || '');
-  const [orderPhoneNum, setOrderPhoneNum] = useState(sessionStorage.getItem('user_phonenum').replace(/-/g, '') || '');
-  const [name, setName] = useState(sessionStorage.getItem('user_name') || '');
-  const [phoneNum, setPhoneNum] = useState(sessionStorage.getItem('user_phonenum').replace(/-/g, '') || '');
-  const [postCode, setPostCode] = useState(sessionStorage.getItem('user_postcode') || '');
-  const [address, setAddress] = useState(sessionStorage.getItem('user_address') || '');
-  const [detailAddress, setDetailAddress] = useState(sessionStorage.getItem('user_detail_addres') || '');
-  const [deliveryMes, setDeliveryMes] = useState('');
-  // 결제 정보
-  const [payment, setPayment] = useState(localStorage.getItem('payment') || '');
+
 
   useEffect(() => {
     setRemainPoints(userPoints - usingPoints);
@@ -296,8 +296,10 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
   useEffect(() => {
     if (totalPurchasePrice >= 50000) {
       setDeliveryPrice(0);
+    } else if ( usedDeliveryCoupon.coupons_discount_limit > -1 ) {
+      setDeliveryPrice(3000 - usedDeliveryCoupon.coupons_discount_limit);
     }
-  }, [totalPurchasePrice]);
+  }, [totalPurchasePrice, usedDeliveryCoupon]);
 
   // 포인트 입력
   function handleUsingPointInput(event) {
@@ -389,6 +391,43 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
     });
   };
 
+  // 필수 입력 끝났는지 확인
+  function checkIsFieldFinish() {
+        // must 클래스가 적용된 모든 input 요소를 선택
+        const mustInputs = document.querySelectorAll('.must input');
+        // 입력 필드 중에서 값이 비어있는 것이 있는지 확인
+        const hasEmptyInput = Array.from(mustInputs).some(input => input.value.trim() === '');
+        if (hasEmptyInput) {
+          
+          setIsFieldFinish(false);
+        } else {
+          if (payment !== "") {
+            setIsFieldFinish(true);
+          }
+        }
+  };
+
+  useEffect(() => {
+    checkIsFieldFinish();
+  }, [orderName, orderPhoneNum,name, phoneNum, detailAddress, postCode, address, detailAddress, payment]);
+
+
+  function usableCouponList(purchase, userCoupon) {
+    // 카운트 초기화
+    let count = 0;
+    // userCoupon 배열 순회
+    for (let i = 0; i < userCoupon.length; i++) {
+      const coupon = userCoupon[i];
+      // coupons_product_category 값이 purchase 배열 내의 cart_product_name 값과 일치하는지 확인
+      if (purchase.some(item => CategoryConvert(item.cart_product_name) === coupon.coupons_product_category)) {
+        // 일치하는 경우 카운트 증가
+        count++;
+      }
+    }
+    // 최종 결과 반환
+    return count;
+  }
+
   return (
     <>
       <Container>
@@ -410,7 +449,7 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
             </InputBox>
             <InputBox className="must sel0" >
               <p>연락처</p>
-              <input type="text" value={orderPhoneNum} onChange={(e) => setOrderPhoneNum(e.target.value)} placeholder="연락 가능한 연락처를 입력해주세요 (-뺴고 숫자만)"></input>
+              <input type="text" disabled value={orderPhoneNum} onChange={(e) => setOrderPhoneNum(e.target.value)} placeholder="연락 가능한 연락처를 입력해주세요 (-뺴고 숫자만)"></input>
             </InputBox>
           </MainContent>
           <MainContent $sel={selectedAria === 0}>
@@ -450,7 +489,9 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
                 <h3>할인·배송비</h3>
               </Title>
               <Detail $sel={selectedAria === 1}>
-                <span>사용가능한 쿠폰을 확인해보세요.</span>
+                  <span>
+                    할인&nbsp;<b>{totalSaleAmount.toLocaleString()}원</b>&nbsp;/ 포인트&nbsp;<b>{usingPoints.toLocaleString()}원</b>&nbsp;/ 배송비&nbsp;<b>{deliveryPrice.toLocaleString()}</b>원
+                  </span>
                 <span onClick={() => handleChangeStatus(1)}><Icon icon="iwwa:circumflex" rotate={2} /></span>
               </Detail>
             </Header>
@@ -458,22 +499,22 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
               <InputBox>
                 <p >할인 금액</p>
                 <InputDiv style={{ color: 'rgba(250, 50, 50, 0.8)' }}>{totalSaleAmount.toLocaleString()}원</InputDiv>
-                <InputBtn onClick={() => setShowProductCouponModal(true)}>쿠폰 변경</InputBtn>
+                <InputBtn onClick={() => setShowProductCouponModal(true)} disabled={usableCouponList(purchaseInfo, userCouponInfo) - deliveryCouponInfo.length === 0}>쿠폰 변경</InputBtn>
                 <span className="addMes">(사용 쿠폰 
                   <b>&nbsp;{usedCouponAmount}장</b> / 보유 쿠폰 
-                  <b>&nbsp;{(userCouponInfo && deliveryCouponInfo && deliveryCouponInfo.length >= 0 && userCouponInfo.length >= 0) && userCouponInfo.length > deliveryCouponInfo.length? (userCouponInfo.length - deliveryCouponInfo.length - usedCouponAmount) : 0}장</b>)</span>
+                  <b>&nbsp;{(userCouponInfo && deliveryCouponInfo && deliveryCouponInfo.length >= 0 && userCouponInfo.length >= 0) && userCouponInfo.length > deliveryCouponInfo.length? (usableCouponList(purchaseInfo, userCouponInfo) - deliveryCouponInfo.length - usedCouponAmount) : 0}장</b>)</span>
               </InputBox>
               <InputBox>
                 <p >포인트</p>
-                <input type="text" className="right" value={usingPoints} onChange={(e) => setUsingPoints(e.target.value)} onInput={handleUsingPointInput}></input>
+                <input  style={{ color: 'rgba(250, 50, 50, 0.8)' }} type="text" className="right" value={usingPoints} onChange={(e) => setUsingPoints(e.target.value)} onInput={handleUsingPointInput}></input>
                 <InputBtn onClick={() => setUsingPoints(userPoints)} disabled={userPoints == 0}>전액 사용</InputBtn>
                 <span className="addMes">(보유 포인트 <b>{parseInt(remainPoints) > 0? remainPoints : 0}</b>)</span>
               </InputBox>
               <InputBox>
                 <p>배송비</p>
                 <InputDiv>{deliveryPrice.toLocaleString()}원</InputDiv>
-                <InputBtn onClick={() => setShowDeliveryCouponModal(true)}>쿠폰 변경</InputBtn>
-                <span className="addMes">(사용 쿠폰 <b>{deliveryCouponInfo && deliveryCouponInfo.length > 0? deliveryCouponInfo.length : 0}</b> / 보유 쿠폰 <b>0장</b>)</span>
+                <InputBtn disabled={(usedDeliveryCoupon && usedDeliveryCoupon.coupons_discount_limit !== 3000 && deliveryPrice < 1) || deliveryCouponInfo.length < 1}  onClick={() => setShowDeliveryCouponModal(true)}>쿠폰 변경</InputBtn>
+                <span className="addMes">(사용 쿠폰 <b>{usedDeliveryCoupon.coupons_type > 0? 1 : 0}장</b> / 보유 쿠폰 <b>{deliveryCouponInfo && deliveryCouponInfo.length > 0? deliveryCouponInfo.length : 0}장</b>)</span>
               </InputBox>
               <UnderBoxGuider>
                 <Icon icon="tabler:alert-circle" color="rgba(250, 50, 50, 0.8)"/>
@@ -491,7 +532,7 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
               <h3>결제 수단</h3>
             </Title>
             <Detail $sel={selectedAria === 2}>
-              <span>{PaymentConvert(payment)}</span>
+              <span>{payment !== ""? PaymentConvert(payment) : "결제수단을 선택해주세요"}</span>
               <span onClick={() => handleChangeStatus(2)}><Icon icon="iwwa:circumflex" rotate={2} /></span>
             </Detail>
           </Header>
@@ -599,6 +640,8 @@ export default function CartPurchaseInfo({ purchaseInfo, setPurchaseInfo,
         deliveryCouponInfo={deliveryCouponInfo}
         deliveryPrice={deliveryPrice}
         setDeliveryPrice={setDeliveryPrice}
+        usedDeliveryCoupon={usedDeliveryCoupon}
+        setUsedDeliveryCoupon={setUsedDeliveryCoupon}
       />
     </>
   )

@@ -10,6 +10,7 @@ import Grade3 from "../../assets/user/grades/user_grades_3.png";
 import Grade4 from "../../assets/user/grades/user_grades_4.png";
 import Grade5 from "../../assets/user/grades/user_grades_5.png";
 import { useState, useEffect } from "react";
+import { NeedAmount } from "./MyPageConverter";
 
 const gradesArr = [
   { 
@@ -305,8 +306,10 @@ const GradeProfileDetailInfo = styled.div`
 `;
 
 
-export default function GradeInfo() {
+export default function GradeInfo({ orderInfo }) {
   const [userGrade, setUserGrade] = useState(sessionStorage.getItem('user_grades') || 0);
+  const [filteredOrderInfo, setFilteredOrderInfo] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     // userGrade가 0일 때만 세션에서 값을 받아오도록
@@ -354,6 +357,64 @@ export default function GradeInfo() {
   
   const gradeCalculationPeriod = calculateGradeCalculationPeriod();
 
+  function orderInfoFilter(orderInfo) {
+    if (orderInfo && orderInfo.length > 0) {
+      const currentDate = new Date();
+      // 현재 날짜의 6개월 전부터 시작
+      const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 6, 1);
+      // 현재 날짜의 전월의 마지막 날짜를 구하기 위해 현재 날짜를 1일로 설정하고 하루를 빼줌
+      currentDate.setDate(1);
+      currentDate.setDate(currentDate.getDate() - 1);
+      const endDate = currentDate;
+    
+      const filteredOrderInfoArray = orderInfo
+        .map(order => {
+          const createdAtDate = new Date(order.createdAt);
+          // createdAt에 18시간을 더함
+          createdAtDate.setHours(createdAtDate.getHours() + 18);
+          // 새로운 createdAt을 가진 객체를 반환
+          return { ...order, createdAt: createdAtDate.toISOString() };
+        })
+        .filter(order => {
+          const orderDate = new Date(order.createdAt);
+          return orderDate >= startDate && orderDate <= endDate && order.status === 3;
+        });
+    
+      // order_final_price를 합산
+      const totalOrderFinalPrice = filteredOrderInfoArray.reduce((total, order) => {
+        return total + order.order_final_price;
+      }, 0);
+    
+      setFilteredOrderInfo(filteredOrderInfoArray);
+      setTotalPrice(totalOrderFinalPrice);
+    }
+  };
+    console.log(orderInfo);
+    console.log(filteredOrderInfo);
+
+  useEffect(() => {
+    if (orderInfo && orderInfo.length > 0) {
+      orderInfoFilter(orderInfo);
+    }
+  }, [orderInfo]);
+
+  useEffect(() => {
+    if (filteredOrderInfo && filteredOrderInfo.length > 0) {
+      let orderNum = filteredOrderInfo.length;
+      if (orderNum >= 10) {
+        setUserGrade(5);
+      } else if (orderNum < 10 && orderNum >= 5) {
+        setUserGrade(4);
+      } else if (orderNum < 5 && orderNum >= 3) {
+        setUserGrade(3);
+      } else {
+        setUserGrade(2);
+      }
+    } else {
+      setUserGrade(1);
+    }
+  }, [filteredOrderInfo, orderInfo]);
+
   return (
     <>
       <Title>등급 안내</Title>
@@ -390,11 +451,11 @@ export default function GradeInfo() {
           <ul>
             <li>
               <p>현재 누적 주문 건수</p>
-              <p>4건</p>
+              <p>{filteredOrderInfo && filteredOrderInfo.length > 0? filteredOrderInfo.length : 0}건</p>
             </li>
             <li>
               <p>현재 누적 구매 금액</p>
-              <p>77,200원</p>
+              <p>{totalPrice.toLocaleString()}원</p>
             </li>
           </ul>
           {
@@ -404,11 +465,11 @@ export default function GradeInfo() {
               <ul>
               <li>
                 <p>필요 구매 건수</p>
-                <p><b style={{ color: '#e5362c' }}>1</b>건</p>
+                <p><b style={{ color: '#e5362c' }}>{NeedAmount(0, userGrade, filteredOrderInfo && filteredOrderInfo.length > 0? filteredOrderInfo.length : 0)}</b>건</p>
               </li>
               <li>
                 <p>필요 구매 금액</p>
-                <p><b style={{ color: '#e5362c' }}>37,200</b>원</p>
+                <p><b style={{ color: '#e5362c' }}>{NeedAmount(1, userGrade, totalPrice)}</b>원</p>
               </li>
             </ul>
             )

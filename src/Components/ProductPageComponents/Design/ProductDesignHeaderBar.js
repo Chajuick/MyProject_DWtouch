@@ -35,13 +35,6 @@ export default function ProductDesignHeaderBar({ cartName, setCartName, productN
     const [settingOption, setSettingOption] = useState(productOption);
   
     const [showAddtoCartModal, setShowAddtoCartModal] = useState(false);
-    const [showAlertModal, setShowAlertModal] = useState(false);
-
-    useEffect(() => {
-      if (productQuantity === 0) {
-        showAlertModal(true);
-      }
-    },[]);
 
     function handleOpenSetting() {
       setSettingOption(productOption);
@@ -121,11 +114,7 @@ export default function ProductDesignHeaderBar({ cartName, setCartName, productN
       }
     };
 
-    function handleAlertModalCloseBtn() {
-      navigate('/');
-      setShowAlertModal(false);
-      window.location.reload(true);
-    };
+
 
 
     return (
@@ -259,13 +248,6 @@ export default function ProductDesignHeaderBar({ cartName, setCartName, productN
             <S.CancleBtn style={{ marginTop: '20px' }} onClick={() => setShowAddtoCartModal(false)}>취소</S.CancleBtn>
             <S.ConfirmBtn style={{ marginTop: '20px' }} onClick={() => handleAddToCart(1)}>확인</S.ConfirmBtn>
           </S.ButtonWrapper>
-        </MS.Modal>
-        <MS.Overlay $showModal={showAlertModal}/>
-        <MS.Modal $showModal={showAlertModal}>
-          <MS.ModalContent>
-            <p>잘못된 접근입니다!</p>
-            <button onClick={handleAlertModalCloseBtn}>확인</button>
-          </MS.ModalContent>
         </MS.Modal>
         </>
     )

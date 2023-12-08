@@ -12,9 +12,14 @@ const fadeInOut = keyframes`
 `;
 
 const Container = styled.div`
-    width: 100vw;
-    height: 100vh;
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
     display: flex;
+    background-color: white;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -47,7 +52,7 @@ export default function LoadingPage() {
 
     return (
         <>
-            <Container>
+            <Container className='loading'>
                 <img src={Loading} alt='Loading' />
                 <p>
                     {chars.map((char, index) => (

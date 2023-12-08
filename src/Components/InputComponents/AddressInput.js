@@ -47,8 +47,8 @@ export default function AddressInput( { postCode, address, detailAddress, setPos
   <>
     <input className='postCodeInput' type="text" placeholder="우편번호" disabled value={postCode} />
     <button className='postCodeSearchBtn' type="button" onClick={openPostcode}>우편번호 찾기</button>
-    <input className='addressInput' type="text" placeholder="주소" disabled defaultValue={address} />
-    <input className='addressInput' type="text" placeholder="상세주소" defaultValue={detailAddress}
+    <input className='addressInput' type="text" placeholder="주소" disabled value={address} />
+    <input className='addressInput' type="text" placeholder="상세주소" value={detailAddress}
       disabled={postCode.length <= 0} 
       onChange={(e) => {
         setDetailAddress(e.target.value);

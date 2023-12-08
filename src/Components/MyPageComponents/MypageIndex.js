@@ -224,8 +224,72 @@ const ServiceList = styled.li`
   }
 `
 
-export default function MypageIndex({ setScreenNum, gradesInfo, userInfo, couponAmount, daysDifference }) {
+export default function MypageIndex({ setScreenNum, gradesInfo, userInfo, couponAmount, daysDifference, orderInfo }) {
+  const [detailOrderNumInfo, setDetailOrderNumInfo] = useState([]);
+  const [reviewStatus, setReviewStatus] = useState([]);
+
+  useEffect(() => {
+    if (orderInfo && orderInfo.length > 0) {
+      const statusCounts = {};
+      
+      orderInfo.forEach(order => {
+        const status = order.status;
+        // status에 해당하는 카운트를 증가
+        statusCounts[status] = (statusCounts[status] || 0) + 1;
+      });
   
+      const updateOrderNum = {
+        nonDeposit: statusCounts[0],
+        wating: statusCounts[1],
+        delivering: statusCounts[2],
+        completed: statusCounts[3],
+        cancle: statusCounts[4],
+        exchange: statusCounts[5],
+        return: statusCounts[6],
+        refunds: statusCounts[4]+statusCounts[5]+statusCounts[6],
+      }
+      setDetailOrderNumInfo(updateOrderNum);
+    }
+  }, [orderInfo]);
+
+  useEffect(() => {
+    if (orderInfo && orderInfo.length > 0) {
+      let zeroReviewCount = 0;
+      let oneReviewCount = 0;
+  
+      const currentDate = new Date();
+  
+      orderInfo.forEach(order => {
+        // 모든 주문에 대해서 처리
+        if (order.product_list && order.product_list.length > 0) {
+          order.product_list.forEach(product => {
+            const reviewStatus = product.review_status;
+  
+            if (isWithin3Days(order.createdAt, currentDate) && reviewStatus === 0 && order.status === 3) {
+              zeroReviewCount += 1;
+            } else if (reviewStatus === 1) {
+              oneReviewCount += 1;
+            }
+          });
+        }
+      });
+  
+      const updateReviewStatus = [zeroReviewCount, oneReviewCount];
+      setReviewStatus(updateReviewStatus);
+    }
+  }, [orderInfo]);
+  
+  // createdAt + 18시간이 현재 날짜 3일 이내인지 확인하는 함수
+  function isWithin3Days(createdAt, currentDate) {
+    const createdAtDate = new Date(createdAt);
+    createdAtDate.setHours(createdAtDate.getHours() + 18);
+    const threeDaysAgo = new Date(currentDate);
+    threeDaysAgo.setDate(currentDate.getDate() - 3);
+  
+    return createdAtDate >= threeDaysAgo;
+  }
+
+
   return (
     <>
       <Title>MY 페이지</Title>
@@ -267,11 +331,11 @@ export default function MypageIndex({ setScreenNum, gradesInfo, userInfo, coupon
       <UserOverview style={{ width: "1200px" }}>
         <h3><span>나의 주문현황</span><a onClick={() => setScreenNum(4)}>더보기</a></h3>
         <ul>
-        <OrderList>미입금<br/><b>0</b>건</OrderList>
-        <OrderList>출고대기<br/><b>0</b>건</OrderList>
-        <OrderList>배송중<br/><b>0</b>건</OrderList>
-        <OrderList>배송완료<br/><b>0</b>건</OrderList>
-        <OrderList>취소·교환·반품<br/><b>0</b>건</OrderList>
+        <OrderList>미입금<br/><b>{detailOrderNumInfo && detailOrderNumInfo.nonDeposit? detailOrderNumInfo.nonDeposit : 0}</b>건</OrderList>
+        <OrderList>출고대기<br/><b>{detailOrderNumInfo && detailOrderNumInfo.wating? detailOrderNumInfo.wating : 0}</b>건</OrderList>
+        <OrderList>배송중<br/><b>{detailOrderNumInfo && detailOrderNumInfo.delivering? detailOrderNumInfo.delivering : 0}</b>건</OrderList>
+        <OrderList>배송완료<br/><b>{detailOrderNumInfo && detailOrderNumInfo.completed? detailOrderNumInfo.completed : 0}</b>건</OrderList>
+        <OrderList>취소·교환·반품<br/><b>{detailOrderNumInfo && detailOrderNumInfo.refunds? detailOrderNumInfo.refunds : 0}</b>건</OrderList>
         </ul>
       </UserOverview>
       <UserServiceOverview>
@@ -286,8 +350,8 @@ export default function MypageIndex({ setScreenNum, gradesInfo, userInfo, coupon
         <UserOverview style={{ width: "580px" }}>
           <h3><span>상품 후기</span><a onClick={() => setScreenNum(5)}>더보기</a></h3>
           <ul>
-            <ServiceList>작성가능 후기<br /><b>0</b>건</ServiceList>
-            <ServiceList>작성완료 후기<br /><b>0</b>건</ServiceList>
+            <ServiceList>작성가능 후기<br /><b>{reviewStatus && reviewStatus.length > 0? reviewStatus[0] : 0}</b>건</ServiceList>
+            <ServiceList>작성완료 후기<br /><b></b>건</ServiceList>
             <ServiceList><Link to="/">후기 작성하기</Link></ServiceList>
           </ul>
         </UserOverview>

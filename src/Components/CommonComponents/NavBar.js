@@ -168,9 +168,7 @@ export default function NavBar({ setShowLoginModal }) {
   };
 
   useEffect(() => {
-    if (!isCartLengthLoading) {
-      cartLengthLoader();
-    }
+    cartLengthLoader();
     // 5초마다 fetchData 실행
     const intervalId = setInterval(() => {
       if (!isCartLengthLoading) {
@@ -179,7 +177,7 @@ export default function NavBar({ setShowLoginModal }) {
     }, 1000);
     // 컴포넌트가 언마운트되면 interval 정리
     return () => clearInterval(intervalId);
-  }, [isCartLengthLoading]);
+  }, [isCartLengthLoading, navigate]);
 
   const handleMouseEnter = () => {
     setSubContainerVisible(true);

@@ -13,69 +13,57 @@ const db = mysql.createConnection({
 });
 
 // 장바구니 추가 라우터
-router.post('/addToCart', (req, res) => {
-  const cartData = req.body;
-  const userUid = cartData.user_uid;
-  const cartName = cartData.project_name;
-  const cartOption = cartData.option;
-  const cartProductName = cartData.product_name;
-  const cartPrice = cartData.price;
-  const cartFinalPrice = cartData.final_price;
-  const cartQuantity = cartData.product_quantity;
-  const cartSaleInfo = cartData.sale_info;
-  const cartSaleDetail = cartData.sale_detail;
-  const cartDefaultPrice = cartData.default_price;
-  let cartThumbnail = "";
-  if (cartData.option[1] === 0) {
-    cartThumbnail = "https://i.ibb.co/KFmR8cv/1.png";
-  } else if (cartData.option[1] === 1) {
-    if (cartData.option[3] === 0) {
-      cartThumbnail = "https://i.ibb.co/c6M9qx7/7.png";
-    } else if (cartData.option[3] === 1) {
-      cartThumbnail = "https://i.ibb.co/26xXZXh/6.png";
-    } else if (cartData.option[3] === 2) {
-      cartThumbnail = "https://i.ibb.co/gr0qMZV/5.png";
-    } else if (cartData.option[3] === 3) {
-      cartThumbnail = "https://i.ibb.co/xq7N4Tc/4.png";
-    } else if (cartData.option[3] === 4) {
-      cartThumbnail = "https://i.ibb.co/bBqzLrK/8.png";
-    } else if (cartData.option[3] === 5) {
-      cartThumbnail = "https://i.ibb.co/QFXhcwH/3.png";
-    } else if (cartData.option[3] === 6) {
-      cartThumbnail = "https://i.ibb.co/4S1hDKm/2.png";
-    }
-  }
+router.post('/addToCart', async (req, res) => {
+  try {
+    const cartData = req.body;
+    const userUid = cartData.user_uid;
+    const cartName = cartData.project_name;
+    const cartOption = cartData.option;
+    const cartProductName = cartData.product_name;
+    const cartPrice = cartData.price;
+    const cartFinalPrice = cartData.final_price;
+    const cartQuantity = cartData.product_quantity;
+    const cartSaleInfo = cartData.sale_info;
+    const cartSaleDetail = cartData.sale_detail;
+    const cartDefaultPrice = cartData.default_price;
 
-  // 장바구니 정보를 Cart 모델을 사용하여 생성
-  const newCart = new Cart({
-    user_uid: userUid,
-    cart_name: cartName,
-    cart_option: cartOption,
-    cart_product_name: cartProductName,
-    cart_thumbnail: cartThumbnail,
-    cart_price: cartPrice,
-    cart_final_price: cartFinalPrice,
-    product_quantity: cartQuantity,
-    cart_sale_info: cartSaleInfo,
-    cart_sale_detail: cartSaleDetail,
-    cart_default_price: cartDefaultPrice,
-  });
+    // products 테이블에서 project_name이 일치하는 제품을 찾습니다.
+    const productQuery = 'SELECT * FROM products WHERE product_name = ?';
+    const [productResult] = await db.promise().query(productQuery, [cartProductName]);
+    const product = productResult[0];
+    
+    // product_main_img 값을 가져옵니다.
+    const cartThumbnail = product ? product.product_main_img : "";
 
-  // 장바구니 정보를 데이터베이스에 저장
-  newCart.save()
-    .then((savedCart) => {
-      // 저장이 성공한 경우
-      res.status(200).json({
-        success: true, // 장바구니 저장 여부
-        message: '장바구니 담기완료',
-        cart_id: savedCart.cart_id,
-      });
-    })
-    .catch((error) => {
-      // 오류 처리
-      console.error('저장 오류:', error);
-      res.status(500).json({ error: '장바구니 담기 중 오류가 발생했습니다.' });
+    // 장바구니 정보를 Cart 모델을 사용하여 생성
+    const newCart = new Cart({
+      user_uid: userUid,
+      cart_name: cartName,
+      cart_option: cartOption,
+      cart_product_name: cartProductName,
+      cart_thumbnail: cartThumbnail,
+      cart_price: cartPrice,
+      cart_final_price: cartFinalPrice,
+      product_quantity: cartQuantity,
+      cart_sale_info: cartSaleInfo,
+      cart_sale_detail: cartSaleDetail,
+      cart_default_price: cartDefaultPrice,
     });
+
+    // 장바구니 정보를 데이터베이스에 저장
+    const savedCart = await newCart.save();
+
+    // 저장이 성공한 경우
+    res.status(200).json({
+      success: true,
+      message: '장바구니 담기 완료',
+      cart_id: savedCart.cart_id,
+    });
+  } catch (error) {
+    // 오류 처리
+    console.error('저장 오류:', error);
+    res.status(500).json({ error: '장바구니 담기 중 오류가 발생했습니다.' });
+  }
 });
 
 // 유저 uid로 장바구니 정보 받아오기
@@ -97,7 +85,7 @@ router.post('/infoLoading', (req, res) => {
       cart_option: result.cart_option,
       cart_product_quantity: result.product_quantity,
       cart_product_name: result.cart_product_name,
-      cart_thumbnail: result.cart_thumbnail,
+      cart_thumbnail: `http://localhost:3001/imgs/${result.cart_thumbnail}`,
       cart_default_price: result.cart_default_price,
       cart_price: result.cart_price,
       cart_final_price: result.cart_final_price,

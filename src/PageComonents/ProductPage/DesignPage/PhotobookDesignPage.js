@@ -10,7 +10,6 @@ import ProductDesignUnderBar from "../../../Components/ProductPageComponents/Des
 import ProductDesignMainScreen from "../../../Components/ProductPageComponents/Design/ProductDesignMainScreen";
 import ProductDesignImgBar from "../../../Components/ProductPageComponents/Design/ProductDesignImgBar";
 
-import PhotobookScreen from "../../../assets/products/design_screen/products_design_screen_photobook.png";
 import PhotobookGrid from "../../../assets/products/design_screen/products_grid_screen_photobook.png";
 
 const Container = styled.div`
@@ -43,15 +42,45 @@ export default function PhotobookDesignPage() {
   const navigate = useNavigate();
   // 모달
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
   // 물품 정보
   const [cartName, setCartName] = useState("프로젝트명을 입력해주세요");
   const productName = sessionStorage.getItem('cart_product_name') || "알수없음"
-  const [productOption, setProductOption] = useState(sessionStorage.getItem('cart_option').split(",").map(Number)) || ([0, 0, 0, 0, 0]);
+  const [productOption, setProductOption] = useState(sessionStorage.getItem('cart_option')? sessionStorage.getItem('cart_option').split(",").map(Number) : ([0, 0, 0, 0, 0]));
   // 메인스크린 상태
   const [mainScreenSize, setMainScreenSize] = useState(100);
   const [isGrid, setIsGrid] = useState(false);
   const [textField, setTextField] = useState([]);
   const [imgField, setImgField] = useState([]);
+  const [photobookScreen, setPhotobookScreen] = useState("");
+
+  useEffect(() => {
+    if (!sessionStorage.getItem('cart_option')) {
+      setShowAlertModal(true);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (productOption[1] === 0) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_n.png");
+    } else if (productOption[1] === 1) {
+      if (productOption[3] === 0) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_bl.png");
+      } else if (productOption[3] === 1) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_p.png");
+      } else if (productOption[3] === 2) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_r.png");
+      } else if (productOption[3] === 3) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_b.png");
+      } else if (productOption[3] === 4) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_g.png");
+      } else if (productOption[3] === 5) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_y.png");
+      } else if (productOption[3] === 6) {
+      setPhotobookScreen("/assets/products/design_screen/photobook_o.png");
+      } 
+    }
+  }, [productOption]);
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -111,6 +140,11 @@ export default function PhotobookDesignPage() {
     });
   };
 
+  function handleAlertModalCloseBtn() {
+    navigate('/');
+    setShowAlertModal(false);
+    window.location.reload(true);
+  };
 
   return (
     <>
@@ -132,10 +166,11 @@ export default function PhotobookDesignPage() {
           setIsGrid={setIsGrid}
           textField={textField}
           setTextField={setTextField}
+          productOption={productOption}
         />
         <ProductDesignMainScreen
           productGrid={PhotobookGrid} 
-          productSrc={PhotobookScreen}
+          productSrc={photobookScreen}
           mainScreenSize={mainScreenSize}
           setMainScreenSize={setMainScreenSize}
           isGrid={isGrid}
@@ -151,6 +186,13 @@ export default function PhotobookDesignPage() {
           <S.ButtonWrapper>
             <S.ConfirmBtn style={{ marginTop: '20px' }} onClick={() => setShowSaveModal(false)}>확인</S.ConfirmBtn>
           </S.ButtonWrapper>
+        </MS.Modal>
+        <MS.Overlay $showModal={showAlertModal}/>
+        <MS.Modal $showModal={showAlertModal}>
+          <MS.ModalContent>
+            <p>잘못된 접근입니다!</p>
+            <button onClick={handleAlertModalCloseBtn}>확인</button>
+          </MS.ModalContent>
         </MS.Modal>
     </>
   );

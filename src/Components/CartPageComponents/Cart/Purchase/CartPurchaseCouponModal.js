@@ -305,7 +305,7 @@ totalSaleAmount, setTotalSaleAmount, totalPurchasePrice, setTotalPurchasePrice, 
 
   useEffect(() => {
     loadUsableCouponList();
-  }, [purchaseInfo, userCouponInfo]);
+  }, [userCouponInfo]);
 
   function handleToggleSelectBar(index) {
     if (visibleCouponInfo === index) {
@@ -349,6 +349,7 @@ totalSaleAmount, setTotalSaleAmount, totalPurchasePrice, setTotalPurchasePrice, 
           // 변경이 필요한 항목에 대해서만 업데이트
           return {
             ...changeItem,
+            used_coupon: usableCouponArr[index][couponIndex].coupons_uid || 0,
             purchase_final_price: (changeItem.purchase_default_price*changeItem.puchase_product_quantity) + usableCouponArr[index][couponIndex].coupons_sale_amount,
             purchase_price: parseInt((((changeItem.purchase_default_price*changeItem.puchase_product_quantity) + usableCouponArr[index][couponIndex].coupons_sale_amount)/changeItem.puchase_product_quantity)/10)*10,
             sale_amount: usableCouponArr[index][couponIndex].coupons_sale_amount,

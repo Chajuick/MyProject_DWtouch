@@ -1,9 +1,11 @@
 import Footer from '../Components/CommonComponents/Footer';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LoadingPage from './LoadingPage';
 import CartIndexPage from '../Components/CartPageComponents/Cart/Index/CartIndexPage';
 import CartPurchasePage from '../Components/CartPageComponents/Cart/Purchase/CartPurchasePage';
+import CartCompletePage from '../Components/CartPageComponents/Cart/Complete/CartCompletePage';
 
 const Container = styled.div`
   width: 100vw;
@@ -48,12 +50,21 @@ const StatusBar = styled.div`
 
 const purchaseStatus = ["01. 장바구니", "02. 주문·결제", "03. 주문완료"];
 
-export default function CartPage() {
+export default function CartPage({ locationReload }) {
+  const navigate = useNavigate();
+  const isLogin = sessionStorage.getItem('isLoggedIn') === 'true';
   const [currentStatus, setCurrentStatus] = useState(0);
   const [cartInfo, setCartInfo] = useState([]);
   const [checkCartInfo, setCheckCartInfo] = useState([]);
   const [isCartInfoLoading, setIsCartInfoLoading] = useState(false);
   const [selectedInfo, setSelectedInfo] = useState([]);
+
+  useEffect(() => {
+    if (!isLogin) {
+      locationReload();
+      navigate('/');
+    }
+  }, []);
 
   useEffect(() => {
     if (isCartInfoLoading && cartInfo.length > 0) {
@@ -126,6 +137,7 @@ export default function CartPage() {
       console.error('Error:', error);
     });
   };
+  
 
   return (
     <>
@@ -153,10 +165,19 @@ export default function CartPage() {
               }
               {currentStatus === 1 &&
               <>
-                <CartPurchasePage 
+                <CartPurchasePage
+                  setCurrentStatus={setCurrentStatus} 
                   checkCartInfo={checkCartInfo}
+                  navigate={navigate}
                 />
               </>
+              }
+              {currentStatus === 2 &&
+                <>
+                  <CartCompletePage 
+                    navigate={navigate}
+                  />
+                </>
               }
             </Wrapper>
           </Container>

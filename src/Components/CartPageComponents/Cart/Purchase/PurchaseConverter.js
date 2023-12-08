@@ -126,6 +126,14 @@ export function OptionConvert(productName, option) {
         break;
     }
   }
-
   return newOptions;
+};
+
+export function hasItem(array, target) {
+  for (const item of array) {
+    if (item === target) {
+      return true; 
+    }
+  }
+  return false; 
 }

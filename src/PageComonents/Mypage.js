@@ -206,10 +206,6 @@ export default function Mypage({ locationReload }) {
     }
   }, [isOrderLoading]);
 
-  console.log(orderInfo);
-
-  // 유저 정보 받아오기
-
   return (
     <>
       {isLogin && isCouponLoading && isOrderLoading ?
@@ -234,10 +230,11 @@ export default function Mypage({ locationReload }) {
                   gradesInfo={gradesInfo}
                   couponAmount={userCouponAmount}
                   daysDifference={daysDifference}
+                  orderInfo={orderInfo}
                 />
                 }
                 {screenNum === 2 && <ProfileEdit />}
-                {screenNum === 3 && <GradeInfo />}
+                {screenNum === 3 && <GradeInfo orderInfo={orderInfo}/>}
                 {screenNum === 4 && <OrderList />}
                 {screenNum === 5 && <ReviewEdit />}
                 {screenNum === 6 && <InquryInfo />}

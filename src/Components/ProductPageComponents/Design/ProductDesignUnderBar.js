@@ -68,7 +68,7 @@ const ViewModify = styled.div`
     }
 `;
 
-export default function ProductDesignUnderBar({ mainScreenSize, setMainScreenSize, isGrid, setIsGrid, textField, setTextField }) {
+export default function ProductDesignUnderBar({ mainScreenSize, setMainScreenSize, isGrid, setIsGrid, textField, setTextField, productOption }) {
 
     function minusScreenSize(num) {
         if (num-20 >= 100) {
@@ -76,7 +76,7 @@ export default function ProductDesignUnderBar({ mainScreenSize, setMainScreenSiz
         }
     }
     function plusScreenSize(num) {
-        if (num+20 <= 200) {
+        if (num+20 <= 300) {
             setMainScreenSize(num+20);
         }
     }
@@ -84,7 +84,7 @@ export default function ProductDesignUnderBar({ mainScreenSize, setMainScreenSiz
     return (
         <>
             <BelowBar>
-                <ProductDesignSideBar textField={textField} setTextField={setTextField}/>
+                <ProductDesignSideBar textField={textField} setTextField={setTextField} productOption={productOption}/>
                 <RightBar>
                     <BelowMenu onClick={() => setIsGrid(!isGrid)}>
                         {isGrid? <Icon icon="cil:grid" width="20px" height="20px" /> : <Icon icon="ri:grid-fill" width="20px" height="20px" />

@@ -86,7 +86,63 @@ router.post('/user-coupon-loading', async (req, res) => {
   }
 });
 
+// 사용한 쿠폰 지우기
+router.post('/user-coupon-delete', async (req, res) => {
+  const usedCouponData = req.body;
+  const userUid = usedCouponData.userUid;
+  const usedCoupon = usedCouponData.usedCoupon;
 
+  // SQL 쿼리 작성
+  const deleteQuery = 'DELETE FROM user_coupons WHERE user_id = ? AND coupons_id IN (?)';
+  try {
+    // 사용한 쿠폰 삭제
+    await queryDatabase(deleteQuery, [userUid, usedCoupon]);
+
+    // 클라이언트에게 응답
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 포인트 차감
+router.post('/sub-point', async (req, res) => {
+  try {
+    const usingPoints = req.body.usingPoints;
+    const userUid = req.body.userUid;
+    // SQL 쿼리 작성
+    const selectQuery = 'SELECT * FROM user_info WHERE user_uid = ?';
+    const updateQuery = 'UPDATE user_info SET user_points = user_points - ? WHERE user_uid = ?';
+    // 사용자 정보 조회
+    const userInfo = await queryDatabase(selectQuery, [userUid]);
+    // 사용자 정보가 존재하지 않을 경우
+    if (userInfo.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // 현재 포인트에서 usingPoints만큼 차감
+    const currentPoints = userInfo[0].user_points;
+    const updatedPoints = currentPoints - usingPoints;
+    // 포인트 갱신
+    await queryDatabase(updateQuery, [usingPoints, userUid]);
+    // 갱신된 포인트가 음수가 될 경우
+    if (updatedPoints < 0) {
+      throw new Error('Insufficient points');
+    }
+    // 클라이언트에게 응답
+    res.status(200).json({ success: true, updatedPoints });
+  } catch (error) {
+    console.error(error);
+    // 에러 메시지에 따라 응답 상태 및 메시지를 설정
+    let status = 500;
+    let errorMessage = 'Internal Server Error';
+    if (error.message === 'Insufficient points') {
+      status = 400; // Bad Request
+      errorMessage = 'Insufficient points';
+    }
+    res.status(status).json({ error: errorMessage });
+  }
+});
 
 // Promise로 감싸진 쿼리 실행을 위한 함수
 function queryDatabase(query, params) {

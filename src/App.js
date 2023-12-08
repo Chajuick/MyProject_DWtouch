@@ -17,6 +17,7 @@ import NavBar from './Components/CommonComponents/NavBar';
 import IndexPage from './PageComonents/IndexPage';
 import Mypage from './PageComonents/Mypage';
 import CartPage from './PageComonents/CartPage';
+import CartErrorPage from './Components/CartPageComponents/Cart/Complete/CartErrorPage';
 
 // 물품-리스트 페이지
 import PhotobookListPage from './PageComonents/ProductPage/ListPage/PhotobookListPage';
@@ -28,8 +29,9 @@ import DrinkwareListPage from './PageComonents/ProductPage/ListPage/DrinkwareLis
 // 물품-오버뷰 페이지
 import PhotobookOverviewPage from './PageComonents/ProductPage/OverViewPage/PhotobookOverViewPage';
 
-// 물품 다지안 페이지
+// 물품 디자인 페이지
 import PhotobookDesignPage from './PageComonents/ProductPage/DesignPage/PhotobookDesignPage';
+
 
 
 
@@ -167,10 +169,10 @@ export default function App() {
 
           <Route path='/photobook-overview' element={<PhotobookOverviewPage setShowLoginModal={setShowLoginModal}/>}/>
 
-          <Route path='/photobook-design' element={<PhotobookDesignPage />}/>
+          <Route path='/photobook-design' element={<PhotobookDesignPage  setShowLoginModal={setShowLoginModal}/>}/>
           
-          <Route path='/cart' element={<CartPage />}/>
-
+          <Route path='/cart' element={<CartPage locationReload={locationReload}/>}/>
+          <Route path='/order-error' element={<CartErrorPage />}/>
         </Routes>
       </BrowserRouter>
     </>
