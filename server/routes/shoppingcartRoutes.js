@@ -26,14 +26,32 @@ router.post('/addToCart', async (req, res) => {
     const cartSaleInfo = cartData.sale_info;
     const cartSaleDetail = cartData.sale_detail;
     const cartDefaultPrice = cartData.default_price;
-
-    // products 테이블에서 project_name이 일치하는 제품을 찾습니다.
-    const productQuery = 'SELECT * FROM products WHERE product_name = ?';
-    const [productResult] = await db.promise().query(productQuery, [cartProductName]);
-    const product = productResult[0];
-    
-    // product_main_img 값을 가져옵니다.
-    const cartThumbnail = product ? product.product_main_img : "";
+    let cartThumbnail = "";
+    if (cartData.product_name === "포토북" || cartData.product_name === "팬북" || cartData.product_name === "졸업앨범") {
+      if (cartData.option[1] === 0) {
+        if (cartData.option[2] === 0) {
+          cartThumbnail = "productThumbnail/photobook/matte.png";
+        } else if (cartData.option[2] === 1) {
+          cartThumbnail = "productThumbnail/photobook/glossy.png";
+        } 
+      } else if (cartData.option[1] === 1) {
+        if (cartData.option[3] === 0) {
+          cartThumbnail = "productThumbnail/photobook/black.png";
+        } else if (cartData.option[3] === 1) {
+          cartThumbnail = "productThumbnail/photobook/pink.png";
+        } else if (cartData.option[3] === 2) {
+          cartThumbnail = "productThumbnail/photobook/red.png";
+        } else if (cartData.option[3] === 3) {
+          cartThumbnail = "productThumbnail/photobook/blue.png";
+        } else if (cartData.option[3] === 4) {
+          cartThumbnail = "productThumbnail/photobook/green.png";
+        } else if (cartData.option[3] === 5) {
+          cartThumbnail = "productThumbnail/photobook/yellow.png";
+        } else if (cartData.option[3] === 6) {
+          cartThumbnail = "productThumbnail/photobook/orange.png";
+        }
+      }
+    }
 
     // 장바구니 정보를 Cart 모델을 사용하여 생성
     const newCart = new Cart({
