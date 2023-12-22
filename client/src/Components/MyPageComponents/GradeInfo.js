@@ -395,9 +395,6 @@ export default function GradeInfo({ orderInfo }) {
     }
   }, [orderInfo]);
 
-  console.log(filteredOrderInfo.length);
-  console.log(userGrade);
-
   return (
     <>
       <Title>등급 안내</Title>
