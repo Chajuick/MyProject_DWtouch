@@ -1,0 +1,10 @@
+{
+  "name": "dwtouch-monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.4.1",
+  "scripts": {
+    "dev": "pnpm -C server dev",
+    "build": "pnpm -C client build && pnpm -C server build",
+    "start": "pnpm -C server start"
+  }
+}

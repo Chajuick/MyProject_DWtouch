@@ -228,13 +228,13 @@ export default function EventAria({ maxPage, bigBox, smallBox, eventsData, isEve
               <PopupEventBox
                 style={{
                   display: currentPage === index ? 'block' : 'none',
-                  backgroundImage: `url(${item.slideDetail})`,
+                  backgroundImage: `url(${item.slideDetail ?? item.slideDetailImg ?? item.event_url_slide_detail})`,
                 }}
               />
               <PopupEventImg
                 style={{
                   display: currentPage === index ? 'block' : 'none',
-                  backgroundImage: `url(${item.slideImg})`,
+                  backgroundImage: `url(${item.slideImg ?? item.slideImgImg ?? item.event_url_slide_img})`,
                 }}
               />
             </Link>

@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import bcrypt from 'bcryptjs';
-import * as MS from '../Modal/ModalStyle'
+import * as MS from "../Modal/ModalStyle";
 import styled from "styled-components";
 
 import ProfilePasswordCheck from "./ProfilePasswordCheck";
 import ErrorModal from "../Modal/ErrorModal";
 import PhoneVerification from "../InputComponents/PhoneVerification";
 import AddressInput from "../InputComponents/AddressInput";
-
 
 const Title = styled.h1`
   font-size: 28px;
@@ -54,7 +52,7 @@ const InputBox = styled.div`
     transform: translateY(-50%); // 중앙 정렬
     margin-left: 5px; // 원하는 간격 조절
   }
-  input[type="radio"]{
+  input[type="radio"] {
     vertical-align: middle;
     appearance: none;
     border: 2px solid gray;
@@ -106,7 +104,7 @@ const InputBox = styled.div`
       color: rgb(150, 150, 150);
       cursor: pointer;
     }
-    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   }
   & input.phoneVerificationInput {
@@ -131,22 +129,22 @@ const InputBox = styled.div`
       color: rgb(150, 150, 150);
       cursor: pointer;
     }
-    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-    }
-    & div.verificationTimeOut {
-      color: rgb(230, 40, 40);
-      font-size: 13px;
-      margin-left: 15px;
-    }
-    & input.postCodeInput {
-      width: 100px;
-      padding: 8px 0 8px 8px;
-      border: 1px solid rgb(200, 200, 200);
-      border-radius: 5px;
-      margin-bottom: 5px;
-      margin-top: 5px;
-    }
+  }
+  & div.verificationTimeOut {
+    color: rgb(230, 40, 40);
+    font-size: 13px;
+    margin-left: 15px;
+  }
+  & input.postCodeInput {
+    width: 100px;
+    padding: 8px 0 8px 8px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
   & button.postCodeSearchBtn {
     margin-left: 15px;
     color: rgb(120, 120, 120);
@@ -160,7 +158,7 @@ const InputBox = styled.div`
       color: rgb(150, 150, 150);
       cursor: pointer;
     }
-    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   }
   & input.addressInput {
@@ -227,7 +225,7 @@ const PwInput = styled.input`
   border-radius: 5px;
   color: rgb(120, 120, 120);
   margin: 2px 0;
-`
+`;
 
 const PnInput = styled.input`
   width: 110px;
@@ -236,8 +234,8 @@ const PnInput = styled.input`
   border-radius: 5px;
   color: rgb(120, 120, 120);
   margin: 2px 0;
-  background-color: 'rgb(240, 240, 240)';
-`
+  background-color: "rgb(240, 240, 240)";
+`;
 
 const Hiddener = styled.button`
   color: rgb(120, 120, 120);
@@ -246,7 +244,7 @@ const Hiddener = styled.button`
   border: 1px solid rgb(200, 200, 200);
   border-radius: 4px;
   transition: all 400ms;
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   &:hover {
     background-color: rgb(230, 230, 230);
@@ -316,33 +314,33 @@ const SubmitButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: all 400ms;
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   &:hover {
     background-color: rgb(230, 230, 230);
     color: rgb(20, 20, 20);
   }
-`
+`;
 
 export default function ProfileEdit() {
   let reBirthDate;
-  const [postCode, setPostCode] = useState(sessionStorage.getItem('user_postcode') || '');
-  const [address, setAddress] = useState(sessionStorage.getItem('user_address') || '');
-  const [detailAddress, setDetailAddress] = useState(sessionStorage.getItem('user_detail_address') || '');
-  const [name, setName] = useState(sessionStorage.getItem('user_name') || '');
-  const [gender, setGender] = useState(sessionStorage.getItem('user_gender') || '');
-  const [birthDate, setBirthDate] = useState(sessionStorage.getItem('user_birthdate') || '');
-  const [phoneNumber, setPhoneNumber] = useState(formatPhoneNumber(sessionStorage.getItem('user_phonenum')) || '');
-  
-  const [errCode, setErrCode] = useState(''); // 에러코드
+  const [postCode, setPostCode] = useState(sessionStorage.getItem("user_postcode") || "");
+  const [address, setAddress] = useState(sessionStorage.getItem("user_address") || "");
+  const [detailAddress, setDetailAddress] = useState(sessionStorage.getItem("user_detail_address") || "");
+  const [name, setName] = useState(sessionStorage.getItem("user_name") || "");
+  const [gender, setGender] = useState(sessionStorage.getItem("user_gender") || "");
+  const [birthDate, setBirthDate] = useState(sessionStorage.getItem("user_birthdate") || "");
+  const [phoneNumber, setPhoneNumber] = useState(formatPhoneNumber(sessionStorage.getItem("user_phonenum")) || "");
+
+  const [errCode, setErrCode] = useState(""); // 에러코드
   const [isPasswordCheck, setIsPasswordCheck] = useState(false);
   const [isPwHidden, setIsPwHidden] = useState(true);
   const [phoneNumModify, setPhoneNumModify] = useState(false);
   const [postcodeModify, setPostcodeModify] = useState(false);
   const [phoneNumModifyCompleted, setPhoneNumModifyCompleted] = useState(false);
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [phoneVerifyStatus, setPhoneVerifyStatus] = useState(false);
   const [isPhoneVerificationCompleted, setIsPhoneVerificationCompleted] = useState(false); // 휴대폰 인증 여부
@@ -353,7 +351,7 @@ export default function ProfileEdit() {
 
   // 생년월일 입력 칸 조절
   function handleBirthInput(event) {
-    event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 8); // 0부터 9까지 숫자만, 최대 8자리
+    event.target.value = event.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 0부터 9까지 숫자만, 최대 8자리
     setBirthDate(event.target.value);
   }
 
@@ -377,8 +375,8 @@ export default function ProfileEdit() {
 
   function openPhoneNumModify() {
     setPhoneNumModify(true);
-    if (!isPhoneVerificationCompleted){
-      setPhoneNumber('');
+    if (!isPhoneVerificationCompleted) {
+      setPhoneNumber("");
     }
   }
 
@@ -386,7 +384,7 @@ export default function ProfileEdit() {
     if (isPhoneVerificationCompleted) {
       setPhoneNumber(phoneNumber);
     } else {
-      setPhoneNumber(formatPhoneNumber(sessionStorage.getItem('user_phonenum')) || '');
+      setPhoneNumber(formatPhoneNumber(sessionStorage.getItem("user_phonenum")) || "");
     }
     setPhoneNumModify(false);
   }
@@ -398,176 +396,79 @@ export default function ProfileEdit() {
   function closePostcodeModify() {
     setPostcodeModify(false);
   }
-  
 
   function formatPhoneNumber(phoneNumber) {
-    if (phoneNumber && typeof phoneNumber === 'string') {
-      const cleaned = phoneNumber.replace(/\D/g, '');
-      const formatted = cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    if (phoneNumber && typeof phoneNumber === "string") {
+      const cleaned = phoneNumber.replace(/\D/g, "");
+      const formatted = cleaned.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
       return formatted;
     } else {
-      console.error('Invalid phoneNumber:', phoneNumber);
-      return ''; 
+      console.error("Invalid phoneNumber:", phoneNumber);
+      return "";
     }
   }
 
   function submitProfileEdit() {
-    if (name.length == 0) {
-      setName(sessionStorage.getItem('user_id'));
-    }
-    if (birthDate.length == 8) {
-      reBirthDate = `${birthDate.substr(0, 4)}-${birthDate.substr(4, 2)}-${birthDate.substr(6, 2)}`;
-    } else {
-      reBirthDate = '';
-    }
-    if (phoneNumber.length !== 11) {
-      setPhoneNumber(sessionStorage.getItem('user_phonenum') || '');
-    }
-    if (validatePassword(password) && passwordsMatch) {
-       // 비밀번호 해싱
-       bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) {
-          console.error('비밀번호 해싱 오류:', err);
-          setErrCode('PE01 : 비밀번호 해싱 오류');
-          setShowErrorModal(true);
-        } else {
-          const userData = {
-            uid: sessionStorage.getItem('user_uid'),
-            password: hashedPassword, // 해싱된 비밀번호를 서버로 전송
-            name,
-            gender,
-            reBirthDate,
-            phoneNumber,
-            postCode,
-            address,
-            detailAddress,
-          };
-          // 서버로 회원 정보를 전송
-          fetch('http://192.168.0.7:3001/api/mypage/editpwprofile', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-          })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error('서버 응답이 실패하였습니다.');
-            }
-          })
-          .then((data) => {
-            if (data.message) {
-              if (data.success) {
-                setShowProfileEditFinModal(true);
-                sessionStorage.setItem('user_name', name);
-                sessionStorage.setItem('user_gender', gender);
-                sessionStorage.setItem('user_birthdate', birthDate);
-                sessionStorage.setItem('user_phonenum', phoneNumber);
-                sessionStorage.setItem('user_postcode', postCode);
-                sessionStorage.setItem('user_detail_address', detailAddress);
-                sessionStorage.setItem('user_address', address);
-              }
-            } else {
-              console.error('오류:', data.error);
-              setErrCode('PE02 : 회원 정보 수정 오류');
-              setShowErrorModal(true);
-            }
-          })
-          .catch((error) => {
-            console.error('오류:', error);
-            setErrCode('PE03 : 서버 응답 오류');
-            setShowErrorModal(true);
-          });
-        }
-      })
-    } else {
-      const userData = {
-        uid: sessionStorage.getItem('user_uid'),
-        name,
-        gender,
-        reBirthDate,
-        phoneNumber,
-        postCode,
-        address,
-        detailAddress,
-      };
-      // 서버로 회원 정보를 전송
-      fetch('http://192.168.0.7:3001/api/mypage/editprofile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('서버 응답이 실패하였습니다.');
-        }
-      })
-      .then((data) => {
-        if (data.message) {
-          if (data.success) {
-            setShowProfileEditFinModal(true);
-            sessionStorage.setItem('user_name', name);
-            sessionStorage.setItem('user_gender', gender);
-            sessionStorage.setItem('user_birthdate', birthDate);
-            sessionStorage.setItem('user_phonenum', phoneNumber);
-            sessionStorage.setItem('user_postcode', postCode);
-            sessionStorage.setItem('user_detail_address', detailAddress);
-            sessionStorage.setItem('user_address', address);
-          }
-        } else {
-          console.error('오류:', data.error);
-          setErrCode('PE02 : 회원 정보 수정 오류');
-          setShowErrorModal(true);
-        }
-      })
-      .catch((error) => {
-        console.error('오류:', error);
-        setErrCode('PE03 : 서버 응답 오류');
+    const finalName = name.length === 0 ? sessionStorage.getItem("user_id") || "" : name;
+
+    const finalBirth = birthDate.length === 8 ? `${birthDate.substr(0, 4)}-${birthDate.substr(4, 2)}-${birthDate.substr(6, 2)}` : "";
+
+    // ✅ 비번 변경은 “선택사항”으로: 입력했고 유효하면 저장
+    if (password.length > 0) {
+      if (!validatePassword(password) || !passwordsMatch()) {
+        setErrCode("PE04 : 비밀번호 형식 또는 확인 불일치");
         setShowErrorModal(true);
-      });
+        return;
+      }
+      // 로컬앱이면 일단 평문 저장(원하면 SHA-256로 바꿔줄게)
+      sessionStorage.setItem("user_password", password);
     }
+
+    sessionStorage.setItem("user_name", finalName);
+    sessionStorage.setItem("user_gender", gender);
+    sessionStorage.setItem("user_birthdate", birthDate); // 원본 8자리 유지
+    sessionStorage.setItem("user_phonenum", phoneNumber.replace(/\D/g, "")); // 숫자만
+    sessionStorage.setItem("user_postcode", postCode);
+    sessionStorage.setItem("user_address", address);
+    sessionStorage.setItem("user_detail_address", detailAddress);
+
+    setShowProfileEditFinModal(true);
   }
 
   function handleProfileEditModalClose() {
     setShowProfileEditFinModal(false);
     window.location.reload();
   }
-  
+
   return (
     <>
       <Title>회원정보 수정</Title>
-      {!isPasswordCheck && <ProfilePasswordCheck isPasswordCheck={isPasswordCheck} setIsPasswordCheck={setIsPasswordCheck}/>}
-      {isPasswordCheck &&
+      {!isPasswordCheck && <ProfilePasswordCheck isPasswordCheck={isPasswordCheck} setIsPasswordCheck={setIsPasswordCheck} />}
+      {isPasswordCheck && (
         <ProfileEditContainer>
           <h2>기본 정보</h2>
           <ProfileEditerForm>
             <InputBox>
               <p>이름</p>
-              <Input 
+              <Input
                 type="text"
                 placeholder="이름"
                 value={name}
                 onChange={(e) => {
-                  setName(e.target.value)
+                  setName(e.target.value);
                 }}
               ></Input>
             </InputBox>
             <InputBox>
               <p>성별</p>
-              <GenderInput><input type='radio' name='gender' value="0" 
-                checked={gender === '0'}
-                onChange={(e) => setGender(e.target.value)}
-              /><span>남</span></GenderInput>
-              <GenderInput><input type='radio' name='gender' value="1" 
-                checked={gender === '1'}
-                onChange={(e) => setGender(e.target.value)}
-              /><span>여</span></GenderInput>
+              <GenderInput>
+                <input type="radio" name="gender" value="0" checked={gender === "0"} onChange={(e) => setGender(e.target.value)} />
+                <span>남</span>
+              </GenderInput>
+              <GenderInput>
+                <input type="radio" name="gender" value="1" checked={gender === "1"} onChange={(e) => setGender(e.target.value)} />
+                <span>여</span>
+              </GenderInput>
             </InputBox>
             <InputBox>
               <p>생년월일</p>
@@ -581,80 +482,60 @@ export default function ProfileEdit() {
             </InputBox>
             <NoneInputBox>
               <p>아이디</p>
-              <div>{sessionStorage.getItem('user_id')}</div>
+              <div>{sessionStorage.getItem("user_id")}</div>
             </NoneInputBox>
             <InputBox>
-                <p>비밀번호</p>
-                <Hiddener type="button" onClick={pwOpen} disabled={!isPwHidden}>변경</Hiddener>
-                {!isPwHidden && 
-                  <PasswordInputBox>
-                    <PasswordModifyBox>
-                      <p>새 비밀번호</p>
-                      <PwInput
-                        type="password"
-                        placeholder="비밀번호"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      ></PwInput>
-                      <PwErrMes
-                        $showErr={password.length > 0}
-                        style={{
-                          color: !validatePassword(password) ? 'rgb(250, 50, 50)' : 'rgb(150, 200, 50)'
-                        }}
-                      >
-                        {password.length > 0 ? ( 
-                          !validatePassword(password)
-                            ? '8~16자 사이, 숫자와 알파벳, 특수문자 모두 포함되어야 합니다.'
-                            : '옳바른 비밀번호입니다'
-                        ) : null}
-                      </PwErrMes>
-                    </PasswordModifyBox>
-                    <PasswordModifyBox>
-                      <p>새 비밀번호 확인</p>
-                      <PwInput
-                        type="password"
-                        placeholder="비밀번호 확인"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      >
-                      </PwInput>
-                      <PwErrMes 
-                        $showErr={confirmPassword.length > 0}
-                        style={{
-                          color: !passwordsMatch() ? 'rgb(250, 50, 50)' : 'rgb(150, 200, 50)'
-                        }}
-                        >
-                        {confirmPassword.length > 0 ? (
-                          !passwordsMatch()
-                            ? '비밀번호와 일치하지 않습니다'
-                            : '비밀번호와 일치합니다'
-                        ) : null}
-                      </PwErrMes>
-                    </PasswordModifyBox>
-                    <CancleBtn type="button" onClick={pwClose} style={{ marginLeft: '398px' }}>취소</CancleBtn>
-                  </PasswordInputBox>
-                }
+              <p>비밀번호</p>
+              <Hiddener type="button" onClick={pwOpen} disabled={!isPwHidden}>
+                변경
+              </Hiddener>
+              {!isPwHidden && (
+                <PasswordInputBox>
+                  <PasswordModifyBox>
+                    <p>새 비밀번호</p>
+                    <PwInput type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)}></PwInput>
+                    <PwErrMes
+                      $showErr={password.length > 0}
+                      style={{
+                        color: !validatePassword(password) ? "rgb(250, 50, 50)" : "rgb(150, 200, 50)",
+                      }}
+                    >
+                      {password.length > 0
+                        ? !validatePassword(password)
+                          ? "8~16자 사이, 숫자와 알파벳, 특수문자 모두 포함되어야 합니다."
+                          : "옳바른 비밀번호입니다"
+                        : null}
+                    </PwErrMes>
+                  </PasswordModifyBox>
+                  <PasswordModifyBox>
+                    <p>새 비밀번호 확인</p>
+                    <PwInput type="password" placeholder="비밀번호 확인" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}></PwInput>
+                    <PwErrMes
+                      $showErr={confirmPassword.length > 0}
+                      style={{
+                        color: !passwordsMatch() ? "rgb(250, 50, 50)" : "rgb(150, 200, 50)",
+                      }}
+                    >
+                      {confirmPassword.length > 0 ? (!passwordsMatch() ? "비밀번호와 일치하지 않습니다" : "비밀번호와 일치합니다") : null}
+                    </PwErrMes>
+                  </PasswordModifyBox>
+                  <CancleBtn type="button" onClick={pwClose} style={{ marginLeft: "398px" }}>
+                    취소
+                  </CancleBtn>
+                </PasswordInputBox>
+              )}
             </InputBox>
             <InputBox>
-              <p className='must'>휴대폰 번호</p>
-              {!phoneNumModify &&
-                <PnInput
-                  type="text"
-                  placeholder="휴대폰 번호"
-                  value={phoneNumber}
-                  disabled
-                />
-              }
-              {!phoneNumModify &&
-                <ModifyBtn
-                type='button'
-                onClick={openPhoneNumModify}
-                >
+              <p className="must">휴대폰 번호</p>
+              {!phoneNumModify && <PnInput type="text" placeholder="휴대폰 번호" value={phoneNumber} disabled />}
+              {!phoneNumModify && (
+                <ModifyBtn type="button" onClick={openPhoneNumModify}>
                   수정
                 </ModifyBtn>
-              }
-              {phoneNumModify &&
-                <PhoneVerification onError={() => setShowErrorModal(true)}
+              )}
+              {phoneNumModify && (
+                <PhoneVerification
+                  onError={() => setShowErrorModal(true)}
                   phoneNumber={phoneNumber}
                   setPhoneNumber={setPhoneNumber}
                   phoneVerifyStatus={phoneVerifyStatus}
@@ -663,34 +544,27 @@ export default function ProfileEdit() {
                   setIsPhoneVerificationCompleted={setIsPhoneVerificationCompleted}
                   errCode={errCode}
                   setErrCode={setErrCode}
-                />  
-              }
-              {phoneNumModify &&
-                <CancleBtn
-                  type='button'
-                  onClick={closePhoneNumModify}
-                  style={{ marginLeft: '580px' }}
-                >
+                />
+              )}
+              {phoneNumModify && (
+                <CancleBtn type="button" onClick={closePhoneNumModify} style={{ marginLeft: "580px" }}>
                   취소
                 </CancleBtn>
-              }
+              )}
             </InputBox>
             <InputBox>
               <p>주소</p>
-              {!postcodeModify &&
+              {!postcodeModify && (
                 <>
-                  <input className='postCodeInput' type="text" placeholder="우편번호" disabled value={postCode} /> 
-                  <ModifyBtn
-                    type='button'
-                    onClick={openPostcodeModify}
-                  >
+                  <input className="postCodeInput" type="text" placeholder="우편번호" disabled value={postCode} />
+                  <ModifyBtn type="button" onClick={openPostcodeModify}>
                     수정
                   </ModifyBtn>
-                  <input className='addressInput' type="text" placeholder="주소" disabled value={address} />
+                  <input className="addressInput" type="text" placeholder="주소" disabled value={address} />
                 </>
-              }
-              {postcodeModify &&
-                <AddressInput 
+              )}
+              {postcodeModify && (
+                <AddressInput
                   postCode={postCode}
                   setPostCode={setPostCode}
                   address={address}
@@ -698,37 +572,28 @@ export default function ProfileEdit() {
                   detailAddress={detailAddress}
                   setDetailAddress={setDetailAddress}
                 />
-              }
-              {postcodeModify &&
-                <CancleBtn
-                  type='button'
-                  onClick={closePostcodeModify}
-                  style={{ marginLeft: '15px' }}
-                >
+              )}
+              {postcodeModify && (
+                <CancleBtn type="button" onClick={closePostcodeModify} style={{ marginLeft: "15px" }}>
                   취소
-                </CancleBtn>  
-              }
+                </CancleBtn>
+              )}
             </InputBox>
           </ProfileEditerForm>
-          <SubmitButton onClick={submitProfileEdit} type='button' >
+          <SubmitButton onClick={submitProfileEdit} type="button">
             수정
           </SubmitButton>
         </ProfileEditContainer>
-      }
-    <MS.AlertOverlay $showAlertModal={showProfileEditFinModal}/>
-    <ErrorModal 
-      showErrorModal={showErrorModal}
-      setShowErrorModal={setShowErrorModal}
-      errCode={errCode}
-      setErrCode={setErrCode}
-    />
-    <MS.AlertOverlay $showAlertModal={showProfileEditFinModal}/>
-    <MS.AlertModal $showAlertModal={showProfileEditFinModal}>
-      <p>수정이 완료되었습니다.</p>
-      <div>
-        <button onClick={handleProfileEditModalClose}>확인</button>
-      </div>
-    </MS.AlertModal>
+      )}
+      <MS.AlertOverlay $showAlertModal={showProfileEditFinModal} />
+      <ErrorModal showErrorModal={showErrorModal} setShowErrorModal={setShowErrorModal} errCode={errCode} setErrCode={setErrCode} />
+      <MS.AlertOverlay $showAlertModal={showProfileEditFinModal} />
+      <MS.AlertModal $showAlertModal={showProfileEditFinModal}>
+        <p>수정이 완료되었습니다.</p>
+        <div>
+          <button onClick={handleProfileEditModalClose}>확인</button>
+        </div>
+      </MS.AlertModal>
     </>
   );
 }

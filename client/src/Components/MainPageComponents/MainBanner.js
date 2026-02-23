@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 import ErrorDiv from "../ErrorDiv";
 
 const Container = styled.div`
@@ -10,7 +10,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  &>div {
+  & > div {
     width: 100vw;
     height: 560px;
     display: flex;
@@ -22,10 +22,10 @@ const Container = styled.div`
 const SlideBox = styled.div`
   position: absolute;
   top: 0;
-  left: ${props => ((props.$index - props.$currentBox) * 100) + '%'};
+  left: ${(props) => (props.$index - props.$currentBox) * 100 + "%"};
   width: 100%;
   height: 100%;
-  background: ${props => props.$background};
+  background: ${(props) => props.$background};
   background-size: cover;
   transition: all 800ms;
 `;
@@ -37,24 +37,24 @@ const Box = styled.div`
   background-size: cover;
   position: relative;
   display: flex;
-  justify-content:right;
+  justify-content: right;
   align-items: center;
   a {
     position: absolute;
     top: 330px;
     left: 0px;
     padding: 1rem 3.5rem;
-    background-color: ${props => (props.$thema === 1 ? 'rgba(230, 230, 230, 0.6)' : 'rgba(40, 40, 40, 0.6)')};
-    color: ${props => (props.$thema === 1 ? 'rgb(40, 40, 40)' : 'rgb(230, 230, 230)')};
-    border: ${props => (props.$thema === 1 ? '1px solid rgba(230, 230, 230, 0)' : '1px solid rgba(40, 40, 40, 0)')};
+    background-color: ${(props) => (props.$thema === 1 ? "rgba(230, 230, 230, 0.6)" : "rgba(40, 40, 40, 0.6)")};
+    color: ${(props) => (props.$thema === 1 ? "rgb(40, 40, 40)" : "rgb(230, 230, 230)")};
+    border: ${(props) => (props.$thema === 1 ? "1px solid rgba(230, 230, 230, 0)" : "1px solid rgba(40, 40, 40, 0)")};
     text-decoration: none;
     font-size: 14px;
     transition: all 400ms;
   }
   a:hover {
-    background-color: ${props => (props.$thema === 1 ? 'rgba(230, 230, 230, 0)' : 'rgba(40, 40, 40, 0)')};
-    color: ${props => (props.$thema === 1 ? 'rgb(200, 200, 200)' : 'rgb(70, 70, 70)')};
-    border: ${props => (props.$thema === 1 ? '1px solid rgba(230, 230, 230, 0.6)' : '1px solid rgba(40, 40, 40, 0.6)')};
+    background-color: ${(props) => (props.$thema === 1 ? "rgba(230, 230, 230, 0)" : "rgba(40, 40, 40, 0)")};
+    color: ${(props) => (props.$thema === 1 ? "rgb(200, 200, 200)" : "rgb(70, 70, 70)")};
+    border: ${(props) => (props.$thema === 1 ? "1px solid rgba(230, 230, 230, 0.6)" : "1px solid rgba(40, 40, 40, 0.6)")};
   }
   img {
     left: -120px;
@@ -69,7 +69,7 @@ const Title = styled.h2`
   font-size: 42px;
   top: 160px;
   left: 0px;
-  color: ${props => (props.$thema === 1 ? 'rgb(230, 230, 230)' : 'rgb(40, 40, 40)')};
+  color: ${(props) => (props.$thema === 1 ? "rgb(230, 230, 230)" : "rgb(40, 40, 40)")};
 `;
 
 const Detail = styled.div`
@@ -78,11 +78,11 @@ const Detail = styled.div`
   width: 100%;
   font-size: 16px;
   top: 250px;
-  color: ${props => (props.$thema === 1 ? 'rgb(200, 200, 200)' : 'rgb(70, 70, 70)')};
+  color: ${(props) => (props.$thema === 1 ? "rgb(200, 200, 200)" : "rgb(70, 70, 70)")};
 `;
 
 const Slide = styled.button`
-  font-family: 'omyu_pretty';
+  font-family: "omyu_pretty";
   font-size: 40px;
   border-radius: 50%;
   color: rgba(65, 65, 65, 0.5);
@@ -105,7 +105,7 @@ export default function MainBanner({ banner, isMainBannerLoading }) {
 
   const handleNextBox = () => {
     if (!isCooldown) {
-      setCurrentBox(prevCurrentBox => (prevCurrentBox === 3 ? 0 : prevCurrentBox + 1));
+      setCurrentBox((prevCurrentBox) => (prevCurrentBox === 3 ? 0 : prevCurrentBox + 1));
       setIsCooldown(true);
 
       setTimeout(() => {
@@ -116,7 +116,7 @@ export default function MainBanner({ banner, isMainBannerLoading }) {
 
   const handlePrevBox = () => {
     if (!isCooldown) {
-      setCurrentBox(prevCurrentBox => (prevCurrentBox === 0 ? 3 : prevCurrentBox - 1));
+      setCurrentBox((prevCurrentBox) => (prevCurrentBox === 0 ? 3 : prevCurrentBox - 1));
       setIsCooldown(true);
 
       setTimeout(() => {
@@ -129,7 +129,7 @@ export default function MainBanner({ banner, isMainBannerLoading }) {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isCooldown) {
-        setCurrentBox(prevCurrentBox => (prevCurrentBox === 3 ? 0 : prevCurrentBox + 1));
+        setCurrentBox((prevCurrentBox) => (prevCurrentBox === 3 ? 0 : prevCurrentBox + 1));
         setIsCooldown(true);
 
         setTimeout(() => {
@@ -143,30 +143,28 @@ export default function MainBanner({ banner, isMainBannerLoading }) {
   }, [isCooldown]);
 
   return (
-    <Container style={{ backgroundColor: !isMainBannerLoading ? '#EBEBEB' : 'inherit' }}>
+    <Container style={{ backgroundColor: !isMainBannerLoading ? "#EBEBEB" : "inherit" }}>
       <Slide onClick={handlePrevBox} disabled={isCooldown}>
         &lt;
       </Slide>
-      {!isMainBannerLoading &&
-        <ErrorDiv wid="1200px" hei="560px" isBck/>
-      }
-      {isMainBannerLoading && banner.map((banner, index) => (
-        <div key={index}>
-          <SlideBox
-            $currentBox={currentBox}
-            $index={index}
-            $background={banner.bck}
-            $thema={banner.style}
-          >
-            <Box $thema={banner.style}>
-              <Title $thema={banner.style}>{banner.title}</Title>
-              <Detail $thema={banner.style}>{banner.detail_1}<br />{banner.detail_2}</Detail>
-              <Link to="/" >바로가기</Link>
-              <img src={banner.image} />
-            </Box>
-          </SlideBox>
-        </div>
-      ))}
+      {!isMainBannerLoading && <ErrorDiv wid="1200px" hei="560px" isBck />}
+      {isMainBannerLoading &&
+        banner.map((banner, index) => (
+          <div key={index}>
+            <SlideBox $currentBox={currentBox} $index={index} $background={banner.bck} $thema={banner.style}>
+              <Box $thema={banner.style}>
+                <Title $thema={banner.style}>{banner.title}</Title>
+                <Detail $thema={banner.style}>
+                  {(banner.detail_1 ?? banner.detailSt ?? banner.mainbanner_detail_st) || ""}
+                  <br />
+                  {(banner.detail_2 ?? banner.detailNd ?? banner.mainbanner_detail_nd) || ""}
+                </Detail>
+                <Link to="/">바로가기</Link>
+                <img src={banner.image ?? banner.img ?? banner.mainbanner_img} alt="" />
+              </Box>
+            </SlideBox>
+          </div>
+        ))}
       <Slide onClick={handleNextBox} disabled={isCooldown}>
         &gt;
       </Slide>

@@ -1,0 +1,110 @@
+// client/src/data/events.js
+export const EVENTS = [
+  {
+    // 원본 컬럼
+    event_id: 1,
+    event_name: "신규회원 환영 이벤트",
+    event_detail: "신규회원 회원가입 시 최대 10,000원 할인(30%) 쿠폰 증정",
+    event_url_main: null,
+    event_url_slide_img: "https://i.ibb.co/Z1fNCsZ/event-slide-img-welcome.png",
+    event_url_slide_detail: "https://i.ibb.co/KzNBhvm/2.png",
+    event_url_bigbox: "https://i.ibb.co/GV7J5vH/1.png",
+    event_url_smallbox: null,
+    event_expiration_date: null,
+    event_link: "",
+
+    // ✅ IndexPage가 기대하는 형태로 매핑 (중요)
+    id: 1,
+    name: "신규회원 환영 이벤트",
+    detail: "신규회원 회원가입 시 최대 10,000원 할인(30%) 쿠폰 증정",
+    slideImg: "https://i.ibb.co/Z1fNCsZ/event-slide-img-welcome.png",
+    slideDetailImg: "https://i.ibb.co/KzNBhvm/2.png",
+    bigboxImg: "https://i.ibb.co/GV7J5vH/1.png",
+    smallboxImg: null,
+    link: ""
+  },
+  {
+    event_id: 2,
+    event_name: "친구초대 이벤트",
+    event_detail: "초대한 친구가 회원가입 시 둘 다 3,000원 쿠폰 지급(계정당 1회)",
+    event_url_main: null,
+    event_url_slide_img: "https://i.ibb.co/7S4Cqjq/event-slide-img-invite-friend.png",
+    event_url_slide_detail: "https://i.ibb.co/G7JtS4Y/3.png",
+    event_url_bigbox: "https://i.ibb.co/BBdQZgv/2.png",
+    event_url_smallbox: null,
+    event_expiration_date: null,
+    event_link: "",
+
+    id: 2,
+    name: "친구초대 이벤트",
+    detail: "초대한 친구가 회원가입 시 둘 다 3,000원 쿠폰 지급(계정당 1회)",
+    slideImg: "https://i.ibb.co/7S4Cqjq/event-slide-img-invite-friend.png",
+    slideDetailImg: "https://i.ibb.co/G7JtS4Y/3.png",
+    bigboxImg: "https://i.ibb.co/BBdQZgv/2.png",
+    smallboxImg: null,
+    link: ""
+  },
+  {
+    event_id: 3,
+    event_name: "리뷰 작성 이벤트",
+    event_detail: "리뷰 작성 시 1,000 포인트 지급(주문당 1회)",
+    event_url_main: null,
+    event_url_slide_img: "https://i.ibb.co/N9w2gS3/event-slide-img-review.png",
+    event_url_slide_detail: "https://i.ibb.co/3c0m7QX/4.png",
+    event_url_bigbox: "https://i.ibb.co/7Y5Qj6Z/3.png",
+    event_url_smallbox: "https://i.ibb.co/z4r3V0V/1.png",
+    event_expiration_date: null,
+    event_link: "",
+
+    id: 3,
+    name: "리뷰 작성 이벤트",
+    detail: "리뷰 작성 시 1,000 포인트 지급(주문당 1회)",
+    slideImg: "https://i.ibb.co/N9w2gS3/event-slide-img-review.png",
+    slideDetailImg: "https://i.ibb.co/3c0m7QX/4.png",
+    bigboxImg: "https://i.ibb.co/7Y5Qj6Z/3.png",
+    smallboxImg: "https://i.ibb.co/z4r3V0V/1.png",
+    link: ""
+  },
+  {
+    event_id: 4,
+    event_name: "포토북 할인 이벤트",
+    event_detail: "포토북 2권 이상 구매 시 5,000원 할인",
+    event_url_main: null,
+    event_url_slide_img: "https://i.ibb.co/TLqkNnY/event-slide-img-photobook.png",
+    event_url_slide_detail: "https://i.ibb.co/0qKk8dB/5.png",
+    event_url_bigbox: null,
+    event_url_smallbox: "https://i.ibb.co/3pP5wYj/2.png",
+    event_expiration_date: null,
+    event_link: "",
+
+    id: 4,
+    name: "포토북 할인 이벤트",
+    detail: "포토북 2권 이상 구매 시 5,000원 할인",
+    slideImg: "https://i.ibb.co/TLqkNnY/event-slide-img-photobook.png",
+    slideDetailImg: "https://i.ibb.co/0qKk8dB/5.png",
+    bigboxImg: null,
+    smallboxImg: "https://i.ibb.co/3pP5wYj/2.png",
+    link: ""
+  },
+  {
+    event_id: 5,
+    event_name: "포토상품 첫 구매 이벤트",
+    event_detail: "포토상품 첫 구매 시 3,000원 쿠폰 지급(계정당 1회)",
+    event_url_main: null,
+    event_url_slide_img: "https://i.ibb.co/f0zSx3r/event-slide-img-first.png",
+    event_url_slide_detail: "https://i.ibb.co/5xZc2jw/6.png",
+    event_url_bigbox: null,
+    event_url_smallbox: "https://i.ibb.co/wWQH2jX/3.png",
+    event_expiration_date: null,
+    event_link: "",
+
+    id: 5,
+    name: "포토상품 첫 구매 이벤트",
+    detail: "포토상품 첫 구매 시 3,000원 쿠폰 지급(계정당 1회)",
+    slideImg: "https://i.ibb.co/f0zSx3r/event-slide-img-first.png",
+    slideDetailImg: "https://i.ibb.co/5xZc2jw/6.png",
+    bigboxImg: null,
+    smallboxImg: "https://i.ibb.co/wWQH2jX/3.png",
+    link: ""
+  }
+];
